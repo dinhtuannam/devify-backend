@@ -14,11 +14,13 @@ namespace Devify.Infrastructure
         private readonly ApplicationDbContext _context;
         private readonly string JWT_Key = "DEVIFY_AUTHENTICATE_JWT_KEY";
         private readonly UserManager<IdentityUser> _userManager;
-       
-        public AuthRepository(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        private readonly SignInManager<IdentityUser> _signInManager;
+
+        public AuthRepository(ApplicationDbContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _context = context;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
         public async Task AddAsAsync(RefreshToken token)
         {
@@ -28,7 +30,12 @@ namespace Devify.Infrastructure
 
         public async Task<IdentityUser> Login(string name, string password)
         {
-            return await _userManager.FindByEmailAsync(name);
+            var result = await _signInManager.PasswordSignInAsync(name,password, false, false);
+            if (result.Succeeded)
+            {
+                return await _userManager.FindByEmailAsync(name);
+            }
+            return null;
         }
 
         public async Task<Token> GenerateToken(IdentityUser account)

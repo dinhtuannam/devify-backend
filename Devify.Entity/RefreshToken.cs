@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Devify.Entity
 {
     public class RefreshToken
     {
+        [Key]
         public Guid Id { get; set; }
         [ForeignKey("Account")]
         public string AccountId { get; set; }

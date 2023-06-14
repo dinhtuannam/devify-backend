@@ -8,7 +8,11 @@ namespace Devify.Infrastructure
     public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Chapter> Chapters { get; set; }
+        public DbSet<Lesson> Lessons { get; set; }
+        public DbSet<Language> Languages { get; set; }
+        public DbSet<Course_Language> Course_Languages { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -17,6 +21,7 @@ namespace Devify.Infrastructure
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<Course_Language>().HasKey(x => new { x.CourseId, x.LanguageId });
 
             builder.Entity<IdentityUserRole<string>>().HasKey(x => new { x.UserId, x.RoleId });
 

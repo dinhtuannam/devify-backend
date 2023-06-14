@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Devify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230614082444_initIdentity")]
-    partial class initIdentity
+    [Migration("20230614151358_initDB")]
+    partial class initDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,19 +25,151 @@ namespace Devify.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Devify.Entity.Product", b =>
+            modelBuilder.Entity("Devify.Entity.Chapter", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ChapterId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ChapterId");
 
-                    b.ToTable("Products");
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("Chapters");
+                });
+
+            modelBuilder.Entity("Devify.Entity.Course", b =>
+                {
+                    b.Property<Guid>("CourseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<long>("Purchased")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CourseId");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("Devify.Entity.Course_Language", b =>
+                {
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LanguageId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CourseId", "LanguageId");
+
+                    b.HasIndex("LanguageId");
+
+                    b.ToTable("Course_Languages");
+                });
+
+            modelBuilder.Entity("Devify.Entity.Language", b =>
+                {
+                    b.Property<string>("LanguageId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LanguageId");
+
+                    b.ToTable("Languages");
+                });
+
+            modelBuilder.Entity("Devify.Entity.Lesson", b =>
+                {
+                    b.Property<Guid>("LessonId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ChapterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Video")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LessonId");
+
+                    b.HasIndex("ChapterId");
+
+                    b.ToTable("Lessons");
                 });
 
             modelBuilder.Entity("Devify.Entity.RefreshToken", b =>
@@ -209,15 +341,15 @@ namespace Devify.Migrations
                         {
                             Id = "ff045d07-be86-4a4e-bfa4-0264ec832c12",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d43bf9a6-59ee-4eb9-ace0-fd5cee974b4d",
+                            ConcurrencyStamp = "6cec5ab4-0166-4e72-9bc8-08872131e568",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "SUPER ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAtqr1XB2VuTbCGiZ8r45ywgw+BUhMebFu5ANeNy678b3o+JBhpYMZNyp2jaY/W0nw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKrsKM4zteTcvEwgdbS28B1Ot2m9uG6pnqdfXFePwgwlWZTnp1dzLP4IzR/9tHJg1w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3d3ef522-0adb-46e8-a1f5-eac8f912d779",
+                            SecurityStamp = "5dceca8b-eddf-4f46-bdf2-c8cb7fcddc1d",
                             TwoFactorEnabled = false,
                             UserName = "Super Admin"
                         });
@@ -316,6 +448,58 @@ namespace Devify.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Devify.Entity.Chapter", b =>
+                {
+                    b.HasOne("Devify.Entity.Course", "Course")
+                        .WithMany("Chapters")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("Devify.Entity.Course", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("Devify.Entity.Course_Language", b =>
+                {
+                    b.HasOne("Devify.Entity.Course", "Course")
+                        .WithMany("CourseLanguages")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Devify.Entity.Language", "Language")
+                        .WithMany("CourseLanguages")
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Language");
+                });
+
+            modelBuilder.Entity("Devify.Entity.Lesson", b =>
+                {
+                    b.HasOne("Devify.Entity.Chapter", "Chapter")
+                        .WithMany("Lessons")
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chapter");
+                });
+
             modelBuilder.Entity("Devify.Entity.RefreshToken", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Account")
@@ -376,6 +560,23 @@ namespace Devify.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Devify.Entity.Chapter", b =>
+                {
+                    b.Navigation("Lessons");
+                });
+
+            modelBuilder.Entity("Devify.Entity.Course", b =>
+                {
+                    b.Navigation("Chapters");
+
+                    b.Navigation("CourseLanguages");
+                });
+
+            modelBuilder.Entity("Devify.Entity.Language", b =>
+                {
+                    b.Navigation("CourseLanguages");
                 });
 #pragma warning restore 612, 618
         }

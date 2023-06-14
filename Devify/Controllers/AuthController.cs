@@ -1,6 +1,7 @@
 ﻿using Devify.Application;
 using Devify.Entity;
 using Devify.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Loship.Controllers
@@ -41,7 +42,13 @@ namespace Loship.Controllers
             return BadRequest("You re not authenticated");
         }
 
-        [HttpPost("renewToken", Name = "renewToken")]
+        [HttpPost("register", Name = "register")]
+        public async Task<IActionResult> Register(RegisterModel model)
+        {
+            throw new Exception();
+        }
+
+        [HttpPost("renew-token", Name = "renewToken")]
         public async Task<IActionResult> RenewToken(Token_VM model)
         {
             try

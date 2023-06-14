@@ -10,5 +10,6 @@ namespace Devify.Application
         Task<Token> GenerateToken(IdentityUser account);
         DateTime ConvertUnixTimeToDateTime(long utcExpireDate);
         Task<API_Response> RenewToken(Token model);
+        /*Task<IdentityUser> Register(RegisterModel model);*/
     }
 }
