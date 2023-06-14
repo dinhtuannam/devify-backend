@@ -1,11 +1,11 @@
 ﻿using Devify.Application;
 using Devify.Entity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace Devify.Infrastructure
 {
@@ -13,9 +13,12 @@ namespace Devify.Infrastructure
     {
         private readonly ApplicationDbContext _context;
         private readonly string JWT_Key = "DEVIFY_AUTHENTICATE_JWT_KEY";
-        public AuthRepository(ApplicationDbContext context)
+        private readonly UserManager<IdentityUser> _userManager;
+       
+        public AuthRepository(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         public async Task AddAsAsync(RefreshToken token)
         {
@@ -23,24 +26,27 @@ namespace Devify.Infrastructure
             await _context.SaveChangesAsync();
         }
 
-        public Account Login(string name, string password)
+        public async Task<IdentityUser> Login(string name, string password)
         {
-            return _context.Accounts.FirstOrDefault(x => x.Fullname == name && x.Password == password);
+            return await _userManager.FindByEmailAsync(name);
         }
 
-        public async Task<Token> GenerateToken(Account account)
+        public async Task<Token> GenerateToken(IdentityUser account)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var secretKeyBytes = Encoding.UTF8.GetBytes(JWT_Key);
+            var roles = await _userManager.GetRolesAsync(account);
+            var roleName = roles[0];
             var tokenDescription = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Email, account.Email),
-                    new Claim(ClaimTypes.Name, account.Fullname),
+                    new Claim(ClaimTypes.Name, account.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim("Id", account.AccountId.ToString()),
-                    new Claim("RoleId", account.RoleId.ToString()),
+                    new Claim("Id", account.Id.ToString()),
+                    new Claim("RoleId", roleName),
+
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey
@@ -54,7 +60,7 @@ namespace Devify.Infrastructure
             var refreshTokenEntity = new RefreshToken
             {
                 Id = Guid.NewGuid(),
-                AccountId = account.AccountId,
+                AccountId = account.Id,
                 JwtId = token.Id,
                 Token = refreshToken,
                 IsRevoked = false,
@@ -169,7 +175,7 @@ namespace Devify.Infrastructure
                 storedToken.IsRevoked = true;
                 _context.Update(storedToken);
                 await _context.SaveChangesAsync();
-                var user = await _context.Accounts.SingleOrDefaultAsync(a => a.AccountId == storedToken.AccountId);
+                var user = await _userManager.FindByIdAsync(storedToken.AccountId);
                 var token = await GenerateToken(user);
 
                 return new API_Response

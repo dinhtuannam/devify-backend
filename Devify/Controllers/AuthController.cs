@@ -9,12 +9,10 @@ namespace Loship.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAccountRepository _accountService;
-        private readonly IAuthRepository _authService;
 
-        public AuthController(IAccountRepository accountService, IAuthRepository authService)
+        private readonly IAuthRepository _authService;
+        public AuthController( IAuthRepository authService)
         {
-            _accountService = accountService;
             _authService = authService;
         }
 
@@ -23,7 +21,7 @@ namespace Loship.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = _authService.Login(model.Name, model.Password);
+                var result = await _authService.Login(model.Name, model.Password);
                 if (result == null)
                 {
                     return Ok(new API_Response_VM
