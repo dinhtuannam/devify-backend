@@ -4,6 +4,7 @@ using Devify.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Devify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230615142418_add-column-link")]
+    partial class addcolumnlink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,9 +166,6 @@ namespace Devify.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Link")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -445,15 +445,15 @@ namespace Devify.Migrations
                         {
                             Id = "ff045d07-be86-4a4e-bfa4-0264ec832c12",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3283c96d-f1ba-44ab-95be-b568c7efe804",
+                            ConcurrencyStamp = "546027fa-948c-46a2-864a-8b475c89cc06",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "SUPER ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIApG8TgX+NuminzcETUV6ZA/PZyxwTiziPAL+vL/1Rf1XKqTjUAc0uvX4E76+BrJQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOFkfO3nFFveweBaayIwE8j18XKVjTWV22JeCuEd6YaYnlfJ6EPnVFzvpKj5cr+utA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "26b3d522-4553-472e-9f4c-df4109226aca",
+                            SecurityStamp = "90802fa2-fd94-406d-bf06-2bbe4d255c67",
                             TwoFactorEnabled = false,
                             UserName = "Super Admin"
                         });
@@ -566,7 +566,7 @@ namespace Devify.Migrations
             modelBuilder.Entity("Devify.Entity.Course", b =>
                 {
                     b.HasOne("Devify.Entity.Creator", "Creator")
-                        .WithMany("Courses")
+                        .WithMany()
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -702,11 +702,6 @@ namespace Devify.Migrations
                     b.Navigation("CourseCategories");
 
                     b.Navigation("CourseLanguages");
-                });
-
-            modelBuilder.Entity("Devify.Entity.Creator", b =>
-                {
-                    b.Navigation("Courses");
                 });
 
             modelBuilder.Entity("Devify.Entity.Language", b =>

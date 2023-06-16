@@ -10,6 +10,6 @@ namespace Devify.Entity
         public string LanguageId { get; set; }
         public string Name { get; set; }
         public string Status { get; set; }
-        public virtual ICollection<Course_Language> CourseLanguages { get; set; }
+        public virtual ICollection<Course_Language> CourseLanguages { get; } = new List<Course_Language>();
     }
 }

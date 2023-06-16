@@ -4,6 +4,7 @@ using Devify.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Devify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230614152946_courseCategories")]
+    partial class courseCategories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,8 +84,9 @@ namespace Devify.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -92,13 +96,6 @@ namespace Devify.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Link")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
@@ -117,7 +114,7 @@ namespace Devify.Migrations
 
                     b.HasKey("CourseId");
 
-                    b.HasIndex("CreatorId");
+                    b.HasIndex("AccountId");
 
                     b.ToTable("Courses");
                 });
@@ -150,40 +147,6 @@ namespace Devify.Migrations
                     b.HasIndex("LanguageId");
 
                     b.ToTable("Course_Languages");
-                });
-
-            modelBuilder.Entity("Devify.Entity.Creator", b =>
-                {
-                    b.Property<Guid>("CreatorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Link")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CreatorId");
-
-                    b.ToTable("Creators");
                 });
 
             modelBuilder.Entity("Devify.Entity.Language", b =>
@@ -445,15 +408,15 @@ namespace Devify.Migrations
                         {
                             Id = "ff045d07-be86-4a4e-bfa4-0264ec832c12",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3283c96d-f1ba-44ab-95be-b568c7efe804",
+                            ConcurrencyStamp = "c27c2526-88c2-43fc-b8ab-8d8cc9a288a1",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "SUPER ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIApG8TgX+NuminzcETUV6ZA/PZyxwTiziPAL+vL/1Rf1XKqTjUAc0uvX4E76+BrJQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAzHqATcWBNdz4bQ36JU6Q7QCWOotJ6HuBp5+pMLphfqVe+ixkDvB982kg5K/QnbsA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "26b3d522-4553-472e-9f4c-df4109226aca",
+                            SecurityStamp = "0dd1815f-0e98-4815-b2e1-542a6bafca5b",
                             TwoFactorEnabled = false,
                             UserName = "Super Admin"
                         });
@@ -565,13 +528,13 @@ namespace Devify.Migrations
 
             modelBuilder.Entity("Devify.Entity.Course", b =>
                 {
-                    b.HasOne("Devify.Entity.Creator", "Creator")
-                        .WithMany("Courses")
-                        .HasForeignKey("CreatorId")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Creator");
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Devify.Entity.Course_Category", b =>
@@ -702,11 +665,6 @@ namespace Devify.Migrations
                     b.Navigation("CourseCategories");
 
                     b.Navigation("CourseLanguages");
-                });
-
-            modelBuilder.Entity("Devify.Entity.Creator", b =>
-                {
-                    b.Navigation("Courses");
                 });
 
             modelBuilder.Entity("Devify.Entity.Language", b =>

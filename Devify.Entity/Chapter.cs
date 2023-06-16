@@ -18,7 +18,7 @@ namespace Devify.Entity
         [ForeignKey("Course")]
         public Guid CourseId { get; set; }
         public virtual Course Course { get; set;}
-        public virtual ICollection<Lesson> Lessons { get; } = new List<Lesson>();
+        public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 
     }
 }

@@ -14,7 +14,10 @@ namespace Devify.Infrastructure
         public DbSet<Language> Languages { get; set; }
         public DbSet<Course_Language> Course_Languages { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
-
+        public DbSet<Slider> Sliders { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Course_Category> Course_Categories { get; set; }
+        public DbSet<Creator> Creators { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Server=ADMIN\\SQLEXPRESS;Database=dbDevify;Trusted_Connection=True;MultipleActiveResultSets=true;trustServerCertificate=true;");
 
@@ -22,7 +25,7 @@ namespace Devify.Infrastructure
         {
             base.OnModelCreating(builder);
             builder.Entity<Course_Language>().HasKey(x => new { x.CourseId, x.LanguageId });
-
+            builder.Entity<Course_Category>().HasKey(x => new { x.CourseId, x.CategoryId });
             builder.Entity<IdentityUserRole<string>>().HasKey(x => new { x.UserId, x.RoleId });
 
             builder.Entity<IdentityRole>().HasData(
