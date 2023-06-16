@@ -17,7 +17,11 @@ namespace Devify.Infrastructure
 
         public List<Course> GetAllCourse()
         {
-            return  _context.Courses.ToList();
+            return  _context.Courses
+                .Include(c => c.Creator)
+                .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
+                .Include(c => c.CourseCategories).ThenInclude(cc => cc.Category)
+                .ToList();
         }
 
         public Course GetCourseByName(string name)
