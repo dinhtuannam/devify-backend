@@ -1,4 +1,5 @@
 ﻿using Devify.Application;
+using Devify.Application.DTO;
 using Devify.Entity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -33,7 +34,7 @@ namespace Devify.Infrastructure
             var result = await _signInManager.PasswordSignInAsync(name,password, false, false);
             if (result.Succeeded)
             {
-                return await _userManager.FindByEmailAsync(name);
+                return await _userManager.FindByNameAsync(name);
             }
             return null;
         }
@@ -200,6 +201,93 @@ namespace Devify.Infrastructure
                     Message = "Something went wrong"
                 };
             }
+        }
+
+        public async Task<API_Response> Register(RegisterRequest model)
+        {
+            var validateResult = await ValidateRegister(model);
+            if (validateResult.Success == false)
+                return validateResult;
+            var user = new IdentityUser
+            {
+                UserName = model.Username,
+                Email = model.Email,
+                PhoneNumber = model.Phone
+            };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                var newUser = await _userManager.FindByEmailAsync(model.Email);
+
+                await _userManager.AddToRoleAsync(newUser, "Customer");
+                return new API_Response
+                {
+                    Success = true,
+                    Message = "Register successfully",
+                    Data = newUser
+                };
+            }
+            else
+            {
+                return new API_Response
+                {
+                    Success = false,
+                    Message = "Username or password are not correct"
+                };
+            }
+        }
+
+        public async Task<API_Response> ValidateRegister(RegisterRequest model)
+        {
+            if (model.Username.Contains(" "))
+                return new API_Response
+                {
+                    Success = false,
+                    Message = "Username cannot have space character",
+                };
+            if (model.Password.Contains(" "))
+                return new API_Response
+                {
+                    Success = false,
+                    Message = "Password cannot have space character",
+                };
+            var checkUsernameUnique = await _userManager.FindByNameAsync(model.Username);
+            if (checkUsernameUnique != null)
+                return new API_Response
+                {
+                    Success = false,
+                    Message = "Username already used",
+                };
+            if (model.Username.Contains(" "))
+                return new API_Response
+                {
+                    Success = false,
+                    Message = "Password cannot have space character",
+                };
+            if (!model.Password.Contains("@"))
+                return new API_Response
+                {
+                    Success = false,
+                    Message = "Password must contains @",
+                };
+            if (model.Password.Length < 8)
+                return new API_Response
+                {
+                    Success = false,
+                    Message = "Password must greater than 8 characters",
+                };
+            if (!model.Email.Contains("@"))
+                return new API_Response
+                {
+                    Success = false,
+                    Message = "Email must contains @",
+                };
+            
+            return new API_Response
+            {
+                Success = true,
+                Message = "Password must greater than 8 characters",
+            };
         }
     }
 }

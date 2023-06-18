@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Devify.Entity
+namespace Devify.Application.DTO
 {
     [Table("Accounts")]
     public class Account

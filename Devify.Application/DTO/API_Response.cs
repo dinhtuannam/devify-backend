@@ -1,4 +1,4 @@
-﻿namespace Devify.Entity
+﻿namespace Devify.Application.DTO
 {
     public class API_Response
     {

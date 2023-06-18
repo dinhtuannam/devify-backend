@@ -11,6 +11,8 @@ namespace Devify.Models
         public string Description { get; set; }
         public string? Link { get; set; }
         public string Image { get; set; }
+        public int TotalChapter => Chapters.Count();
+        public int TotalLesson => Chapters.Sum(chapter => chapter.Lessons.Count());
         public virtual Detail_Course_Creator Creator { get; set; }
         public virtual IEnumerable<Detail_Course_LanguageList> Languages { get; set; } = new List<Detail_Course_LanguageList>();
         public virtual IEnumerable<Detail_Course_ChapterList> Chapters { get; set; } = new List<Detail_Course_ChapterList>();

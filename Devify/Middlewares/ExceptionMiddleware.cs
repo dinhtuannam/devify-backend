@@ -32,7 +32,7 @@ namespace Devify.Middlewares
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            return context.Response.WriteAsync("Error");
+            return context.Response.WriteAsync(exception.Message);
         }
     }
 }

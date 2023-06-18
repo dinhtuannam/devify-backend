@@ -1,8 +1,10 @@
 ﻿using Devify.Application;
 using Devify.Entity;
+using Devify.Application.DTO;
 using Devify.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 
 namespace Loship.Controllers
 {
@@ -43,9 +45,14 @@ namespace Loship.Controllers
         }
 
         [HttpPost("register", Name = "register")]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> Register(RegisterRequest model)
         {
-            throw new Exception();
+            if (ModelState.IsValid)
+            {
+                var result = await _authService.Register(model);
+                return Ok(result);
+            }
+            return BadRequest();
         }
 
         [HttpPost("renew-token", Name = "renewToken")]

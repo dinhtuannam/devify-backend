@@ -1,8 +1,5 @@
 ﻿namespace Devify.Models
 {
-    public class API_Model
-    {
-    }
     public class API_Response_VM
     {
         public bool Success { get; set; }
