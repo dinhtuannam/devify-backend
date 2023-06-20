@@ -1,9 +1,11 @@
-﻿using Devify.Application;
+﻿using AutoMapper;
+using Devify.Application.Interfaces;
 using Devify.Entity;
 using Devify.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Devify.Controllers
 {
@@ -12,9 +14,11 @@ namespace Devify.Controllers
     public class CourseController : ControllerBase
     {
         private readonly ICourseRepository _courseService;
-        public CourseController(ICourseRepository courseService)
+        private readonly IMapper _mapper;
+        public CourseController(ICourseRepository courseService,IMapper mapper)
         {
             _courseService = courseService;
+            _mapper = mapper;
         }
         [HttpGet("get-detail-course", Name = "getDetailCourse")]
         public IActionResult getDetailByName(string name)
@@ -28,48 +32,7 @@ namespace Devify.Controllers
                     Message = "invalid"
                 });
             }
-            var creator = new Detail_Course_Creator
-            {
-                CreatorId = result.CreatorId,
-                Name = result.Creator.Name,
-                Link = result.Creator.Link,
-                Image = result.Creator.Image
-            };
-            var categoryList = result.CourseCategories.Select(c => new Detail_Course_CategoryList
-            {
-                CategoryName = c.Category.CategoryName,
-                CategoryId = c.Category.CategoryId,
-            });
-            var chapterList = result.Chapters.Select(ch => new Detail_Course_ChapterList
-            {
-                ChapterId = ch.ChapterId,
-                Name = ch.Name,
-                Description = ch.Description,
-                Lessons = ch.Lessons.Select(ls => new Detail_Course_LessonList
-                {
-                    LessonId = ls.LessonId,
-                    Name = ls.Name
-                })
-            });
-            var languagesList = result.CourseLanguages.Select(l => new Detail_Course_LanguageList
-            {
-                LanguageId = l.Language.LanguageId,
-                Name = l.Language.Name,
-            });
-            var model = new Detail_Course
-            {
-                CourseId = result.CourseId,
-                Title = result.Title,
-                Purchased = result.Purchased,
-                Price = result.Price,
-                Description = result.Description,
-                Image = result.Image,
-                Link = result.Link,
-                Creator = creator,
-                Languages = languagesList,
-                Categories = categoryList,
-                Chapters = chapterList
-            };
+            var model = _mapper.Map<Detail_Course>(result);
             return Ok(new API_Response_VM
             {
                 Success = true,
@@ -88,35 +51,7 @@ namespace Devify.Controllers
                     Success = false,
                     Message = "Something wrong, please try again later !",
                 });
-            var model = new All_Course_List
-            {
-                courseItems = result.Select(c => new All_Course_Item
-                {
-                    CourseId = c.CourseId,
-                    Title = c.Title,
-                    Purchased = c.Purchased,
-                    Price = c.Price,
-                    Link = c.Link,
-                    Image = c.Image,
-                    Creator = new Detail_Course_Creator
-                    {
-                        CreatorId = c.CreatorId,
-                        Name = c.Creator.Name,
-                        Link = c.Creator.Link,
-                        Image = c.Creator.Image
-                    },
-                    Languages = c.CourseLanguages.Select(cl => new Detail_Course_LanguageList
-                    {
-                        LanguageId = cl.Language.LanguageId,
-                        Name = cl.Language.Name
-                    }),
-                    Categories = c.CourseCategories.Select(cl => new Detail_Course_CategoryList
-                    {
-                        CategoryId = cl.Category.CategoryId,
-                        CategoryName = cl.Category.CategoryName
-                    })
-                })
-            };             
+            var model = result.Select(c => _mapper.Map<All_Course_List>(c));
             return Ok(new API_Response_VM
             {
                 Success = true,

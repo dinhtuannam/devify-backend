@@ -2,7 +2,7 @@
 using Devify.Application.DTO;
 using Microsoft.AspNetCore.Identity;
 
-namespace Devify.Application
+namespace Devify.Application.Interfaces
 {
     public interface IAuthRepository
     {

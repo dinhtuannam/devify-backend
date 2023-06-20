@@ -1,5 +1,4 @@
-﻿using Devify.Application;
-using Devify.Application.DTO;
+﻿using Devify.Application.DTO;
 using Devify.Entity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,8 +6,9 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
-
-namespace Devify.Infrastructure
+using Devify.Application.Interfaces;
+using Devify.Infrastructure.Persistance;
+namespace Devify.Infrastructure.Services
 {
     public class AuthRepository : IAuthRepository
     {
@@ -31,7 +31,7 @@ namespace Devify.Infrastructure
 
         public async Task<IdentityUser> Login(string name, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(name,password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(name, password, false, false);
             if (result.Succeeded)
             {
                 return await _userManager.FindByNameAsync(name);
@@ -130,9 +130,10 @@ namespace Devify.Infrastructure
                         (SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
                     if (!result)
                     {
-                        return new API_Response{
-                            Success= false,
-                            Message= "Invalid token"
+                        return new API_Response
+                        {
+                            Success = false,
+                            Message = "Invalid token"
                         };
                     }
                 }
@@ -282,7 +283,7 @@ namespace Devify.Infrastructure
                     Success = false,
                     Message = "Email must contains @",
                 };
-            
+
             return new API_Response
             {
                 Success = true,

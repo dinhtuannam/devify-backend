@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Devify.Application
+namespace Devify.Application.Interfaces
 {
     public interface ICourseRepository
     {

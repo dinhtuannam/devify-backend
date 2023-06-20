@@ -1,10 +1,10 @@
-﻿using Devify.Application;
-using Devify.Entity;
+﻿using Devify.Entity;
 using Devify.Application.DTO;
 using Devify.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Devify.Application.Interfaces;
 
 namespace Loship.Controllers
 {

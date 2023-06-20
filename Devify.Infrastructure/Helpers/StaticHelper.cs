@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Devify.Infrastructure
+namespace Devify.Infrastructure.Helpers
 {
     public static class StaticHelper
     {

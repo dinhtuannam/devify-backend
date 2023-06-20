@@ -1,11 +1,12 @@
-﻿using Devify.Application;
+﻿using Devify.Application.Interfaces;
 using Devify.Entity;
+using Devify.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Devify.Infrastructure
+namespace Devify.Infrastructure.Services
 {
     public class CourseRepository : ICourseRepository
     {
@@ -17,7 +18,7 @@ namespace Devify.Infrastructure
 
         public List<Course> GetAllCourse()
         {
-            return  _context.Courses
+            return _context.Courses
                 .Include(c => c.Creator)
                 .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
                 .Include(c => c.CourseCategories).ThenInclude(cc => cc.Category)
@@ -28,10 +29,10 @@ namespace Devify.Infrastructure
         {
             var result = _context.Courses
                 .Include(c => c.Creator)
-                .Include(c => c.Chapters).ThenInclude(c => c.Lessons.OrderBy(l=> l.Name))
+                .Include(c => c.Chapters).ThenInclude(c => c.Lessons.OrderBy(l => l.Name))
                 .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
                 .Include(c => c.CourseCategories).ThenInclude(cc => cc.Category)
-                .Where(c=> c.Link == name)
+                .Where(c => c.Link == name)
                 .FirstOrDefault();
             return result;
         }

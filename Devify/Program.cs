@@ -1,5 +1,7 @@
-using Devify.Application;
-using Devify.Infrastructure;
+using Devify.Application.Interfaces;
+using Devify.Infrastructure.Persistance;
+using Devify.Infrastructure.Services;
+using Devify.Mappings;
 using Devify.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -21,6 +23,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
