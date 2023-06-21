@@ -1,6 +1,8 @@
 using Devify.Application.Interfaces;
+using Devify.Configuration;
 using Devify.Infrastructure.Persistance;
 using Devify.Infrastructure.Services;
+using Devify.Installers;
 using Devify.Mappings;
 using Devify.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,8 +28,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
 
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
-builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+/*builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();*/
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -57,6 +59,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
+builder.Services.InstallerServicesInAssembly(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,3 +1,5 @@
+using Devify.Application.Interfaces;
+using Devify.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +9,7 @@ namespace Devify.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+        private readonly ICacheRepository _cacheService;
         private static readonly string[] Summaries = new[]
         {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -14,22 +17,31 @@ namespace Devify.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,ICacheRepository cacheService)
         {
             _logger = logger;
+            _cacheService = cacheService;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        [Authorize(Policy = "RequireAdminRole")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet("getall")]
+        [Cache(1000)]
+        public async Task<IActionResult> Get(int pageIndex = 1 , int pageSize = 10)
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var result = new List<WeatherForecast>()
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+                new WeatherForecast(){ Name = "abc" },
+                new WeatherForecast(){ Name = "abc" },
+                new WeatherForecast(){ Name = "abc" },
+                new WeatherForecast(){ Name = "abc" },
+            };
+            return Ok(result);
+        }
+
+        [HttpGet("Create")]
+        public async Task<IActionResult> Create()
+        {
+            await _cacheService.RemoveCacheResponseAsync("/WeatherForecast/getall");
+            return Ok();
         }
     }
 }
