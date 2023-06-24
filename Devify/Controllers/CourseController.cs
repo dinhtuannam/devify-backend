@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Devify.Application.Interfaces;
 using Devify.Entity;
+using Devify.Filters;
 using Devify.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -21,6 +22,7 @@ namespace Devify.Controllers
             _mapper = mapper;
         }
         [HttpGet("get-detail-course", Name = "getDetailCourse")]
+        [Cache(120)]
         public IActionResult getDetailByName(string name)
         {
             var result = _courseService.GetCourseByName(name);
@@ -41,6 +43,7 @@ namespace Devify.Controllers
             });
         }
 
+        [Cache(120)]
         [HttpGet("get-all-course", Name = "getAllCourse")]
         public IActionResult getAllCourse()
         {
@@ -51,7 +54,7 @@ namespace Devify.Controllers
                     Success = false,
                     Message = "Something wrong, please try again later !",
                 });
-            var model = result.Select(c => _mapper.Map<All_Course_List>(c));
+            var model = result.Select(course => _mapper.Map<All_Course_List>(course));
             return Ok(new API_Response_VM
             {
                 Success = true,

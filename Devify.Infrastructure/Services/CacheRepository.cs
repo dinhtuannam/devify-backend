@@ -27,6 +27,7 @@ namespace Devify.Infrastructure.Services
         {
             if (string.IsNullOrWhiteSpace(pattern))
                 throw new ArgumentException("value cannot be null or white space");
+            var tmp = GetKeyAsync(pattern + "*");
             await foreach(var key in GetKeyAsync(pattern+"*"))
             {
                 await _distributedCache.RemoveAsync(key);

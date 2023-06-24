@@ -19,7 +19,7 @@ namespace Devify.Infrastructure.Persistance
         public DbSet<Course_Category> Course_Categories { get; set; }
         public DbSet<Creator> Creators { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=ADMIN\\SQLEXPRESS;Database=dbDevify;Trusted_Connection=True;MultipleActiveResultSets=true;trustServerCertificate=true;");
+        => optionsBuilder.UseSqlServer("Server=Admin-PC\\SQLEXPRESS;Database=dbDevify;Trusted_Connection=True;MultipleActiveResultSets=true;trustServerCertificate=true;");
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

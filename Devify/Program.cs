@@ -15,8 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 var secretKey = builder.Configuration.GetConnectionString("JWT_Key");
 var secretKeyBytes = System.Text.Encoding.UTF8.GetBytes(secretKey);
 
-builder.Services.AddControllers();
-
 // ========================== Cau hinh thu vien =============================
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
@@ -25,11 +23,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
-
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
-
-/*builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-builder.Services.AddScoped<ICourseRepository, CourseRepository>();*/
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -48,16 +42,10 @@ builder.Services.AddAuthentication(options => {
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 // ================================================================
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole", policy =>
         policy.RequireClaim("RoleId", "Admin"));
-});
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 builder.Services.InstallerServicesInAssembly(builder.Configuration);
 var app = builder.Build();
