@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Devify.Entity;
 using Devify.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Devify.Mappings
 {
@@ -17,6 +18,7 @@ namespace Devify.Mappings
                 .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator))
                 .ForMember(dest => dest.CourseLanguages, opt => opt.MapFrom(src => src.CourseLanguages.Select(cl => cl.Language).ToList()))
                 .ForMember(dest => dest.CourseCategories, opt => opt.MapFrom(src => src.CourseCategories.Select(cl => cl.Category).ToList()));
+            CreateMap<IdentityUser,Account_Information_VM>();
             CreateMap<Creator, Detail_Course_Creator>();
             CreateMap<Category, Detail_Course_CategoryList>();
             CreateMap<Language, Detail_Course_LanguageList>();

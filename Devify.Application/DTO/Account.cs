@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Devify.Application.DTO
 {
-    [Table("Accounts")]
     public class Account
     {
         [Key]

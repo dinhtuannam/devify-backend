@@ -290,5 +290,59 @@ namespace Devify.Infrastructure.Services
                 Message = "Password must greater than 8 characters",
             };
         }
+
+        public bool IsTokenIdEqualRequestId(string token, string requestId)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var decodedToken = tokenHandler.ReadJwtToken(token);
+            var claimId = decodedToken.Claims.FirstOrDefault(claim => claim.Type == "Id")?.Value;
+            if (!string.IsNullOrEmpty(claimId) && claimId == requestId)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool ValidateToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var validationParameter = GetValidationParameters();
+            try
+            {
+                var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameter, out _);
+                var expirationDateUnix = long.Parse(claimsPrincipal.FindFirst("exp")?.Value);
+                var expirationDate = DateTimeOffset.FromUnixTimeSeconds(expirationDateUnix).DateTime;
+                if (expirationDate <= DateTime.UtcNow)
+                    return false;
+                return true;
+            }
+            catch (SecurityTokenException)
+            {
+                // Lỗi xác thực token
+                return false;
+            }
+            catch (Exception)
+            {
+                // Lỗi khác
+                return false;
+            }
+            
+        }
+
+        private TokenValidationParameters GetValidationParameters(bool isValidateLifetime = true)
+        {
+            var secretKeyBytes = Encoding.UTF8.GetBytes(JWT_Key);
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
+                ClockSkew = TimeSpan.Zero,
+                ValidateLifetime = isValidateLifetime
+            };
+
+            return validationParameters;
+        }
     }
 }

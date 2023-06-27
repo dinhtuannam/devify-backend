@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Devify.Application.Interfaces;
+using Azure.Core;
 
 namespace Loship.Controllers
 {
@@ -30,7 +31,7 @@ namespace Loship.Controllers
                     return Ok(new API_Response_VM
                     {
                         Success = false,
-                        Message = "invalid"
+                        Message = "Tên đăng nhập hoặc mật khẩu không đúng"
                     });
                 }
                 var token = await _authService.GenerateToken(result);
@@ -38,7 +39,7 @@ namespace Loship.Controllers
                 {
                     Success = true,
                     Message = "authenticated success",
-                    Data = token
+                    Data = token 
                 });
             }
             return BadRequest("You re not authenticated");

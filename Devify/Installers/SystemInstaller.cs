@@ -10,6 +10,7 @@ namespace Devify.Installers
             services.AddControllers();
             services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddSwaggerGen();
             services.AddEndpointsApiExplorer();
             services.AddControllers().AddJsonOptions(options =>
