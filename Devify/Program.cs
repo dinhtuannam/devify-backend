@@ -1,7 +1,4 @@
-using Devify.Application.Interfaces;
-using Devify.Configuration;
 using Devify.Infrastructure.Persistance;
-using Devify.Infrastructure.Services;
 using Devify.Installers;
 using Devify.Mappings;
 using Devify.Middlewares;
@@ -30,10 +27,14 @@ builder.Services.AddAuthentication(options => {
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(opt =>
 {
-    opt.TokenValidationParameters = new TokenValidationParameters
+    opt.SaveToken = true;
+    opt.RequireHttpsMetadata = false;
+    opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
-        ValidateIssuer = false,
-        ValidateAudience = false,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration.GetConnectionString("ValidAudience"),
+        ValidIssuer = builder.Configuration.GetConnectionString("ValidIssuer"),
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
         ClockSkew = TimeSpan.Zero

@@ -15,9 +15,11 @@ namespace Loship.Controllers
     {
 
         private readonly IAuthRepository _authService;
-        public AuthController( IAuthRepository authService)
+        private readonly SignInManager<IdentityUser> _signInManager;
+        public AuthController( IAuthRepository authService, SignInManager<IdentityUser> signInManager)
         {
             _authService = authService;
+            _signInManager = signInManager;
         }
 
         [HttpPost("login", Name = "authlogin")]
@@ -38,11 +40,19 @@ namespace Loship.Controllers
                 return Ok(new API_Response_VM
                 {
                     Success = true,
-                    Message = "authenticated success",
+                    Message = "Đăng nhập thành công",
                     Data = token 
                 });
             }
-            return BadRequest("You re not authenticated");
+            return BadRequest("Vui lòng điền đầy đủ tên đăng nhập và mật khẩu");
+        }
+
+        [HttpGet("logout", Name = "authlogout")]
+        public async Task<IActionResult> Logout()
+        {
+            bool isAuthenticated = _signInManager.IsSignedIn(User);
+            return Ok(isAuthenticated);
+
         }
 
         [HttpPost("register", Name = "register")]

@@ -2,9 +2,7 @@
 using Devify.Entity;
 using Devify.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
-using System.Text;
-using System.Text.RegularExpressions;
+
 
 namespace Devify.Infrastructure.Services
 {

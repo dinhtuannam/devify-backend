@@ -14,6 +14,8 @@ namespace Devify.Infrastructure.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly string JWT_Key = "DEVIFY_AUTHENTICATE_JWT_KEY";
+        private readonly string ValidAudience = "User";
+        private readonly string ValidIssuer = "https://localhost:7221";
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
 
@@ -34,7 +36,9 @@ namespace Devify.Infrastructure.Services
             var result = await _signInManager.PasswordSignInAsync(name, password, false, false);
             if (result.Succeeded)
             {
-                return await _userManager.FindByNameAsync(name);
+                var user = await _userManager.FindByNameAsync(name);
+                await _signInManager.SignInAsync(user, false);            
+                return user;
             }
             return null;
         }
@@ -56,7 +60,9 @@ namespace Devify.Infrastructure.Services
                     new Claim("RoleId", roleName),
 
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(30),
+                Issuer = ValidIssuer,
+                Audience = ValidAudience,
+                Expires = DateTime.UtcNow.AddMinutes(60),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey
                 (secretKeyBytes), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -109,10 +115,12 @@ namespace Devify.Infrastructure.Services
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var secretKeyBytes = Encoding.UTF8.GetBytes(JWT_Key);
-            var tokenParamValidate = new TokenValidationParameters
+            var tokenParamValidate = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidAudience = ValidAudience,
+                ValidIssuer = ValidIssuer,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
                 ClockSkew = TimeSpan.Zero,
@@ -334,8 +342,10 @@ namespace Devify.Infrastructure.Services
             var secretKeyBytes = Encoding.UTF8.GetBytes(JWT_Key);
             var validationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidAudience = ValidAudience,
+                ValidIssuer = ValidIssuer,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
                 ClockSkew = TimeSpan.Zero,

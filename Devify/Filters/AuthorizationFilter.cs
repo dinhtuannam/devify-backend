@@ -26,7 +26,7 @@ namespace Devify.Filters
                 var tokenValue = token.Split(" ")[1];
                 var authService = context.HttpContext.RequestServices.GetService<IAuthRepository>();
 
-                // ===================== Kiểm tra exp của token
+                // ===================== Kiểm tra tính hợp lệ của token
                 var IsTokenValid = authService.ValidateToken(tokenValue);
                 if(!IsTokenValid)
                 {
