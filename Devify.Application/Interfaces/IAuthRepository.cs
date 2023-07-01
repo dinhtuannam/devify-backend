@@ -13,7 +13,8 @@ namespace Devify.Application.Interfaces
         Task<API_Response> ValidateRegister(RegisterRequest model);
         Task<Token> GenerateToken(IdentityUser account);
         DateTime ConvertUnixTimeToDateTime(long utcExpireDate);
-        Task<API_Response> RenewToken(Token model);
+        /*Task<API_Response> RenewToken(Token model);*/
+        Task<API_Response> RenewToken(string refreshTokenRequest);
         bool IsTokenIdEqualRequestId(string token, string requestId);
         bool ValidateToken(string token);
    

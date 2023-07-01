@@ -27,7 +27,7 @@ namespace Devify.Infrastructure.Services
         {
             var result = _context.Courses
                 .Include(c => c.Creator)
-                .Include(c => c.Chapters).ThenInclude(c => c.Lessons.OrderBy(l => l.Name))
+                .Include(c => c.Chapters.OrderBy(c=>c.Name)).ThenInclude(c => c.Lessons.OrderBy(l => l.Name))
                 .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
                 .Include(c => c.CourseCategories).ThenInclude(cc => cc.Category)
                 .Where(c => c.Link == name)

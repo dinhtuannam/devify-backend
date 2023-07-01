@@ -31,4 +31,8 @@ namespace Devify.Models
         public string RefreshToken { get; set; }
     }
 
+    public class RefreshToken_Request
+    {
+        public string refreshToken { get; set; }
+    }
 }

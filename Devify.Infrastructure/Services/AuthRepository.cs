@@ -111,7 +111,7 @@ namespace Devify.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public async Task<API_Response> RenewToken(Token model)
+        /*public async Task<API_Response> RenewToken(Token model)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var secretKeyBytes = Encoding.UTF8.GetBytes(JWT_Key);
@@ -186,6 +186,55 @@ namespace Devify.Infrastructure.Services
                     {
                         Success = false,
                         Message = "token doesnt match"
+                    };
+                // Update token is used
+                storedToken.IsUsed = true;
+                storedToken.IsRevoked = true;
+                _context.Update(storedToken);
+                await _context.SaveChangesAsync();
+                var user = await _userManager.FindByIdAsync(storedToken.AccountId);
+                var token = await GenerateToken(user);
+
+                return new API_Response
+                {
+                    Success = true,
+                    Message = "Renew Token Success",
+                    Data = token
+                };
+            }
+            catch (Exception ex)
+            {
+                return new API_Response
+                {
+                    Success = false,
+                    Message = "Something went wrong"
+                };
+            }
+        }*/
+        public async Task<API_Response> RenewToken(string refreshTokenRequest)
+        {
+            try
+            {                
+                // check 4 : check refresh token exist in db ?
+                var storedToken = _context.RefreshTokens.FirstOrDefault(x => x.Token == refreshTokenRequest);
+                if (storedToken == null)
+                    return new API_Response
+                    {
+                        Success = false,
+                        Message = "Refresh token does not exist"
+                    };
+                // check 5 : check refresh token is used/revoked?
+                if (storedToken.IsUsed)
+                    return new API_Response
+                    {
+                        Success = false,
+                        Message = "Refresh token has been used"
+                    };
+                if (storedToken.IsRevoked)
+                    return new API_Response
+                    {
+                        Success = false,
+                        Message = "Refresh token has been revoked"
                     };
                 // Update token is used
                 storedToken.IsUsed = true;

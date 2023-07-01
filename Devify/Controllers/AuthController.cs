@@ -66,7 +66,7 @@ namespace Loship.Controllers
             return BadRequest();
         }
 
-        [HttpPost("renew-token", Name = "renewToken")]
+        /*[HttpPost("renew-token", Name = "renewToken")]
         public async Task<IActionResult> RenewToken(Token_VM model)
         {
             try
@@ -84,6 +84,21 @@ namespace Loship.Controllers
                 return BadRequest(e);
             }
             
+        }*/
+
+        [HttpPost("renew-token", Name = "renewToken")]
+        public async Task<IActionResult> RenewToken(RefreshToken_Request model)
+        {
+            try
+            {
+                var result = await _authService.RenewToken(model.refreshToken);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+
         }
     }
 }
