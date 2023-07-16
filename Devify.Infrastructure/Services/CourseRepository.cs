@@ -14,25 +14,23 @@ namespace Devify.Infrastructure.Services
             _context = context;
         }
 
-        public List<Course> GetAllCourse()
+        public async Task<List<Course>> GetAllCourse()
         {
             return _context.Courses
                 .Include(c => c.Creator)
                 .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
-                .Include(c => c.CourseCategories).ThenInclude(cc => cc.Category)
                 .ToList();
         }
 
-        public Course GetCourseByName(string name)
+        public async Task<Course> GetCourseBySlug(string slug)
         {
-            var result = _context.Courses
-                .Include(c => c.Creator)
-                .Include(c => c.Chapters.OrderBy(c=>c.Name)).ThenInclude(c => c.Lessons.OrderBy(l => l.Name))
+            var courses = await _context.Courses.AsNoTracking()
+                .Include(c => c.Creator).ThenInclude(c => c.User)
+                .Include(c => c.Chapters.OrderBy(c => c.Name)).ThenInclude(c => c.Lessons.OrderBy(l => l.Name))
+                .Include(c => c.Category)
                 .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
-                .Include(c => c.CourseCategories).ThenInclude(cc => cc.Category)
-                .Where(c => c.Link == name)
-                .FirstOrDefault();
-            return result;
+                .Where(c => c.Slug == slug).ToListAsync();
+            return courses.FirstOrDefault();
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace Devify.Application.DTO
+﻿namespace Devify.Application.DTO.ResponseDTO
 {
-    public class API_Response
+    public class ApiResponse
     {
         public bool Success { get; set; }
         public string Message { get; set; }

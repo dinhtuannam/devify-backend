@@ -24,10 +24,10 @@ namespace Devify.Filters
                     return;
                 }
                 var tokenValue = token.Split(" ")[1];
-                var authService = context.HttpContext.RequestServices.GetService<IAuthRepository>();
+                var tokenService = context.HttpContext.RequestServices.GetService<ITokenRepository>();
 
                 // ===================== Kiểm tra tính hợp lệ của token
-                var IsTokenValid = authService.ValidateToken(tokenValue);
+                var IsTokenValid = tokenService.ValidateToken(tokenValue);
                 if(!IsTokenValid)
                 {
                     context.Result = new UnauthorizedObjectResult(new API_Response_VM
@@ -39,7 +39,7 @@ namespace Devify.Filters
                 }
 
                 // ===================== Kiểm tra token có = request Id
-                var IsTokenIdEqualRequestId = authService.IsTokenIdEqualRequestId(tokenValue, id);
+                var IsTokenIdEqualRequestId = tokenService.IsTokenIdEqualRequestId(tokenValue, id);
                 if (!IsTokenIdEqualRequestId)
                 {
                     context.Result = new UnauthorizedObjectResult(new API_Response_VM

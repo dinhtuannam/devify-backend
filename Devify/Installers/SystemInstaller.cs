@@ -7,16 +7,25 @@ namespace Devify.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddControllers();
-            services.AddScoped<ICourseRepository, CourseRepository>();
-            services.AddScoped<IAuthRepository, AuthRepository>();
-            services.AddScoped<IAccountRepository, AccountRepository>();
+            //  =======================================================================
+            //  =========================  Cấu hình Project ===========================
+            
             services.AddSwaggerGen();
             services.AddEndpointsApiExplorer();
-            services.AddControllers().AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-            });
+
+
+            //  =======================================================================
+            //  =========================  Cấu hình Cors ==============================
+            services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
+
+            //  =======================================================================
+            //  =========================  Cấu hình Policy ============================
+            services.AddAuthorization(options =>
+             {
+                 options.AddPolicy("RequireAdminRole", policy =>
+                     policy.RequireClaim("RoleId", "Admin"));
+             });
         }
     }
 }

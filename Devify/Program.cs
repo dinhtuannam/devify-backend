@@ -1,55 +1,17 @@
-using Devify.Infrastructure.Persistance;
 using Devify.Installers;
-using Devify.Mappings;
 using Devify.Middlewares;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+
 
 var builder = WebApplication.CreateBuilder(args);
-// ================== Tao bien ======================
-var secretKey = builder.Configuration.GetConnectionString("JWT_Key");
-var secretKeyBytes = System.Text.Encoding.UTF8.GetBytes(secretKey);
 
-// ========================== Cau hinh thu vien =============================
-builder.Services.AddDbContext<ApplicationDbContext>(option =>
+builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Devify"));
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
-        .AddEntityFrameworkStores<ApplicationDbContext>()
-        .AddDefaultTokenProviders();
-builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
-builder.Services.AddAuthentication(options => {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(opt =>
-{
-    opt.SaveToken = true;
-    opt.RequireHttpsMetadata = false;
-    opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidAudience = builder.Configuration.GetConnectionString("ValidAudience"),
-        ValidIssuer = builder.Configuration.GetConnectionString("ValidIssuer"),
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
-        ClockSkew = TimeSpan.Zero
-    };
-});
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
-// ================================================================
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("RequireAdminRole", policy =>
-        policy.RequireClaim("RoleId", "Admin"));
-});
+
 builder.Services.InstallerServicesInAssembly(builder.Configuration);
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

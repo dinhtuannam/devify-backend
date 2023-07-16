@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using Devify.Application.DTO;
-using Devify.Application.Interfaces;
+using Devify.Application.Features.Account.Queries;
 using Devify.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using static Devify.Filters.AuthorizationFilter;
 
@@ -14,27 +11,24 @@ namespace Devify.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IAccountRepository _accountRepository;
-        private readonly IMapper _mapper;
-        public AccountController(IAccountRepository accountRepository,IMapper mapper)
+        private readonly IMediator _mediator;
+        public AccountController(IMediator mediator)
         {
-            _accountRepository = accountRepository;
-            _mapper = mapper;
+            _mediator = mediator;
         }
 
         [HttpGet("get-user-information", Name = "getUserInformation")]
         [AuthorizeId]
         public async Task<IActionResult> getUserInformation(string id)
         {
-            var account = _accountRepository.getAccountInformation(id);
-            if(account.Result != null)
+            var account = await _mediator.Send(new GetUserInformationById { Id = id });
+            if(account != null)
             {
-                var model = _mapper.Map<Account_Information_VM>(account.Result);
                 return Ok(new API_Response_VM
                 {
                     Success = true,
                     Message = "Get account information successfully",
-                    Data = model
+                    Data = account
                 });
             }
             return NotFound(new API_Response_VM

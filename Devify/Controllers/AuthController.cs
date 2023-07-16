@@ -1,11 +1,9 @@
-﻿using Devify.Entity;
-using Devify.Application.DTO;
-using Devify.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Devify.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Devify.Application.Interfaces;
-using Azure.Core;
+using Devify.Application.DTO.RequestDTO;
+using Devify.Entity;
 
 namespace Loship.Controllers
 {
@@ -15,11 +13,13 @@ namespace Loship.Controllers
     {
 
         private readonly IAuthRepository _authService;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        public AuthController( IAuthRepository authService, SignInManager<IdentityUser> signInManager)
+        private readonly ITokenRepository _tokenService;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        public AuthController( IAuthRepository authService, ITokenRepository tokenService, SignInManager<ApplicationUser> signInManager)
         {
             _authService = authService;
             _signInManager = signInManager;
+            _tokenService = tokenService;
         }
 
         [HttpPost("login", Name = "authlogin")]
@@ -36,7 +36,7 @@ namespace Loship.Controllers
                         Message = "Tên đăng nhập hoặc mật khẩu không đúng"
                     });
                 }
-                var token = await _authService.GenerateToken(result);
+                var token = await _tokenService.GenerateToken(result);
                 return Ok(new API_Response_VM
                 {
                     Success = true,
@@ -66,32 +66,12 @@ namespace Loship.Controllers
             return BadRequest();
         }
 
-        /*[HttpPost("renew-token", Name = "renewToken")]
-        public async Task<IActionResult> RenewToken(Token_VM model)
-        {
-            try
-            {
-                var token = new Token
-                {
-                    AccessToken = model.AccessToken,
-                    RefreshToken = model.RefreshToken
-                };
-                var result = await _authService.RenewToken(token);
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-            
-        }*/
-
         [HttpPost("renew-token", Name = "renewToken")]
         public async Task<IActionResult> RenewToken(RefreshToken_Request model)
         {
             try
             {
-                var result = await _authService.RenewToken(model.refreshToken);
+                var result = await _tokenService.RenewToken(model.refreshToken);
                 return Ok(result);
             }
             catch (Exception e)

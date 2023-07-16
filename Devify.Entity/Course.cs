@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using Devify.Entity.Commons;
 
 namespace Devify.Entity
 {
@@ -12,16 +13,30 @@ namespace Devify.Entity
         public string Title { get; set; }
         public long Purchased { get; set; }
         public double Price { get; set; }
-        public string Description { get; set; }
-        public string? Link { get; set; }
-        public string Image { get; set; }
+        public string? Description { get; set; }
+        public string? Slug { get; set; }
+        public string? Image { get; set; }
         public string Status { get; set; }
 
+        // ====================== Creator Foreign Key ==============================
         [ForeignKey("Creator")]
-        public Guid CreatorId { get; set; }
-        public virtual Creator Creator { get; set; }
-        public virtual ICollection<Chapter> Chapters { get; set; } = new List<Chapter>();
-        public virtual ICollection<Course_Language> CourseLanguages { get;} = new List<Course_Language>();
-        public virtual ICollection<Course_Category> CourseCategories { get; } = new List<Course_Category>();
+        public string CreatorId { get; set; }
+        public Creator Creator { get; set; }
+
+        // ====================== Category Foreign Key ==============================
+        [ForeignKey("Category")]
+        public string CategoryId { get; set; }
+        public Category? Category { get; set; }
+
+        // ====================== Level Foreign Key ==============================
+        [ForeignKey("CourseLevel")]
+        public string CourseLevelId { get; set; }
+        public CourseLevel? CourseLevel { get; set; }
+
+        // ====================== Collection Attributes ==============================
+        public ICollection<Chapter> Chapters { get; set; } = new List<Chapter>();
+        public ICollection<DetailOrder> DetailOrders { get; } = new List<DetailOrder>();
+        public ICollection<Course_Language> CourseLanguages { get; } = new List<Course_Language>();
+        
     }
 }

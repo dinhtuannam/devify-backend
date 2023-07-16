@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Devify.Entity.Commons;
+using Devify.Entity.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,8 +19,9 @@ namespace Devify.Entity
         public string Description { get; set; }
         [ForeignKey("Course")]
         public Guid CourseId { get; set; }
-        public virtual Course Course { get; set;}
-        public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
+        public  Course Course { get; set;}
+        public CommonEnum Status { get; set; }
+        public  ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 
     }
 }

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Devify.Entity.Commons;
+using Devify.Entity.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Devify.Entity
 {
@@ -15,6 +13,7 @@ namespace Devify.Entity
         public string CategoryId { get; set; }
         public string CategoryName { get; set; }
         public string? Description { get; set; }
-        public virtual ICollection<Course_Category> CourseCategories { get;  } = new List<Course_Category>();
+        public CommonEnum Status { get; set; }
+        public  ICollection<Course> Courses { get;  } = new List<Course>();
     }
 }

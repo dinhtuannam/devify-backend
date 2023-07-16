@@ -10,7 +10,7 @@ namespace Devify.Entity
         public Guid Id { get; set; }
         [ForeignKey("Account")]
         public string AccountId { get; set; }
-        public virtual IdentityUser Account { get; set; }
+        public  ApplicationUser Account { get; set; }
         public string Token { get; set; }
         public string JwtId { get; set; }
         public bool IsUsed { get; set; }

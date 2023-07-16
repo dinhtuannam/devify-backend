@@ -7,10 +7,10 @@ namespace Devify.Entity
     {     
         [ForeignKey("Course")]
         public Guid CourseId { get; set; }
-        public virtual Course Course { get; set; }
+        public  Course Course { get; set; }
 
         [ForeignKey("Language")]
         public string LanguageId { get; set; }
-        public virtual Language Language { get; set; }
+        public  Language Language { get; set; }
     }
 }

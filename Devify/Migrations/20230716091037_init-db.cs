@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Devify.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class initdb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,6 +32,8 @@ namespace Devify.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -59,8 +61,9 @@ namespace Devify.Migrations
                     CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -68,20 +71,19 @@ namespace Devify.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Creators",
+                name: "CourseLevels",
                 columns: table => new
                 {
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Link = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CourseLevelId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LevelName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LevelDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Creators", x => x.CreatorId);
+                    table.PrimaryKey("PK_CourseLevels", x => x.CourseLevelId);
                 });
 
             migrationBuilder.CreateTable(
@@ -91,8 +93,8 @@ namespace Devify.Migrations
                     LanguageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -222,6 +224,48 @@ namespace Devify.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Creators",
+                columns: table => new
+                {
+                    CreatorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FacebookUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LinkedInUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Creators", x => x.CreatorId);
+                    table.ForeignKey(
+                        name: "FK_Creators_AspNetUsers_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserBuyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Total = table.Column<double>(type: "float", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_UserBuyId",
+                        column: x => x.UserBuyId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RefreshTokens",
                 columns: table => new
                 {
@@ -252,17 +296,31 @@ namespace Devify.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Purchased = table.Column<long>(type: "bigint", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Link = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CourseLevelId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Courses", x => x.CourseId);
+                    table.ForeignKey(
+                        name: "FK_Courses_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Courses_CourseLevels_CourseLevelId",
+                        column: x => x.CourseLevelId,
+                        principalTable: "CourseLevels",
+                        principalColumn: "CourseLevelId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Courses_Creators_CreatorId",
                         column: x => x.CreatorId,
@@ -279,8 +337,9 @@ namespace Devify.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -318,27 +377,26 @@ namespace Devify.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Courses_Categories",
+                name: "DetailOrders",
                 columns: table => new
                 {
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CoursePrice = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Courses_Categories", x => new { x.CourseId, x.CategoryId });
+                    table.PrimaryKey("PK_DetailOrders", x => new { x.OrderId, x.CourseId });
                     table.ForeignKey(
-                        name: "FK_Courses_Categories_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "CategoryId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Courses_Categories_Courses_CourseId",
+                        name: "FK_DetailOrders_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
-                        principalColumn: "CourseId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "CourseId");
+                    table.ForeignKey(
+                        name: "FK_DetailOrders_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "OrderId");
                 });
 
             migrationBuilder.CreateTable(
@@ -348,11 +406,11 @@ namespace Devify.Migrations
                     LessonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Video = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ChapterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -371,21 +429,40 @@ namespace Devify.Migrations
                 values: new object[,]
                 {
                     { "2ca8fa08-4a80-4714-a5fb-17b7316fddc4", null, "Admin", "ADMIN" },
-                    { "88ac3925-8432-4f60-89e2-96433d08bbcf", null, "Manager", "MANAGER" }
+                    { "c6de4ab5-2df7-4a6c-9bbd-2e1b68f8ebdd", null, "Creator", "CREATOR" },
+                    { "f28ad7f6-6c3d-4f0f-b9a4-60bca4b57bb3", null, "Customer", "CUSTOMER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "ff045d07-be86-4a4e-bfa4-0264ec832c12", 0, "54164cc4-e9f5-4609-b156-bfd3b8ab4024", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "SUPER ADMIN", "AQAAAAIAAYagAAAAELuba5AQU/eOuliaZCmuurWDDVFUK/y++wjL9Fh675vMjVkDaWHkS3I/A7tYifGaJg==", null, false, "008605e1-98c1-4489-b722-8ed7b6e226a0", false, "Super Admin" });
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DisplayName", "Email", "EmailConfirmed", "Image", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "2b2e0d9b-74dd-4928-8c24-1a3156d9fc41", 0, "9cbd1a2a-6687-4196-8240-a0ac718491a3", null, "guest@gmail.com", false, null, false, null, "GUEST@GMAIL.COM", "GUEST", "AQAAAAIAAYagAAAAEGVXDYPJYSC0Wo+2bn47Z5wdTt+w39nAf6ox8G3hQlqjwQ+pllJpZ78eZ9hnTsdOOg==", null, false, "40cd258e-29fd-48aa-962d-e3a2df50e0bf", false, "Guest" },
+                    { "3f9f0d9e-67af-4a8d-9aa6-5f2270fc9fbb", 0, "913901d8-05d7-4a63-be9c-192bd7447d4d", null, "customer@gmail.com", false, null, false, null, "CUSTOMER@GMAIL.COM", "CUSTOMER", "AQAAAAIAAYagAAAAEEzDrfvlH/mXl3S+WdWgtKCVr2byaTDtAtNgtlzfrkV0deubQonUJHM8vvxAEC1/ag==", null, false, "fd0001a3-52bd-4729-8a58-51995f2872b9", false, "Customer" },
+                    { "51274390-9171-49dd-a3e7-6e23fbf327fb", 0, "1170ab7e-76d0-4f9b-9e79-539713f76e89", null, "hoidanit@gmail.com", false, null, false, null, "HOIDANIT@GMAIL.COM", "HOIDANIT", "AQAAAAIAAYagAAAAEDjAM+mkR5RrVrh7JfgT+vRTOw18Jur/SEmDS1TkmaFjRDID+Et5yJQAHg3wtfViiA==", null, false, "3a7b7ca3-3696-4278-a080-0bd8a64b2a4a", false, "HoiDanIT" },
+                    { "6e6e4976-631d-46fb-91ea-11e70fb7087a", 0, "7cfcf749-f945-46c8-a9c1-cacc5b4310dd", null, "clone@gmail.com", false, null, false, null, "CLONE@GMAIL.COM", "CLONE", "AQAAAAIAAYagAAAAEMpja90Iih5E8CXfZFbH+xiXaNYy1lbpjsMCAwaod42h+Ka3k8s9Yyw5zxifRhrG5w==", null, false, "fde837e7-2af8-493c-b17e-a03ef86c53ac", false, "Clone" },
+                    { "8b4a17e1-4a1a-44e3-9a95-c2b59b7a7a4c", 0, "e384ecd0-b7a4-4bea-8e6e-f5516b6584c0", null, "duocdev26@gmail.com", false, null, false, null, "DUOCDEV26@GMAIL.COM", "DUOCDEV", "AQAAAAIAAYagAAAAEDUOWFvpe41MGxH8qIaznRMRxr9rX9OF34pJFiYcYSCxF13TsBuBdC5zh7X3yiZTsA==", null, false, "aabfb318-f19c-4513-964f-5e0884f2e1cf", false, "DuocDev" },
+                    { "9b2eb0a3-7d3c-4671-8d16-30c69d20a7c9", 0, "eab52f23-ef07-48fe-977d-d2077020662a", null, "tedulms@gmail.com", false, null, false, null, "TEDULMS@GMAIL.COM", "TEDULMS", "AQAAAAIAAYagAAAAEMozDcM/KKaLfK0+3PNb5nymYTZkFIforR7ZAInDkPV09+QmStJeacHfJ37Ciw9TFg==", null, false, "5c3b2fed-e90c-4e8c-9892-e1de18f863a9", false, "TeduLMS" },
+                    { "d9e03227-9b87-40b5-9c7b-3a8578b6c04c", 0, "bda4a152-0ce8-4c68-ac5e-e4d1fd423700", null, "codedao6@gmail.com", false, null, false, null, "CODEDAO@GMAIL.COM", "TOIDICODEDAO", "AQAAAAIAAYagAAAAEGl4cwzT385XVzmQvBXHJW2OuAMz+GIUkFKG6HRAHefBaPKx6H6zk1jaP4n/mV64Tw==", null, false, "ededf500-9947-403e-9d33-ffa04dae28f2", false, "ToiDiCodeDao" },
+                    { "e0ed2b3d-2c72-4a84-bd60-1ff9a78ee084", 0, "2351912e-9564-4426-b4d6-f758c90c7b35", null, "manager@gmail.com", false, null, false, null, "MANAGER@GMAIL.COM", "SUPERMANAGER", "AQAAAAIAAYagAAAAEA/lcgrdgor0iLvYJxbfvAz1e+LUStZcvfVOGJaJVdP6GXzHGzplbdbHJqPW0lPsMQ==", null, false, "64d6f4bc-098d-457c-b74c-970dd87734bd", false, "SuperManager" },
+                    { "ff045d07-be86-4a4e-bfa4-0264ec832c12", 0, "f215b71b-e434-402e-be6f-ff6605e66ee3", null, "admin@gmail.com", false, null, false, null, "ADMIN@GMAIL.COM", "SUPERADMIN", "AQAAAAIAAYagAAAAEEAursQ3a3QCXl3M6cu3NOeAKn/uqy8m8oprBk7jneauMJ3LwMh2B4XWvR7OSa0z+Q==", null, false, "8b2049e8-c2d7-42af-8e50-d1b928e297ca", false, "SuperAdmin" }
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "2ca8fa08-4a80-4714-a5fb-17b7316fddc4", "ff045d07-be86-4a4e-bfa4-0264ec832c12" },
-                    { "88ac3925-8432-4f60-89e2-96433d08bbcf", "ff045d07-be86-4a4e-bfa4-0264ec832c12" }
+                    { "f28ad7f6-6c3d-4f0f-b9a4-60bca4b57bb3", "2b2e0d9b-74dd-4928-8c24-1a3156d9fc41" },
+                    { "f28ad7f6-6c3d-4f0f-b9a4-60bca4b57bb3", "3f9f0d9e-67af-4a8d-9aa6-5f2270fc9fbb" },
+                    { "c6de4ab5-2df7-4a6c-9bbd-2e1b68f8ebdd", "51274390-9171-49dd-a3e7-6e23fbf327fb" },
+                    { "f28ad7f6-6c3d-4f0f-b9a4-60bca4b57bb3", "6e6e4976-631d-46fb-91ea-11e70fb7087a" },
+                    { "c6de4ab5-2df7-4a6c-9bbd-2e1b68f8ebdd", "8b4a17e1-4a1a-44e3-9a95-c2b59b7a7a4c" },
+                    { "c6de4ab5-2df7-4a6c-9bbd-2e1b68f8ebdd", "9b2eb0a3-7d3c-4671-8d16-30c69d20a7c9" },
+                    { "c6de4ab5-2df7-4a6c-9bbd-2e1b68f8ebdd", "d9e03227-9b87-40b5-9c7b-3a8578b6c04c" },
+                    { "2ca8fa08-4a80-4714-a5fb-17b7316fddc4", "e0ed2b3d-2c72-4a84-bd60-1ff9a78ee084" },
+                    { "2ca8fa08-4a80-4714-a5fb-17b7316fddc4", "ff045d07-be86-4a4e-bfa4-0264ec832c12" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -438,19 +515,34 @@ namespace Devify.Migrations
                 column: "LanguageId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Courses_CategoryId",
+                table: "Courses",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Courses_CourseLevelId",
+                table: "Courses",
+                column: "CourseLevelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Courses_CreatorId",
                 table: "Courses",
                 column: "CreatorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Courses_Categories_CategoryId",
-                table: "Courses_Categories",
-                column: "CategoryId");
+                name: "IX_DetailOrders_CourseId",
+                table: "DetailOrders",
+                column: "CourseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Lessons_ChapterId",
                 table: "Lessons",
                 column: "ChapterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserBuyId",
+                table: "Orders",
+                column: "UserBuyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_AccountId",
@@ -480,7 +572,7 @@ namespace Devify.Migrations
                 name: "Course_Languages");
 
             migrationBuilder.DropTable(
-                name: "Courses_Categories");
+                name: "DetailOrders");
 
             migrationBuilder.DropTable(
                 name: "Lessons");
@@ -498,19 +590,25 @@ namespace Devify.Migrations
                 name: "Languages");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Chapters");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "Courses");
 
             migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "CourseLevels");
+
+            migrationBuilder.DropTable(
                 name: "Creators");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

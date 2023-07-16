@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Devify.Entity;
+
 
 namespace Devify.Application.Interfaces
 {
     public interface IAccountRepository
     {
-        public Task<IdentityUser> getAccountInformation(string id);
+        public Task<ApplicationUser> getAccountInformation(string id);
     }
 }

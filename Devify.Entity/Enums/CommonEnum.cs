@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Devify.Application.DTO
+namespace Devify.Entity.Enums
 {
-    public class getAccountInfo
+    public enum CommonEnum
     {
-
+        DELETED = -1 ,
+        UNAVAILABLE = 0,
+        AVAILABLE = 1
     }
 }

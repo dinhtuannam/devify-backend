@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Devify.Entity.Commons;
 
 namespace Devify.Entity
 {
@@ -10,6 +11,6 @@ namespace Devify.Entity
         public string LanguageId { get; set; }
         public string Name { get; set; }
         public string Status { get; set; }
-        public virtual ICollection<Course_Language> CourseLanguages { get; } = new List<Course_Language>();
+        public  ICollection<Course_Language> CourseLanguages { get; } = new List<Course_Language>();
     }
 }
