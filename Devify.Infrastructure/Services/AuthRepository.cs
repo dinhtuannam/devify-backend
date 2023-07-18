@@ -18,47 +18,75 @@ namespace Devify.Infrastructure.Services
         }
         public async Task<ApplicationUser> Login(string name, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(name, password, false, false);
-            if (result.Succeeded)
+            try
             {
-                var user = await _userManager.FindByNameAsync(name);
-                await _signInManager.SignInAsync(user, false);            
-                return user;
+                var result = await _signInManager.PasswordSignInAsync(name, password, false, false);
+                if (result.Succeeded)
+                {
+                    var user = await _userManager.FindByNameAsync(name);
+                    await _signInManager.SignInAsync(user, false);
+                    Console.WriteLine($"[AuthService] -> Login with name: {name} and password: {password} -> return true -> successfully  ");
+                    return user;
+                }
+                Console.WriteLine($"[AuthService] -> Login with name: {name} and password: {password} -> return false -> successfully  ");
+                return null;
             }
-            return null;
+            catch(Exception ex)
+            {
+                Console.WriteLine($"[AuthService] -> Login with name: {name} and password: {password} -> failed -> Exception: {ex.Message}  ");
+                return null;
+            }
+            
         }
         public async Task<ApiResponse> Register(RegisterRequest model)
         {
-            var validateResult = await ValidateRegister(model);
-            if (validateResult.Success == false)
-                return validateResult;
-            var user = new ApplicationUser
+            try
             {
-                UserName = model.Username,
-                Email = model.Email,
-                PhoneNumber = model.Phone
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-            {
-                var newUser = await _userManager.FindByEmailAsync(model.Email);
-
-                await _userManager.AddToRoleAsync(newUser, "Customer");
-                return new ApiResponse
+                var validateResult = await ValidateRegister(model);
+                if (validateResult.Success == false)
                 {
-                    Success = true,
-                    Message = "Register successfully",
-                    Data = newUser
+                    Console.WriteLine($"[AuthService] -> Register -> return false -> successfully  ");
+                    return validateResult;
+                }               
+                var user = new ApplicationUser
+                {
+                    UserName = model.Username,
+                    Email = model.Email,
+                    PhoneNumber = model.Phone
                 };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    var newUser = await _userManager.FindByEmailAsync(model.Email);
+                    await _userManager.AddToRoleAsync(newUser, "Customer");
+                    Console.WriteLine($"[AuthService] -> Register -> return true -> successfully  ");
+                    return new ApiResponse
+                    {
+                        Success = true,
+                        Message = "Register successfully",
+                        Data = newUser
+                    };
+                }
+                else
+                {
+                    Console.WriteLine($"[AuthService] -> Register -> return false -> successfully  ");
+                    return new ApiResponse
+                    {
+                        Success = false,
+                        Message = "Username or password are not correct"
+                    };
+                }
             }
-            else
+            catch(Exception ex)
             {
+                Console.WriteLine($"[AuthService] -> Register -> failed -> Exception: {ex} ");
                 return new ApiResponse
                 {
                     Success = false,
-                    Message = "Username or password are not correct"
+                    Message = ex.Message
                 };
             }
+            
         }
         public async Task<ApiResponse> ValidateRegister(RegisterRequest model)
         {

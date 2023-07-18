@@ -5,9 +5,8 @@ using Devify.Infrastructure.Services;
 using Devify.Application.Mappings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
 using MediatR;
+using Devify.Infrastructure.SeedWorks;
 
 namespace Devify.Installers
 {
@@ -18,7 +17,8 @@ namespace Devify.Installers
             //  =========================  DbContext ========================================
             services.AddDbContext<ApplicationDbContext>(option =>
             {
-                option.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Devify"));
+                option.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Devify"))
+                .LogTo(Console.WriteLine, new[] {DbLoggerCategory.Database.Command.Name},LogLevel.Information);
             });
 
 
@@ -33,6 +33,7 @@ namespace Devify.Installers
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
             //  =========================  Cấu hình AutoMapper ===============================

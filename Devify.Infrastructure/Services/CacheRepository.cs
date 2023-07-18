@@ -25,13 +25,22 @@ namespace Devify.Infrastructure.Services
 
         public async Task RemoveCacheResponseAsync(string pattern)
         {
-            if (string.IsNullOrWhiteSpace(pattern))
-                throw new ArgumentException("value cannot be null or white space");
-            var tmp = GetKeyAsync(pattern + "*");
-            await foreach(var key in GetKeyAsync(pattern+"*"))
+            try
             {
-                await _distributedCache.RemoveAsync(key);
+                if (string.IsNullOrWhiteSpace(pattern))
+                    throw new ArgumentException("value cannot be null or white space");
+                var tmp = GetKeyAsync(pattern + "*");
+                await foreach (var key in GetKeyAsync(pattern + "*"))
+                {
+                    await _distributedCache.RemoveAsync(key);
+                }
+                Console.WriteLine($"[CacheService] -> RemoveCacheResponseAsync with pattern:{pattern} -> successfully ");
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"[CacheService] -> RemoveCacheResponseAsync with pattern:{pattern} -> failed , Exception: {ex.Message}");
+            }
+           
 
         }
 
@@ -52,17 +61,26 @@ namespace Devify.Infrastructure.Services
 
         public async Task SetCacheResponseAsync(string cacheKey, object response, TimeSpan timeOut)
         {
-            if (response == null)
-                return;
-            var serializerResponse = JsonConvert.SerializeObject(response, new JsonSerializerSettings()
+            try
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+                if (response == null)
+                    return;
+                var serializerResponse = JsonConvert.SerializeObject(response, new JsonSerializerSettings()
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                });
 
-            await _distributedCache.SetStringAsync(cacheKey, serializerResponse, new DistributedCacheEntryOptions
+                await _distributedCache.SetStringAsync(cacheKey, serializerResponse, new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = timeOut
+                });
+                Console.WriteLine($"[CacheService] -> SetCacheResponseAsync with cacheKey:{cacheKey} and object and timeOut: {timeOut} -> successfully ");
+            }
+            catch(Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = timeOut
-            });
+                Console.WriteLine($"[CacheService] -> SetCacheResponseAsync with cacheKey:{cacheKey} and object and timeOut: {timeOut} -> failed -> Ex: {ex.Message} ");
+            }
+           
         }
     }
 }

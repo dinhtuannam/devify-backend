@@ -1,10 +1,12 @@
-﻿using Devify.Application.DTO;
+﻿using Azure.Core;
+using Devify.Application.DTO;
 using Devify.Application.DTO.ResponseDTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using Devify.Infrastructure.Persistance;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -26,8 +28,17 @@ namespace Devify.Infrastructure.Services
         }
         public async Task AddAsAsync(RefreshToken token)
         {
-            await _context.AddAsync(token);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.AddAsync(token);
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"[TokenService] -> AddAsAsync -> with RefreshToken: {token} -> successfully ");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[TokenService] -> AddAsAsync -> with RefreshToken: {token} -> failed , Exception: {ex.Message}");
+            }
+            
         }
 
         public DateTime ConvertUnixTimeToDateTime(long utcExpireDate)
@@ -39,14 +50,16 @@ namespace Devify.Infrastructure.Services
 
         public async Task<Token> GenerateToken(ApplicationUser account)
         {
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
-            var secretKeyBytes = Encoding.UTF8.GetBytes(JWT_Key);
-            var roles = await _userManager.GetRolesAsync(account);
-            var roleName = roles[0];
-            var tokenDescription = new SecurityTokenDescriptor
+            try
             {
-                Subject = new ClaimsIdentity(new[]
+                var jwtTokenHandler = new JwtSecurityTokenHandler();
+                var secretKeyBytes = Encoding.UTF8.GetBytes(JWT_Key);
+                var roles = await _userManager.GetRolesAsync(account);
+                var roleName = roles[0];
+                var tokenDescription = new SecurityTokenDescriptor
                 {
+                    Subject = new ClaimsIdentity(new[]
+                    {
                     new Claim(ClaimTypes.Email, account.Email),
                     new Claim(ClaimTypes.Name, account.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -54,33 +67,41 @@ namespace Devify.Infrastructure.Services
                     new Claim("RoleId", roleName),
 
                 }),
-                Issuer = ValidIssuer,
-                Audience = ValidAudience,
-                Expires = DateTime.UtcNow.AddMinutes(60),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey
-                (secretKeyBytes), SecurityAlgorithms.HmacSha256Signature)
-            };
+                    Issuer = ValidIssuer,
+                    Audience = ValidAudience,
+                    Expires = DateTime.UtcNow.AddMinutes(60),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey
+                    (secretKeyBytes), SecurityAlgorithms.HmacSha256Signature)
+                };
 
-            var token = jwtTokenHandler.CreateToken(tokenDescription);
-            var accessToken = jwtTokenHandler.WriteToken(token);
-            var refreshToken = GenerateRefreshToken();
+                var token = jwtTokenHandler.CreateToken(tokenDescription);
+                var accessToken = jwtTokenHandler.WriteToken(token);
+                var refreshToken = GenerateRefreshToken();
 
-            var refreshTokenEntity = new RefreshToken
+                var refreshTokenEntity = new RefreshToken
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = account.Id,
+                    JwtId = token.Id,
+                    Token = refreshToken,
+                    IsRevoked = false,
+                    IsUsed = false,
+                    Expired = DateTime.UtcNow.AddMinutes(2)
+                };
+                await AddAsAsync(refreshTokenEntity);
+                Console.WriteLine($"[TokenService] -> GenerateToken -> with Username: {account.UserName} -> successfully");
+                return new Token
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+            }
+            catch (Exception ex)
             {
-                Id = Guid.NewGuid(),
-                AccountId = account.Id,
-                JwtId = token.Id,
-                Token = refreshToken,
-                IsRevoked = false,
-                IsUsed = false,
-                Expired = DateTime.UtcNow.AddMinutes(2)
-            };
-            await AddAsAsync(refreshTokenEntity);
-            return new Token
-            {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
+                Console.WriteLine($"[TokenService] -> GenerateToken -> with Username: {account.UserName} -> failed , Exception: {ex.Message}");
+                return null;
+            }
+
         }
         private string GenerateRefreshToken()
         {
@@ -93,14 +114,25 @@ namespace Devify.Infrastructure.Services
         }
         public bool IsTokenIdEqualRequestId(string token, string requestId)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var decodedToken = tokenHandler.ReadJwtToken(token);
-            var claimId = decodedToken.Claims.FirstOrDefault(claim => claim.Type == "Id")?.Value;
-            if (!string.IsNullOrEmpty(claimId) && claimId == requestId)
+            try
             {
-                return true;
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var decodedToken = tokenHandler.ReadJwtToken(token);
+                var claimId = decodedToken.Claims.FirstOrDefault(claim => claim.Type == "Id")?.Value;
+                if (!string.IsNullOrEmpty(claimId) && claimId == requestId)
+                {
+                    Console.WriteLine($"[TokenService] -> IsTokenIdEqualRequestId -> with token: {token} and requestId: {requestId} -> return true -> successfully");
+                    return true;
+                }
+                Console.WriteLine($"[TokenService] -> IsTokenIdEqualRequestId -> with token: {token} and requestId: {requestId} -> return false -> successfully");
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[TokenService] -> IsTokenIdEqualRequestId -> with token: {token} and requestId: {requestId} -> failed , Exception: {ex.Message}");
+                return false;
+            }
+
         }
 
         public async Task<ApiResponse> RenewToken(string refreshTokenRequest)
@@ -135,7 +167,7 @@ namespace Devify.Infrastructure.Services
                 await _context.SaveChangesAsync();
                 var user = await _userManager.FindByIdAsync(storedToken.AccountId);
                 var token = await GenerateToken(user);
-
+                Console.WriteLine($"[TokenService] -> RenewToken -> with refreshTokenRequest: {refreshTokenRequest} -> successfully");
                 return new ApiResponse
                 {
                     Success = true,
@@ -145,6 +177,7 @@ namespace Devify.Infrastructure.Services
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"[TokenService] -> RenewToken -> with refreshTokenRequest: {refreshTokenRequest} -> failed , Exception: {ex.Message}");
                 return new ApiResponse
                 {
                     Success = false,
@@ -180,17 +213,21 @@ namespace Devify.Infrastructure.Services
                 var expirationDateUnix = long.Parse(claimsPrincipal.FindFirst("exp")?.Value);
                 var expirationDate = DateTimeOffset.FromUnixTimeSeconds(expirationDateUnix).DateTime;
                 if (expirationDate <= DateTime.UtcNow)
+                {
+                    Console.WriteLine($"[TokenService] -> ValidateToken -> return false -> successfully");
                     return false;
+                }
+                Console.WriteLine($"[TokenService] -> ValidateToken -> return true -> successfully");
                 return true;
             }
-            catch (SecurityTokenException)
+            catch (SecurityTokenException ex)
             {
-                // Lỗi xác thực token
+                Console.WriteLine($"[TokenService] -> ValidateToken -> SecurityTokenException -> failed , Exception: {ex.Message}");
                 return false;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Lỗi khác
+                Console.WriteLine($"[TokenService] -> ValidateToken -> failed , Exception: {ex.Message}");
                 return false;
             }
         }

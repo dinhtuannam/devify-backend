@@ -1,6 +1,7 @@
 ﻿using Devify.Application.Interfaces;
 using Devify.Entity;
 using Microsoft.AspNetCore.Identity;
+using System.Threading;
 
 namespace Devify.Infrastructure.Services
 {
@@ -14,8 +15,18 @@ namespace Devify.Infrastructure.Services
 
         public async Task<ApplicationUser> getAccountInformation(string id)
         {
-            var result = await _userManager.FindByIdAsync(id);
-            return result;
+            try
+            {
+                var result = await _userManager.FindByIdAsync(id);
+                Console.WriteLine($"[AccountService] -> getAccountInformation with id:{id} -> successfully");
+                return result;
+            }
+            catch(Exception ex) 
+            {
+                Console.WriteLine($"[AccountService] -> getAccountInformation with id:{id} -> failed -> ex: {ex} ");
+                return null;
+            }
+            
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using Devify.Entity;
+﻿using Devify.Application.DTO;
+using Devify.Entity;
 
 namespace Devify.Application.Interfaces
 {
     public interface ICourseRepository
     {
-        Task<Course> GetCourseBySlug(string slug);
-        Task<List<Course>> GetAllCourse();
+        Task<Detail_Course_DTO> GetCourseBySlug(string slug);
+        Task<DataListDTO<IEnumerable<All_Course_List>>> GetAllCourse();
     }
 }
