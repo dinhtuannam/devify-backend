@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Auth\Queries\" />
-    <Folder Include="Features\Course\Commands\" />
     <Folder Include="Features\Token\" />
   </ItemGroup>
 

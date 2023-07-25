@@ -10,8 +10,10 @@ namespace Devify.Infrastructure.Services
     {
         private readonly ApplicationDbContext _DbContext;
         private readonly IUnitOfWork _unitOfWork;
-        public CategoryRepository(ApplicationDbContext _context) : base(_context){
-            _DbContext = _context;
+        public CategoryRepository(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        {
+            _DbContext = context;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<Category>> SearchAsAsync(string name)
@@ -19,6 +21,7 @@ namespace Devify.Infrastructure.Services
             try
             {
                 var model = await _DbContext.Categories.Where(c => c.CategoryName == name).ToListAsync();
+                var tmp = await _unitOfWork.LanguageRepository.GetAllAsync();
                 return model;
             }
             catch (Exception ex)
@@ -27,7 +30,7 @@ namespace Devify.Infrastructure.Services
             }
         }
 
-        public override async Task<IEnumerable<Category>> GetAll()
+        public override async Task<IEnumerable<Category>> GetAllAsync()
         {
             try
             {

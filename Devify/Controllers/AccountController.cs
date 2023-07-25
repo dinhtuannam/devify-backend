@@ -17,7 +17,7 @@ namespace Devify.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("get-user-information", Name = "getUserInformation")]
+        [HttpGet("get-current-user", Name = "getCurrentUser")]
         [AuthorizeId]
         public async Task<IActionResult> getUserInformation(string id)
         {

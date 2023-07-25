@@ -1,12 +1,7 @@
-﻿using Castle.Core.Logging;
-using Devify.Application.Interfaces;
+﻿using Devify.Application.Interfaces;
 using Devify.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace Devify.Infrastructure.SeedWorks
 {
@@ -32,9 +27,15 @@ namespace Devify.Infrastructure.SeedWorks
             throw new NotImplementedException();
         }
 
-        public virtual async Task<IEnumerable<T>> GetAll()
+
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
+        }
+
+        public virtual async Task<List<T>> GetByCondition(Expression<Func<T, bool>> condition)
+        {
+            return await _dbSet.Where(condition).ToListAsync();
         }
 
         public virtual async Task<T> GetById(string id)
@@ -45,6 +46,10 @@ namespace Devify.Infrastructure.SeedWorks
         public virtual Task<bool> UpdateAsAsync(T entity)
         {
             throw new NotImplementedException();
+        }
+        public virtual IQueryable<T> GetAll()
+        {
+            return _dbSet;
         }
     }
 }

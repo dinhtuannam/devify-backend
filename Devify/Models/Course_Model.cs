@@ -62,4 +62,10 @@ namespace Devify.Models
         public virtual IEnumerable<Detail_Course_LanguageList> CourseLanguages { get; set; } = new List<Detail_Course_LanguageList>();
         public virtual IEnumerable<Detail_Course_CategoryList> CourseCategories { get; set; } = new List<Detail_Course_CategoryList>();
     }
+
+    public class Create_Course
+    {
+        public string name { get; set; }
+        public IFormFile Image { get; set; }
+    }
 }

@@ -1,17 +1,21 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
+using Devify.Entity;
 using Devify.Infrastructure.Persistance;
+using Devify.Infrastructure.SeedWorks;
 using Microsoft.EntityFrameworkCore;
 
 
 namespace Devify.Infrastructure.Services
 {
-    public class CourseRepository : ICourseRepository
+    public class CourseRepository : GenericRepository<Course>, ICourseRepository
     {
         private readonly ApplicationDbContext _context;
-        public CourseRepository(ApplicationDbContext context)
+        private readonly IUnitOfWork _unitOfWork;
+        public CourseRepository(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
         {
             _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<DataListDTO<IEnumerable<All_Course_List>>> GetAllCourse()
@@ -68,6 +72,8 @@ namespace Devify.Infrastructure.Services
                         .Include(c => c.Category)
                         .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
                         .Where(c => c.Slug == slug).FirstOrDefaultAsync();
+                if (query == null)
+                    return null;
                 var course = new Detail_Course_DTO
                 {
                     CourseId = query.CourseId,
@@ -115,6 +121,20 @@ namespace Devify.Infrastructure.Services
                 return null;
             }
             
+        }
+
+        public override async Task<bool> AddAsAsync(Course course)
+        {
+            try
+            {
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[CourseService] -> AddAsAsync -> failed , Exception: {ex.Message}");
+                return false;
+            }
         }
     }
 }

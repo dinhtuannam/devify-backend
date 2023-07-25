@@ -10,14 +10,14 @@ namespace Devify.Application.Features.Course.Queries
 
         public class GetProductByIdQueryHandler : IRequestHandler<GetDetailCourseBySlug, Detail_Course_DTO>
         {
-            private readonly ICourseRepository _courseService;
-            public GetProductByIdQueryHandler(ICourseRepository courseService)
+            private readonly IUnitOfWork _unitOfWork;
+            public GetProductByIdQueryHandler(IUnitOfWork unitOfWork)
             {
-                _courseService = courseService;
+                _unitOfWork = unitOfWork;
             }
             public async Task<Detail_Course_DTO> Handle(GetDetailCourseBySlug query, CancellationToken cancellationToken)
             {
-                return await _courseService.GetCourseBySlug(query.Slug);
+                return await _unitOfWork.CourseRepository.GetCourseBySlug(query.Slug);
             }
         }
 

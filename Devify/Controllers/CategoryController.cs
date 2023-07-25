@@ -20,7 +20,7 @@ namespace Devify.Controllers
         [HttpGet("get-all-category")]
         public async Task<IActionResult> GetALlCategory()
         {
-            var model = await _unitOfWork.CategoryRepository.GetAll();
+            var model = await _unitOfWork.CategoryRepository.GetAllAsync();
             return Ok(model);
         }
 

@@ -19,7 +19,7 @@ namespace Devify.Controllers
         [HttpGet("get-all-language")]
         public async Task<IActionResult> GetALlLanguage()
         {
-            var model = await _unitOfWork.LanguageRepository.GetAll();
+            var model = await _unitOfWork.LanguageRepository.GetAllAsync();
             return Ok(model);
         }
     }

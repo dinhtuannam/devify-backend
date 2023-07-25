@@ -8,14 +8,14 @@ namespace Devify.Application.Features.Course.Queries
     {
         public class GetAllProductsQueryHandler : IRequestHandler<GetAllCourse, DataListDTO<IEnumerable<All_Course_List>> >
         {
-            private readonly ICourseRepository _courseRepository;
-            public GetAllProductsQueryHandler(ICourseRepository courseRepository)
+            private readonly IUnitOfWork _unitOfWork;
+            public GetAllProductsQueryHandler(IUnitOfWork unitOfWork)
             {
-                _courseRepository = courseRepository;
+                _unitOfWork = unitOfWork;
             }
             public async Task<DataListDTO<IEnumerable<All_Course_List>>> Handle(GetAllCourse query, CancellationToken cancellationToken)
             {
-                return await _courseRepository.GetAllCourse();
+                return await _unitOfWork.CourseRepository.GetAllCourse();
             }
         }
     }
