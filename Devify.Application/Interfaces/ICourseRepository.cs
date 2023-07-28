@@ -5,7 +5,7 @@ namespace Devify.Application.Interfaces
 {
     public interface ICourseRepository : IGenericRepository<Course>
     {
-        Task<Detail_Course_DTO> GetCourseBySlug(string slug);
-        Task<DataListDTO<IEnumerable<All_Course_List>>> GetAllCourse();
+        Task<DetailCourseDTO> GetCourseBySlug(string slug);
+        Task<DataListDTO<IEnumerable<AllCourseList>>> GetAllCourse();
     }
 }

@@ -19,6 +19,7 @@ namespace Devify.Infrastructure.SeedWorks
             CategoryRepository = new CategoryRepository(_context,this);
             LanguageRepository = new LanguageRepository(_context,this);
             CourseRepository = new CourseRepository(_context, this);
+            FirebaseRepository = new FirebaseRepository();
         }
 
         public async Task CompleteAsync()

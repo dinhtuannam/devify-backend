@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Devify.Application.Features.Account.Queries;
+﻿using Devify.Application.Features.Account.Queries;
 using Devify.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

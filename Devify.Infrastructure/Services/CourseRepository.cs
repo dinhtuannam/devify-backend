@@ -18,16 +18,16 @@ namespace Devify.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<DataListDTO<IEnumerable<All_Course_List>>> GetAllCourse()
+        public async Task<DataListDTO<IEnumerable<AllCourseList>>> GetAllCourse()
         {
-            var dataList = new DataListDTO<IEnumerable<All_Course_List>>();
+            var dataList = new DataListDTO<IEnumerable<AllCourseList>>();
             try
             {               
                 var query = await _context.Courses.AsNoTracking()
                     .Include(c => c.Creator).ThenInclude(c => c.User)
                     .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
                     .ToListAsync();
-                dataList.Items = query.Select(c => new All_Course_List
+                dataList.Items = query.Select(c => new AllCourseList
                 {
                     CourseId = c.CourseId,
                     Title = c.Title,
@@ -35,14 +35,14 @@ namespace Devify.Infrastructure.Services
                     Price = c.Price,
                     Slug = c.Slug,
                     Image = c.Image,
-                    Creator = new Detail_Course_Creator
+                    Creator = new DetailCourseCreator
                     {
                         CreatorId = c.Creator.CreatorId,
                         DisplayName = c.Creator.User.DisplayName,
                         Slug = c.Creator.Slug,
                         Image = c.Creator.User.Image
                     },
-                    CourseLanguages = c.CourseLanguages.Select(cl => new Detail_Course_LanguageList
+                    CourseLanguages = c.CourseLanguages.Select(cl => new DetailCourseLanguageList
                     {
                         LanguageId = cl.Language.LanguageId,
                         Name = cl.Language.Name
@@ -62,7 +62,7 @@ namespace Devify.Infrastructure.Services
             
         }
 
-        public async Task<Detail_Course_DTO> GetCourseBySlug(string slug)
+        public async Task<DetailCourseDTO> GetCourseBySlug(string slug)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace Devify.Infrastructure.Services
                         .Where(c => c.Slug == slug).FirstOrDefaultAsync();
                 if (query == null)
                     return null;
-                var course = new Detail_Course_DTO
+                var course = new DetailCourseDTO
                 {
                     CourseId = query.CourseId,
                     Title = query.Title,
@@ -83,29 +83,29 @@ namespace Devify.Infrastructure.Services
                     Description = query.Description,
                     Slug = query.Slug,
                     Image = query.Image,
-                    Creator = new Detail_Course_Creator
+                    Creator = new DetailCourseCreator
                     {
                         CreatorId = query.Creator.CreatorId,
                         DisplayName = query.Creator.User.DisplayName,
                         Slug = query.Creator.Slug,
                         Image = query.Creator.User.Image
                     },
-                    Category = new Detail_Course_Category
+                    Category = new DetailCourseCategory
                     {
                         CategoryId = query.Category.CategoryId,
                         CategoryName = query.Category.CategoryName,
                     },
-                    CourseLanguages = query.CourseLanguages.Select( item => new Detail_Course_LanguageList
+                    CourseLanguages = query.CourseLanguages.Select( item => new DetailCourseLanguageList
                     {
                         LanguageId = item.Language.LanguageId,
                         Name = item.Language.Name
                     }),
-                    Chapters = query.Chapters.Select( item => new Detail_Course_ChapterList
+                    Chapters = query.Chapters.Select( item => new DetailCourseChapterList
                     {
                         ChapterId = item.ChapterId,
                         Name = item.Name,
                         Description = item.Description,
-                        Lessons = item.Lessons.Select( lsItem => new Detail_Course_LessonList
+                        Lessons = item.Lessons.Select( lsItem => new DetailCourseLessonList
                         {
                             LessonId = lsItem.LessonId,
                             Name = lsItem.Name
@@ -127,7 +127,7 @@ namespace Devify.Infrastructure.Services
         {
             try
             {
-                
+                var result = await _dbSet.AddAsync(course);
                 return true;
             }
             catch (Exception ex)

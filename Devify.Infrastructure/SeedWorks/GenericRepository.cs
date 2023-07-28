@@ -18,8 +18,17 @@ namespace Devify.Infrastructure.SeedWorks
     
         public virtual async Task<bool> AddAsAsync(T entity)
         {
-            await _dbSet.AddAsync(entity);
-            return true;
+            try
+            {
+                await _dbSet.AddAsync(entity);
+                Console.WriteLine($"[AddAsAsync] -> successfully ");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[AddAsAsync] -> failed -> Exception : {ex.Message}");
+                return false;
+            }
         }
 
         public virtual Task<bool> DeleteById(string id)

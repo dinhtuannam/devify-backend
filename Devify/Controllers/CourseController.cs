@@ -1,12 +1,14 @@
-﻿using AutoMapper;
+﻿using Devify.Application.DTO;
+using Devify.Application.Features.Course.Commands;
 using Devify.Application.Features.Course.Queries;
+using Devify.Filters;
 using Devify.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/course")]
     [ApiController]
     public class CourseController : ControllerBase
     {
@@ -17,7 +19,7 @@ namespace Devify.Controllers
         }
 
         [HttpGet("get-course-by-slug", Name = "get-course-by-slug")]
-        //[Cache(120)]
+        [Cache(120)]
         public async Task<IActionResult> getDetailBySlug(string slug)
         {
             var courseResult = await _mediator.Send(new GetDetailCourseBySlug { Slug = slug });
@@ -40,7 +42,7 @@ namespace Devify.Controllers
 
         
         [HttpGet("get-all-course", Name = "get-all-course")]
-        //[Cache(120)]
+        [Cache(120)]
         public async Task<IActionResult> getAllCourse()
         {
             var courseResult = await _mediator.Send(new GetAllCourse());
@@ -59,16 +61,14 @@ namespace Devify.Controllers
         }
 
         [HttpPost("create-new-course", Name = "create-new-course")]
-        public async Task<IActionResult> Upload([FromForm] Create_Course p)
+        public async Task<IActionResult> CreateCourse([FromForm] CreateCourseRequest model)
         {
-            if (p.Image.Length > 0)
+            if (ModelState.IsValid)
             {
-                
-                var fileName = DateTime.UtcNow.ToString("yymmssfff") + p.Image.FileName;
-                //await UploadToFirebase(p.Image.OpenReadStream(),fileName);
+                var result = await _mediator.Send(new CreateCourseCommand { request = model });
+                return result.Success ? Ok(result) : BadRequest(result);
             }
-
-            return Ok(p.Image.FileName);
+            return BadRequest(ModelState);
         }
 
         

@@ -4,16 +4,16 @@ using MediatR;
 
 namespace Devify.Application.Features.Course.Queries
 {
-    public class GetAllCourse : IRequest<DataListDTO<IEnumerable<All_Course_List>>>
+    public class GetAllCourse : IRequest<DataListDTO<IEnumerable<AllCourseList>>>
     {
-        public class GetAllProductsQueryHandler : IRequestHandler<GetAllCourse, DataListDTO<IEnumerable<All_Course_List>> >
+        public class GetAllProductsQueryHandler : IRequestHandler<GetAllCourse, DataListDTO<IEnumerable<AllCourseList>> >
         {
             private readonly IUnitOfWork _unitOfWork;
             public GetAllProductsQueryHandler(IUnitOfWork unitOfWork)
             {
                 _unitOfWork = unitOfWork;
             }
-            public async Task<DataListDTO<IEnumerable<All_Course_List>>> Handle(GetAllCourse query, CancellationToken cancellationToken)
+            public async Task<DataListDTO<IEnumerable<AllCourseList>>> Handle(GetAllCourse query, CancellationToken cancellationToken)
             {
                 return await _unitOfWork.CourseRepository.GetAllCourse();
             }
