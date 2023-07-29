@@ -6,7 +6,7 @@ using static Devify.Filters.AuthorizationFilter;
 
 namespace Devify.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/account")]
     [ApiController]
     public class AccountController : ControllerBase
     {

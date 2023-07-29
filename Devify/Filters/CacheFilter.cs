@@ -23,8 +23,8 @@ namespace Devify.Filters
                 return;
             }
             var cacheKey = generateCacheKeyFromRequest(context.HttpContext.Request);
-            var cacheService = context.HttpContext.RequestServices.GetRequiredService<ICacheRepository>();
-            var cacheResponse = await cacheService.GetCacheResponseAsync(cacheKey);
+            var cacheService = context.HttpContext.RequestServices.GetRequiredService<IUnitOfWork>();
+            var cacheResponse = await cacheService.CacheRepository.GetCacheResponseAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cacheResponse))
             {
@@ -41,7 +41,7 @@ namespace Devify.Filters
             var excutedContext = await next();
             if(excutedContext.Result is OkObjectResult okObjectResult)
             {
-                await cacheService.SetCacheResponseAsync(cacheKey, okObjectResult.Value, TimeSpan.FromSeconds(_timeToLiveSeconds));
+                await cacheService.CacheRepository.SetCacheResponseAsync(cacheKey, okObjectResult.Value, TimeSpan.FromSeconds(_timeToLiveSeconds));
             }
         }
 

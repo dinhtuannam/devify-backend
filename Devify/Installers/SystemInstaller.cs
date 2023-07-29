@@ -1,7 +1,4 @@
-﻿using Devify.Application.Interfaces;
-using Devify.Infrastructure.Services;
-
-namespace Devify.Installers
+﻿namespace Devify.Installers
 {
     public class SystemInstaller : IInstaller
     {

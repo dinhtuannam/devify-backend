@@ -3,7 +3,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using StackExchange.Redis;
-using System.Text.Json.Serialization;
 
 namespace Devify.Infrastructure.Services
 {

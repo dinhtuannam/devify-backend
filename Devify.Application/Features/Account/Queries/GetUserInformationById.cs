@@ -11,16 +11,16 @@ namespace Devify.Application.Features.Account.Queries
         public string Id { get; set; }
         public class GetUserInformationByIdHandler : IRequestHandler<GetUserInformationById, Account_Information_DTO>
         {
-            private readonly IAccountRepository _accountService;
+            private readonly IUnitOfWork _unitOfWork;
             private readonly IMapper _mapper;
-            public GetUserInformationByIdHandler(IAccountRepository accountService, IMapper mapper)
+            public GetUserInformationByIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
             {
-                _accountService = accountService;
+                _unitOfWork = unitOfWork;
                 _mapper = mapper;
             }
             public async Task<Account_Information_DTO> Handle(GetUserInformationById query, CancellationToken cancellationToken)
             {
-                var account = await _accountService.getAccountInformation(query.Id);
+                var account = await _unitOfWork.AccountRepository.getCurrentUser(query.Id);
                 var model = _mapper.Map<Account_Information_DTO>(account);
                 return model;
             }

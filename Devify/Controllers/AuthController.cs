@@ -4,22 +4,22 @@ using Microsoft.AspNetCore.Identity;
 using Devify.Application.Interfaces;
 using Devify.Application.DTO.RequestDTO;
 using Devify.Entity;
+using Devify.Application.Features.Course.Commands;
+using Devify.Application.Features.Auth.Commands;
+using MediatR;
 
 namespace Loship.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-
-        private readonly IAuthRepository _authService;
-        private readonly ITokenRepository _tokenService;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        public AuthController( IAuthRepository authService, ITokenRepository tokenService, SignInManager<ApplicationUser> signInManager)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMediator _mediator;
+        public AuthController( IUnitOfWork unitOfWork, IMediator mediator)
         {
-            _authService = authService;
-            _signInManager = signInManager;
-            _tokenService = tokenService;
+            _unitOfWork = unitOfWork;
+            _mediator = mediator;
         }
 
         [HttpPost("login", Name = "authlogin")]
@@ -27,32 +27,16 @@ namespace Loship.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _authService.Login(model.Name, model.Password);
-                if (result == null)
-                {
-                    return Ok(new API_Response_VM
-                    {
-                        Success = false,
-                        Message = "Tên đăng nhập hoặc mật khẩu không đúng"
-                    });
-                }
-                var token = await _tokenService.GenerateToken(result);
-                return Ok(new API_Response_VM
-                {
-                    Success = true,
-                    Message = "Đăng nhập thành công",
-                    Data = token 
-                });
+                var result = await _mediator.Send(new LoginCommand { username = model.Name, password = model.Password });
+                return result.Success ? Ok(result) : BadRequest(result);
             }
             return BadRequest("Vui lòng điền đầy đủ tên đăng nhập và mật khẩu");
         }
 
-        [HttpGet("logout", Name = "authlogout")]
+        [HttpGet("logout", Name = "authlogout")] 
         public async Task<IActionResult> Logout()
         {
-            bool isAuthenticated = _signInManager.IsSignedIn(User);
-            return Ok(isAuthenticated);
-
+            return Ok();
         }
 
         [HttpPost("register", Name = "register")]
@@ -60,7 +44,7 @@ namespace Loship.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _authService.Register(model);
+                var result = await _unitOfWork.AuthRepository.Register(model);
                 return Ok(result);
             }
             return BadRequest();
@@ -71,7 +55,7 @@ namespace Loship.Controllers
         {
             try
             {
-                var result = await _tokenService.RenewToken(model.refreshToken);
+                var result = await _unitOfWork.TokenRepository.RenewToken(model.refreshToken);
                 return Ok(result);
             }
             catch (Exception e)

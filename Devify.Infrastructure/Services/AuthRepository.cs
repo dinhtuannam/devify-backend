@@ -1,7 +1,6 @@
 ﻿using Devify.Entity;
 using Microsoft.AspNetCore.Identity;
 using Devify.Application.Interfaces;
-using Devify.Infrastructure.Persistance;
 using Devify.Application.DTO.RequestDTO;
 using Devify.Application.DTO.ResponseDTO;
 
@@ -11,7 +10,7 @@ namespace Devify.Infrastructure.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        public AuthRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AuthRepository(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager) 
         {
             _userManager = userManager;
             _signInManager = signInManager;

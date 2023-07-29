@@ -6,6 +6,10 @@
         ILanguageRepository LanguageRepository { get; }
         ICourseRepository CourseRepository { get; }
         IFirebaseRepository FirebaseRepository { get; }
+        IAuthRepository AuthRepository { get; }
+        ITokenRepository TokenRepository { get; }
+        IAccountRepository AccountRepository { get; }
+        ICacheRepository CacheRepository { get; }
         Task CompleteAsync();
     }
 }

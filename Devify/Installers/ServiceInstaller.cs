@@ -29,10 +29,6 @@ namespace Devify.Installers
 
 
             //  =========================  Cấu hình Repository ==============================
-            services.AddScoped<ICourseRepository, CourseRepository>();
-            services.AddScoped<IAuthRepository, AuthRepository>();
-            services.AddScoped<IAccountRepository, AccountRepository>();
-            services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 

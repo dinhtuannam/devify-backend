@@ -5,6 +5,6 @@ namespace Devify.Application.Interfaces
 {
     public interface IAccountRepository
     {
-        public Task<ApplicationUser> getAccountInformation(string id);
+        public Task<ApplicationUser> getCurrentUser(string id);
     }
 }

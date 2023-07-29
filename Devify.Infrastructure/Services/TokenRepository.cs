@@ -26,7 +26,7 @@ namespace Devify.Infrastructure.Services
             _context = context;
             _userManager = userManager;
         }
-        public async Task AddAsAsync(RefreshToken token)
+        public async Task AddTokenAsync(RefreshToken token)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace Devify.Infrastructure.Services
                     IsUsed = false,
                     Expired = DateTime.UtcNow.AddMinutes(2)
                 };
-                await AddAsAsync(refreshTokenEntity);
+                await AddTokenAsync(refreshTokenEntity);
                 Console.WriteLine($"[TokenService] -> GenerateToken -> with Username: {account.UserName} -> successfully");
                 return new Token
                 {

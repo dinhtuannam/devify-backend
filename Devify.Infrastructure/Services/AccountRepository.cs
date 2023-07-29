@@ -13,7 +13,7 @@ namespace Devify.Infrastructure.Services
             _userManager = userManager;
         }
 
-        public async Task<ApplicationUser> getAccountInformation(string id)
+        public async Task<ApplicationUser> getCurrentUser(string id)
         {
             try
             {
