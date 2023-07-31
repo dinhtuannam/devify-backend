@@ -30,6 +30,7 @@ namespace Devify.Application.Features.Auth.Commands
                 {
                     apiResponse.Success = false;
                     apiResponse.Message = "Tên đăng nhập hoặc mật khẩu không đúng";
+                    apiResponse.ErrCode = "500";
                     return apiResponse;
                 }
                 var tokenResult = await _unitOfWork.TokenRepository.GenerateToken(loginResult);
@@ -37,6 +38,7 @@ namespace Devify.Application.Features.Auth.Commands
                 {
                     apiResponse.Success = false;
                     apiResponse.Message = "Đã xảy ra lỗi vui lòng thử lại sau";
+                    apiResponse.ErrCode = "500";
                     return apiResponse;
                 }
                 apiResponse.Data = tokenResult;

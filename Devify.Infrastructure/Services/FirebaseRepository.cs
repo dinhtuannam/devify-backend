@@ -13,15 +13,6 @@ namespace Devify.Infrastructure.Services
         private static string AuthEmail = "admin26@gmail.com";
         private static string AuthPassword = "admin26";
         public FirebaseRepository() { }
-        public FirebaseDTO test()
-        {
-            return new FirebaseDTO
-            {
-                Success = true,
-                Message = "abc",
-                Data = "abc"
-            };
-        }
         public async Task<FirebaseDTO> UploadToFirebase(Stream stream, string fileName)
         {
             var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));

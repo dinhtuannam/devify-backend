@@ -9,7 +9,7 @@ namespace Devify.Application.Interfaces
         Task<bool> AddAsAsync(T entity);
         Task<bool> DeleteById(string id);
         Task<bool> UpdateAsAsync(T entity);
-        Task<List<T>> GetByCondition(Expression<Func<T, bool>> condition);
+        IQueryable<T> GetByCondition(Expression<Func<T, bool>> condition);
         IQueryable<T> GetAll();
     }
 }

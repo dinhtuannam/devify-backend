@@ -27,7 +27,7 @@ namespace Devify.Application.Features.Course.Commands
                 };
                 var createCourseResult = false;
                 var firebaseResult = new FirebaseDTO();
-                var isSlugValid = await _unitOfWork.CourseRepository.GetByCondition(c => c.Slug == command.request.Slug);
+                var isSlugValid = _unitOfWork.CourseRepository.GetByCondition(c => c.Slug == command.request.Slug).ToList();
                 if (isSlugValid.Count > 0)
                 {
                     var newSlug = command.request.Slug;

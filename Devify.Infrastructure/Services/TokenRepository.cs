@@ -26,6 +26,7 @@ namespace Devify.Infrastructure.Services
             _context = context;
             _userManager = userManager;
         }
+
         public async Task AddTokenAsync(RefreshToken token)
         {
             try
@@ -103,6 +104,7 @@ namespace Devify.Infrastructure.Services
             }
 
         }
+
         private string GenerateRefreshToken()
         {
             var random = new byte[32];
@@ -112,6 +114,7 @@ namespace Devify.Infrastructure.Services
                 return Convert.ToBase64String(random);
             }
         }
+
         public bool IsTokenIdEqualRequestId(string token, string requestId)
         {
             try
@@ -203,6 +206,7 @@ namespace Devify.Infrastructure.Services
 
             return validationParameters;
         }
+
         public bool ValidateToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

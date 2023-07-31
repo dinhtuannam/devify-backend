@@ -4,17 +4,17 @@ using Devify.Entity;
 using Devify.Infrastructure.Persistance;
 using Devify.Infrastructure.SeedWorks;
 using Microsoft.EntityFrameworkCore;
-
+using System.Linq.Expressions;
 
 namespace Devify.Infrastructure.Services
 {
     public class CourseRepository : GenericRepository<Course>, ICourseRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _DbContext;
         private readonly IUnitOfWork _unitOfWork;
         public CourseRepository(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
         {
-            _context = context;
+            _DbContext = context;
             _unitOfWork = unitOfWork;
         }
 
@@ -123,6 +123,44 @@ namespace Devify.Infrastructure.Services
             
         }
 
+        public async Task<LearningCourseDTO> GetLearningCourse(string slug)
+        {
+            try
+            {
+                var query = await _context.Courses
+                    .Include(c => c.Chapters.OrderBy(c => c.Name)).ThenInclude(c => c.Lessons.OrderBy(l => l.Name))
+                    .Where(c => c.Slug == slug).FirstOrDefaultAsync();
+                if (query == null)
+                    return null;
+                var course = new LearningCourseDTO
+                {
+                    CourseId = query.CourseId,
+                    Title = query.Title,
+                    Description = query.Description,
+                    Slug = query.Slug,
+                    Image = query.Image,
+                    Chapters = query.Chapters.Select(item => new DetailCourseChapterList
+                    {
+                        ChapterId = item.ChapterId,
+                        Name = item.Name,
+                        Description = item.Description,
+                        Lessons = item.Lessons.Select(lsItem => new DetailCourseLessonList
+                        {
+                            LessonId = lsItem.LessonId,
+                            Name = lsItem.Name
+                        })
+                    })
+                };
+                Console.WriteLine($"[CourseService] -> GetLearningCourse width slug: {slug} -> successfully");
+                return course;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[CourseService] -> GetLearningCourse -> failed , Exception: {ex.Message}");
+                return null;
+            }
+        }
+
         public override async Task<bool> AddAsAsync(Course course)
         {
             try
@@ -135,6 +173,53 @@ namespace Devify.Infrastructure.Services
                 Console.WriteLine($"[CourseService] -> AddAsAsync -> failed , Exception: {ex.Message}");
                 return false;
             }
+        }
+
+        public async Task<LearningLessonDTO> GetLearningLesson(string slug, Guid LessonId)
+        {
+            try
+            {               
+                var lesson = await _unitOfWork.LessonRepository.GetByCondition(condition: ls => ls.LessonId == LessonId)
+                .Include(ls => ls.Chapter).ThenInclude(ch => ch.Course)
+                .Select(ls => new LearningLessonDTO
+                {
+                    LessonId = ls.LessonId,
+                    Name = ls.Name,
+                    Description = ls.Description,
+                    Video = ls.Video,
+                    CourseId = ls.Chapter.CourseId,
+                })
+                .FirstOrDefaultAsync();
+                if(lesson == null)
+                {
+                    return null;
+                }
+                var course = await _unitOfWork.CourseRepository.GetByCondition(condition: c => c.Slug == slug)
+                     .Include(c => c.Creator)
+                     .Select(c => new Course
+                     {
+                         CourseId = c.CourseId,
+                         Title = c.Title,
+                         Slug = c.Slug,
+                     }).FirstOrDefaultAsync();
+                if (course == null)
+                {
+                    return null;
+                }
+                if (lesson.CourseId == course.CourseId)
+                {
+                    lesson.CourseTitle = course.Title;
+                    lesson.CourseSlug = course.Slug;
+                    return lesson;
+
+                }
+                return null;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+            
         }
     }
 }

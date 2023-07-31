@@ -1,8 +1,9 @@
-﻿using Devify.Application.Features.Account.Queries;
+﻿using Devify.Application.DTO.ResponseDTO;
+using Devify.Application.Features.Account.Queries;
+using Devify.Filters;
 using Devify.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using static Devify.Filters.AuthorizationFilter;
 
 namespace Devify.Controllers
 {
@@ -33,8 +34,9 @@ namespace Devify.Controllers
             return NotFound(new API_Response_VM
             {
                 Success = false,
-                Message = "Not found account"
-            });
+                Message = "Not found account",
+                ErrCode = "404"
+        });
         }
     }
 }

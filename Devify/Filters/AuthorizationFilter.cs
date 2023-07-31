@@ -5,51 +5,59 @@ using Devify.Models;
 
 namespace Devify.Filters
 {
-    public class AuthorizationFilter
+    public class AuthorizeIdAttribute : Attribute, IAuthorizationFilter
     {
-        public class AuthorizeIdAttribute : Attribute, IAuthorizationFilter
+        public void OnAuthorization(AuthorizationFilterContext context)
         {
-            public void OnAuthorization(AuthorizationFilterContext context)
+            var token = context.HttpContext.Request.Headers["Authorization"].ToString();
+            var id = context.HttpContext.Request.Query["id"].ToString();
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(id))
             {
-                var token = context.HttpContext.Request.Headers["Authorization"].ToString();
-                var id = context.HttpContext.Request.Query["id"].ToString();
-                if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(id))
+                context.Result = new UnauthorizedObjectResult(new API_Response_VM
                 {
-                    context.Result = new UnauthorizedObjectResult(new API_Response_VM
-                    {
-                        Success = false,
-                        Message = "Vui lòng đăng nhập",
-                        Data = "/login"
-                    });
-                    return;
-                }
-                var tokenValue = token.Split(" ")[1];
-                var tokenService = context.HttpContext.RequestServices.GetService<IUnitOfWork>();
+                    Success = false,
+                    Message = "Vui lòng đăng nhập",
+                    Data = "/login"
+                });
+                return;
+            }
+            var tokenValue = token.Split(" ")[1];
+            var tokenService = context.HttpContext.RequestServices.GetService<IUnitOfWork>();
 
-                // ===================== Kiểm tra tính hợp lệ của token
-                var IsTokenValid = tokenService.TokenRepository.ValidateToken(tokenValue);
-                if(!IsTokenValid)
+            // ===================== Kiểm tra tính hợp lệ của token
+            var IsTokenValid = tokenService.TokenRepository.ValidateToken(tokenValue);
+            if (!IsTokenValid)
+            {
+                context.Result = new UnauthorizedObjectResult(new API_Response_VM
                 {
-                    context.Result = new UnauthorizedObjectResult(new API_Response_VM
-                    {
-                        Success = false,
-                        Message = "Quyền truy cập không hợp lệ",
-                    });
-                    return;
-                }
+                    Success = false,
+                    Message = "Quyền truy cập không hợp lệ",
+                });
+                return;
+            }
 
-                // ===================== Kiểm tra token có = request Id
-                var IsTokenIdEqualRequestId = tokenService.TokenRepository.IsTokenIdEqualRequestId(tokenValue, id);
-                if (!IsTokenIdEqualRequestId)
+            // ===================== Kiểm tra token có = request Id
+            var IsTokenIdEqualRequestId = tokenService.TokenRepository.IsTokenIdEqualRequestId(tokenValue, id);
+            if (!IsTokenIdEqualRequestId)
+            {
+                context.Result = new UnauthorizedObjectResult(new API_Response_VM
                 {
-                    context.Result = new UnauthorizedObjectResult(new API_Response_VM
-                    {
-                        Success = false,
-                        Message = "Bạn không có quyền truy cập dịch vụ này",
-                    });
-                    return;
-                }
+                    Success = false,
+                    Message = "Bạn không có quyền truy cập dịch vụ này",
+                });
+                return;
             }
         }
     }
+
+    public class CourseOwnerAttribute : Attribute, IAuthorizationFilter
+    {
+        public void OnAuthorization(AuthorizationFilterContext context)
+        {
+            var token = context.HttpContext.Request.Headers["Authorization"].ToString();
+            var id = context.HttpContext.Request.Query["slug"].ToString();
+            
+        }
+    }
 }
+

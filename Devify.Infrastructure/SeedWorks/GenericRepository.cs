@@ -15,7 +15,12 @@ namespace Devify.Infrastructure.SeedWorks
             _context = context;
             _dbSet = context.Set<T>();
         }
-    
+
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
+
         public virtual async Task<bool> AddAsAsync(T entity)
         {
             try
@@ -34,17 +39,13 @@ namespace Devify.Infrastructure.SeedWorks
         public virtual Task<bool> DeleteById(string id)
         {
             throw new NotImplementedException();
-        }
+        }       
 
-
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        public virtual IQueryable<T> GetByCondition(Expression<Func<T, bool>> condition)
         {
-            return await _dbSet.ToListAsync();
-        }
-
-        public virtual async Task<List<T>> GetByCondition(Expression<Func<T, bool>> condition)
-        {
-            return await _dbSet.Where(condition).ToListAsync();
+            IQueryable<T> query = _dbSet;
+            query = query.Where(condition);
+            return query;
         }
 
         public virtual async Task<T> GetById(string id)

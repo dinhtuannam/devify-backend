@@ -23,6 +23,7 @@ namespace Devify.Infrastructure.SeedWorks
         public ITokenRepository TokenRepository { get; private set; }
         public IAccountRepository AccountRepository { get; private set; }
         public ICacheRepository CacheRepository { get; private set; }
+        public ILessonRepository LessonRepository { get; private set; }
 
         public UnitOfWork(
             ApplicationDbContext context,
@@ -40,6 +41,7 @@ namespace Devify.Infrastructure.SeedWorks
             CategoryRepository = new CategoryRepository(_context,this);
             LanguageRepository = new LanguageRepository(_context,this);
             CourseRepository = new CourseRepository(_context, this);
+            LessonRepository = new LessonRepository(_context,this);
             FirebaseRepository = new FirebaseRepository();
             AuthRepository = new AuthRepository(_userManager , _signInManager);
             TokenRepository = new TokenRepository(_context, _userManager);

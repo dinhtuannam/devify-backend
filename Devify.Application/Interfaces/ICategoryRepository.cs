@@ -1,4 +1,5 @@
-﻿using Devify.Entity;
+﻿using Devify.Application.DTO;
+using Devify.Entity;
 
 namespace Devify.Application.Interfaces
 {

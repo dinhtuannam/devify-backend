@@ -89,4 +89,28 @@ namespace Devify.Application.DTO
         public string CourseLevelId { get; set; }
     }
 
+    // ====================================== Learning Course DTO =======================================
+    public class LearningCourseDTO
+    {
+        public Guid CourseId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string? Slug { get; set; }
+        public string Image { get; set; }
+        public int TotalChapter => Chapters.Count();
+        public int TotalLesson => Chapters.Sum(chapter => chapter.Lessons.Count());
+        public IEnumerable<DetailCourseChapterList> Chapters { get; set; } = new List<DetailCourseChapterList>();
+
+    }
+
+    public class LearningLessonDTO
+    {
+        public Guid LessonId { get; set; }
+        public string Name { get; set; }
+        public string? Description { get; set; }
+        public string Video { get; set; }
+        public Guid CourseId { get; set; }
+        public string CourseTitle { get; set; }
+        public string? CourseSlug { get; set; }
+    }
 }

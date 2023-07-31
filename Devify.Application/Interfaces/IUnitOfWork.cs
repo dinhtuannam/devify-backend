@@ -10,6 +10,7 @@
         ITokenRepository TokenRepository { get; }
         IAccountRepository AccountRepository { get; }
         ICacheRepository CacheRepository { get; }
+        ILessonRepository LessonRepository { get; }
         Task CompleteAsync();
     }
 }
