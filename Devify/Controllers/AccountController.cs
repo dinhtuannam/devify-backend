@@ -1,5 +1,6 @@
 ﻿using Devify.Application.DTO.ResponseDTO;
 using Devify.Application.Features.Account.Queries;
+using Devify.Entity;
 using Devify.Filters;
 using Devify.Models;
 using MediatR;
@@ -17,7 +18,7 @@ namespace Devify.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("get-current-user", Name = "getCurrentUser")]
+        [HttpGet("{id}/current", Name = "getCurrentUser")]
         [AuthorizeId]
         public async Task<IActionResult> getUserInformation(string id)
         {
@@ -37,6 +38,24 @@ namespace Devify.Controllers
                 Message = "Not found account",
                 ErrCode = "404"
         });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddNewAccount(Slider model)
+        {
+            return Ok();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAccount(int id)
+        {
+            return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateAccount(Slider model)
+        {
+            return Ok();
         }
     }
 }

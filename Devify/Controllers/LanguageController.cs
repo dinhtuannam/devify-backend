@@ -1,4 +1,5 @@
 ﻿using Devify.Application.Interfaces;
+using Devify.Entity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers
@@ -16,11 +17,30 @@ namespace Devify.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet("get-all-language")]
+        [HttpGet]
         public async Task<IActionResult> GetALlLanguage()
         {
             var model = await _unitOfWork.LanguageRepository.GetAllAsync();
             return Ok(model);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddNewLanguage(Language model)
+        {
+            return Ok();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteLanguage(int id)
+        {
+            return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateLanguage(Language model)
+        {
+            return Ok();
         }
     }
 }

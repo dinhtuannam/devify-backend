@@ -21,9 +21,7 @@ namespace Devify.Infrastructure.Services
         {
             try
             {
-                var query = await _DbContext.Courses.Where(c => c.Slug == "hoc-lap-trinh-frontend").FirstOrDefaultAsync();
                 var model = await _DbContext.Categories.Where(c => c.CategoryName == name).ToListAsync();
-                var tmp = await _unitOfWork.LanguageRepository.GetAllAsync();
                 return model;
             }
             catch (Exception ex)

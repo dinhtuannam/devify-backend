@@ -24,6 +24,7 @@ namespace Devify.Infrastructure.SeedWorks
         public IAccountRepository AccountRepository { get; private set; }
         public ICacheRepository CacheRepository { get; private set; }
         public ILessonRepository LessonRepository { get; private set; }
+        public ISliderRepository SliderRepository { get; private set; }
 
         public UnitOfWork(
             ApplicationDbContext context,
@@ -43,6 +44,7 @@ namespace Devify.Infrastructure.SeedWorks
             CourseRepository = new CourseRepository(_context, this);
             LessonRepository = new LessonRepository(_context,this);
             FirebaseRepository = new FirebaseRepository();
+            SliderRepository = new SliderReposotory(_context,this);
             AuthRepository = new AuthRepository(_userManager , _signInManager);
             TokenRepository = new TokenRepository(_context, _userManager);
             AccountRepository = new AccountRepository(_userManager);

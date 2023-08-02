@@ -1,4 +1,6 @@
 ﻿using Devify.Application.Interfaces;
+using Devify.Entity;
+using Devify.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,18 +19,37 @@ namespace Devify.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet("get-all-category")]
+        [HttpGet]
         public async Task<IActionResult> GetALlCategory()
         {
             var model = await _unitOfWork.CategoryRepository.GetAllAsync();
             return Ok(model);
         }
 
-        [HttpGet("get-category-by-name")]
+        [HttpGet("name/{name}")]
         public async Task<IActionResult> GetCategoryByName(string name)
         {
             var model = await _unitOfWork.CategoryRepository.SearchAsAsync(name);
             return Ok(model);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddNewCategory(Category model)
+        {
+            return Ok();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCategory(Category model)
+        {
+            return Ok();
         }
     }
 }

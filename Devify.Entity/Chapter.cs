@@ -16,6 +16,7 @@ namespace Devify.Entity
         [Key]
         public Guid ChapterId { get; set; }
         public string Name { get; set; }
+        public int? Step { get; set; }
         public string Description { get; set; }
         [ForeignKey("Course")]
         public Guid CourseId { get; set; }

@@ -68,7 +68,7 @@ namespace Devify.Infrastructure.Services
             {
                 var query = await _context.Courses.AsNoTracking()
                         .Include(c => c.Creator).ThenInclude(c => c.User)
-                        .Include(c => c.Chapters.OrderBy(c => c.Name)).ThenInclude(c => c.Lessons.OrderBy(l => l.Name))
+                        .Include(c => c.Chapters.OrderBy(c => c.Step)).ThenInclude(c => c.Lessons.OrderBy(l => l.Step))
                         .Include(c => c.Category)
                         .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
                         .Where(c => c.Slug == slug).FirstOrDefaultAsync();
@@ -128,7 +128,7 @@ namespace Devify.Infrastructure.Services
             try
             {
                 var query = await _context.Courses
-                    .Include(c => c.Chapters.OrderBy(c => c.Name)).ThenInclude(c => c.Lessons.OrderBy(l => l.Name))
+                    .Include(c => c.Chapters.OrderBy(c => c.Step)).ThenInclude(c => c.Lessons.OrderBy(l => l.Name))
                     .Where(c => c.Slug == slug).FirstOrDefaultAsync();
                 if (query == null)
                     return null;

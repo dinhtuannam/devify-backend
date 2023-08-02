@@ -5,6 +5,7 @@ using Devify.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Devify.Filters;
+using Devify.Entity;
 
 namespace Devify.Controllers
 {
@@ -18,7 +19,7 @@ namespace Devify.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("get-course-by-slug", Name = "get-course-by-slug")]
+        [HttpGet("slug/{slug}", Name = "get-course-by-slug")]
         [Cache(120)]
         public async Task<IActionResult> getDetailBySlug(string slug)
         {
@@ -42,7 +43,7 @@ namespace Devify.Controllers
         }
 
         
-        [HttpGet("get-all-course", Name = "get-all-course")]
+        [HttpGet]
         [Cache(120)]
         public async Task<IActionResult> getAllCourse()
         {
@@ -63,7 +64,7 @@ namespace Devify.Controllers
         }
 
 
-        [HttpGet("get-learning-course", Name = "get-learning-course")]
+        [HttpGet("{slug}/learning", Name = "get-learning-course")]
         [Cache(120)]
         public async Task<IActionResult> getLearningCourse(string slug)
         {
@@ -112,7 +113,7 @@ namespace Devify.Controllers
         }
 
 
-        [HttpPost("create-new-course", Name = "create-new-course")]
+        [HttpPost]
         public async Task<IActionResult> CreateCourse([FromForm] CreateCourseRequest model)
         {
             if (ModelState.IsValid)
@@ -123,5 +124,16 @@ namespace Devify.Controllers
             return BadRequest(ModelState);
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCourse(Guid id)
+        {
+            return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCourse(Course model)
+        {
+            return Ok();
+        }
     }
 }

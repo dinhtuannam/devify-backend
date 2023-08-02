@@ -4,6 +4,7 @@ using Devify.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Devify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230802061402_sada")]
+    partial class sada
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,15 +100,15 @@ namespace Devify.Migrations
                         {
                             Id = "ff045d07-be86-4a4e-bfa4-0264ec832c12",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fae84a33-6b34-4027-a8a3-04fa62211b92",
+                            ConcurrencyStamp = "f97c809c-70e9-47de-901b-b14f59971722",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "SUPERADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEvEMAYnczTVzrylTrN2LTH0EuBdRg0DH4goDgxkYA4BHMLbkaWNLEVP7X7p57R7PA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMzFeycmUiwOFO/k7qiayJJIZiMSWhGYUVcbpKxhc7MLocdc6zjTd0GkeylIJDHZ1A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "74a4575f-ab7d-49c5-8017-ecbfcd0c1b49",
+                            SecurityStamp = "e10e800b-786d-4cd2-8bbc-df8eb616f8d7",
                             TwoFactorEnabled = false,
                             UserName = "SuperAdmin"
                         },
@@ -113,15 +116,15 @@ namespace Devify.Migrations
                         {
                             Id = "e0ed2b3d-2c72-4a84-bd60-1ff9a78ee084",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d34809b1-eb72-49d5-a296-fa52d4b1c237",
+                            ConcurrencyStamp = "5b9aecea-8ae0-4c1d-8713-c3c1b1eae140",
                             Email = "manager@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MANAGER@GMAIL.COM",
                             NormalizedUserName = "SUPERMANAGER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJvVXq301Om/zalAsJsko9ommND80RDlHHKhndLwwwu2GKKShmCDwhz9f1GTaHi1zg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELQb+Z4dnoNcptkncgxE+RdYoQkrLrH/A+wVUOK14ei7qRENqc4KjTprjMH2FPzhQw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "975367c2-375e-41b9-8464-5b41aab5862b",
+                            SecurityStamp = "8a219f35-7fec-467b-82c2-8b6aa3267735",
                             TwoFactorEnabled = false,
                             UserName = "SuperManager"
                         },
@@ -129,15 +132,15 @@ namespace Devify.Migrations
                         {
                             Id = "8b4a17e1-4a1a-44e3-9a95-c2b59b7a7a4c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4e022434-40cd-4d35-bd5d-8bd80b93712c",
+                            ConcurrencyStamp = "b40119e2-e977-4e63-a495-f305daccb44f",
                             Email = "duocdev26@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "DUOCDEV26@GMAIL.COM",
                             NormalizedUserName = "DUOCDEV",
-                            PasswordHash = "AQAAAAIAAYagAAAAEM8cWmgEdDgDHQWdcLrk4qeJDB3CD+F/WbK3nY3MY97ay2tSZ6VRBRbzdqW0jLAfNw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGZvI5UBMDFFf0ZHqynV0a/HUA4lySIFwTXm1u93/8tyzUGJBSUbz7otJLiUu48Hmg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "79010bef-25fc-41fe-85bb-181ee405c3ce",
+                            SecurityStamp = "8c212966-dacd-474b-a818-7954a22f95b1",
                             TwoFactorEnabled = false,
                             UserName = "DuocDev"
                         },
@@ -145,15 +148,15 @@ namespace Devify.Migrations
                         {
                             Id = "d9e03227-9b87-40b5-9c7b-3a8578b6c04c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e67c1959-a465-463b-a273-98ed8bc5ae7a",
+                            ConcurrencyStamp = "a7e113f6-9771-4945-8ea6-e2caf18c4b60",
                             Email = "codedao6@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CODEDAO@GMAIL.COM",
                             NormalizedUserName = "TOIDICODEDAO",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIIGOWmpIGlomcAmWv4XHqKwhYcjurbwA7bcIzm+8oAXdpmvGwgoFOt8MIr1eo7I3w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE/nANuOcpGv5OtnIBcsbiTFZkAbhgNmc1JnN3JJs0R8woZDzKNQsAaG6OFhSWUi2A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "00ca905c-ec35-4191-ae4c-e26321ab6ffe",
+                            SecurityStamp = "763ea372-ffa9-49a7-82c4-b09ae2ba5e31",
                             TwoFactorEnabled = false,
                             UserName = "ToiDiCodeDao"
                         },
@@ -161,15 +164,15 @@ namespace Devify.Migrations
                         {
                             Id = "51274390-9171-49dd-a3e7-6e23fbf327fb",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f211c8f2-8d8b-40f5-9e35-5e7ac604f2f1",
+                            ConcurrencyStamp = "270200ff-e046-4800-956a-6b209efb48e5",
                             Email = "hoidanit@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "HOIDANIT@GMAIL.COM",
                             NormalizedUserName = "HOIDANIT",
-                            PasswordHash = "AQAAAAIAAYagAAAAECGpQdxA8DaNMBiyMt743EuE3EOlSjB9Vz8vQA1IwdmLej3Rw8ZFVPTcYq1DBx6M0w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH8tHevHji2RJzJhIWSKusafOVC6ogaO7yx1jQjuWNGEiQQLTcafLRHmWoIN3J7JNw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5ce119a6-cece-4ff6-b7f0-0d930e059c62",
+                            SecurityStamp = "7cf5ef62-5858-44d7-a06c-db619cb67c94",
                             TwoFactorEnabled = false,
                             UserName = "HoiDanIT"
                         },
@@ -177,15 +180,15 @@ namespace Devify.Migrations
                         {
                             Id = "9b2eb0a3-7d3c-4671-8d16-30c69d20a7c9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "be4b676c-e557-4cd0-ae05-4003fc81c697",
+                            ConcurrencyStamp = "5aa375d5-8834-4413-8fe9-ad0906c0feec",
                             Email = "tedulms@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "TEDULMS@GMAIL.COM",
                             NormalizedUserName = "TEDULMS",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGgFiuuhBjvSz6OqFiP68nNWc7Ne0+z3NwqwYnQIh+wqvQ11+0mSuC8NNc9mxXhjIQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECAMx1tGgbrvAQUzOj0ysnUV2oVMJRYB3K+50+YQNQ/6pgF430CXQb1OG3UzQPHHeA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6e07d949-2c44-43c1-9c1b-d11096aac18e",
+                            SecurityStamp = "f27c433d-cf77-4bf3-9fed-d24cfe048cd7",
                             TwoFactorEnabled = false,
                             UserName = "TeduLMS"
                         },
@@ -193,15 +196,15 @@ namespace Devify.Migrations
                         {
                             Id = "3f9f0d9e-67af-4a8d-9aa6-5f2270fc9fbb",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8920d9d4-0e22-4f19-b52d-f62094f59548",
+                            ConcurrencyStamp = "d7b8a0d3-249f-4b09-9c1e-49bd91f33ef2",
                             Email = "customer@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CUSTOMER@GMAIL.COM",
                             NormalizedUserName = "CUSTOMER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEI9EIhqr7LBQEPwPiZD6AIxeVKtSicj/Fgg6lTjfAsb6g2wAbXWwu5R3cfeILvUcBQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOeIRGziXV/4PR/sytU+sEqC21LoiYRIH/TaPCGa7ITW4Bm8HBf4TtGIwORGj02vWg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "42cc92ee-84b5-4585-b1c3-34c2ddfc5d50",
+                            SecurityStamp = "82c08705-8e20-4eb7-a86b-66a3d4d61b17",
                             TwoFactorEnabled = false,
                             UserName = "Customer"
                         },
@@ -209,15 +212,15 @@ namespace Devify.Migrations
                         {
                             Id = "6e6e4976-631d-46fb-91ea-11e70fb7087a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7f7de113-3ecd-4a5f-b468-661da55942d3",
+                            ConcurrencyStamp = "1733fe1d-dccf-4f0c-ae69-324a6727f58e",
                             Email = "clone@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CLONE@GMAIL.COM",
                             NormalizedUserName = "CLONE",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBQ9jBqrO8HfMWd25IezX600aJV6Y/fWxGnEWMMIhwgwhsG3Kbk635z4KZBZjT2BoA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPSnVZxKcV2/OKFgaYVkjt+OLxxWd9qfkN1WUw3G4H4xrXiXvBRzlxGddequvQhqvQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9ebd06f4-1610-41a7-80ec-49037ba8b372",
+                            SecurityStamp = "a4a32583-0490-4c54-95c5-f5b7c4ead7f7",
                             TwoFactorEnabled = false,
                             UserName = "Clone"
                         },
@@ -225,15 +228,15 @@ namespace Devify.Migrations
                         {
                             Id = "2b2e0d9b-74dd-4928-8c24-1a3156d9fc41",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dd43fd8f-54c7-4216-8f5d-1973159c7f50",
+                            ConcurrencyStamp = "57b0ef55-28b7-422b-847e-f4a5b98fdf63",
                             Email = "guest@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "GUEST@GMAIL.COM",
                             NormalizedUserName = "GUEST",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKtRSz0q6kW5p+nUyzMoEXOQ09YUVKue40kmIWA2XJCymcLtKsLY/GL1w+owOTuNKA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELp206utszoUhGx/rocc98Uf7xPs1ePUmYKbyel1TklnK0pnbBAE4dsjngOJvlDFeA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "28ca1fb0-1278-4df8-8e34-0089f703ed4b",
+                            SecurityStamp = "39cebaee-2b38-4f20-998f-ef565c1adea3",
                             TwoFactorEnabled = false,
                             UserName = "Guest"
                         });
@@ -289,9 +292,6 @@ namespace Devify.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Step")
                         .HasColumnType("int");
 
                     b.HasKey("ChapterId");
@@ -481,17 +481,11 @@ namespace Devify.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Step")
                         .HasColumnType("int");
 
                     b.Property<string>("Video")
