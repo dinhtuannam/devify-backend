@@ -1,9 +1,11 @@
-﻿using Devify.Application.Commons;
+﻿using AutoMapper;
+using Devify.Application.Commons;
 using Devify.Application.DTO;
 using Devify.Application.DTO.ResponseDTO;
 using Devify.Application.Features.Course.Commands;
 using Devify.Application.Interfaces;
 using MediatR;
+using System.Security.Principal;
 
 namespace Devify.Application.Features.Auth.Commands
 {
@@ -14,9 +16,11 @@ namespace Devify.Application.Features.Auth.Commands
         public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse>
         {
             private readonly IUnitOfWork _unitOfWork;
-            public LoginCommandHandler(IUnitOfWork unitOfWork)
+            private readonly IMapper _mapper;
+            public LoginCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
             {
                 _unitOfWork = unitOfWork;
+                _mapper = mapper;
             }
             public async Task<ApiResponse> Handle(LoginCommand command, CancellationToken cancellationToken)
             {
@@ -33,6 +37,7 @@ namespace Devify.Application.Features.Auth.Commands
                     apiResponse.ErrCode = "500";
                     return apiResponse;
                 }
+                var userInformation = _mapper.Map<Account_Information_DTO>(loginResult);
                 var tokenResult = await _unitOfWork.TokenRepository.GenerateToken(loginResult);
                 if(tokenResult == null)
                 {
@@ -41,7 +46,13 @@ namespace Devify.Application.Features.Auth.Commands
                     apiResponse.ErrCode = "500";
                     return apiResponse;
                 }
-                apiResponse.Data = tokenResult;
+                var responseData = new LoginResponse
+                {
+                    AccessToken = tokenResult.AccessToken,
+                    RefreshToken = tokenResult.RefreshToken,
+                    Info = userInformation
+                };
+                apiResponse.Data = responseData;
                 return apiResponse;
             }
         }

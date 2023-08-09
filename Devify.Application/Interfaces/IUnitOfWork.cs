@@ -12,6 +12,7 @@
         ICacheRepository CacheRepository { get; }
         ILessonRepository LessonRepository { get; }
         ISliderRepository SliderRepository { get; } 
+        ICreatorRepository CreatorRepository { get; }   
         Task CompleteAsync();
     }
 }

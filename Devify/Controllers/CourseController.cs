@@ -112,7 +112,6 @@ namespace Devify.Controllers
             });
         }
 
-
         [HttpPost]
         public async Task<IActionResult> CreateCourse([FromForm] CreateCourseRequest model)
         {

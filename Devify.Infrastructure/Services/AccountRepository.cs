@@ -28,5 +28,20 @@ namespace Devify.Infrastructure.Services
             }
             
         }
+
+        public async Task<ApplicationUser> getUserByName(string name)
+        {
+            try
+            {
+                var result = await _userManager.FindByNameAsync(name);
+                Console.WriteLine($"[AccountService] -> getUserByName with id:{name} -> successfully");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[AccountService] -> getUserByName with id:{name} -> failed -> ex: {ex} ");
+                return null;
+            }
+        }
     }
 }

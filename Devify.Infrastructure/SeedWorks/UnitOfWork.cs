@@ -25,7 +25,7 @@ namespace Devify.Infrastructure.SeedWorks
         public ICacheRepository CacheRepository { get; private set; }
         public ILessonRepository LessonRepository { get; private set; }
         public ISliderRepository SliderRepository { get; private set; }
-
+        public ICreatorRepository CreatorRepository { get; private set; }
         public UnitOfWork(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -43,12 +43,13 @@ namespace Devify.Infrastructure.SeedWorks
             LanguageRepository = new LanguageRepository(_context,this);
             CourseRepository = new CourseRepository(_context, this);
             LessonRepository = new LessonRepository(_context,this);
-            FirebaseRepository = new FirebaseRepository();
+            CreatorRepository = new CreatorRepository(_context,this);
             SliderRepository = new SliderReposotory(_context,this);
             AuthRepository = new AuthRepository(_userManager , _signInManager);
             TokenRepository = new TokenRepository(_context, _userManager);
             AccountRepository = new AccountRepository(_userManager);
             CacheRepository = new CacheRepository(_distributedCache, _connectionMultiplexer);
+            FirebaseRepository = new FirebaseRepository();
         }
 
         public async Task CompleteAsync()

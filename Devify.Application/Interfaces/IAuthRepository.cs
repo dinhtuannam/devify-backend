@@ -1,6 +1,7 @@
 ﻿using Devify.Entity;
 using Devify.Application.DTO.RequestDTO;
 using Devify.Application.DTO.ResponseDTO;
+using Devify.Application.DTO;
 
 namespace Devify.Application.Interfaces
 {

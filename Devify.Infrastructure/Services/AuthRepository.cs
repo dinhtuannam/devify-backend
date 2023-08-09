@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Devify.Application.Interfaces;
 using Devify.Application.DTO.RequestDTO;
 using Devify.Application.DTO.ResponseDTO;
+using Devify.Application.DTO;
 
 namespace Devify.Infrastructure.Services
 {
