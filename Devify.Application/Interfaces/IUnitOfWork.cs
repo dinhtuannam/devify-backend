@@ -13,6 +13,7 @@
         ILessonRepository LessonRepository { get; }
         ISliderRepository SliderRepository { get; } 
         ICreatorRepository CreatorRepository { get; }   
+        ILevelRepository LevelRepository { get; }
         Task CompleteAsync();
     }
 }

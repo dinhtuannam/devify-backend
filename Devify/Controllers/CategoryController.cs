@@ -20,6 +20,7 @@ namespace Devify.Controllers
         }
 
         [HttpGet]
+        [Cache(3600)]
         public async Task<IActionResult> GetALlCategory()
         {
             var model = await _unitOfWork.CategoryRepository.GetAllAsync();

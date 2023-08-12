@@ -1,5 +1,6 @@
 ﻿using Devify.Application.Interfaces;
 using Devify.Entity;
+using Devify.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers
@@ -18,6 +19,7 @@ namespace Devify.Controllers
         }
 
         [HttpGet]
+        [Cache(3600)]
         public async Task<IActionResult> GetALlLanguage()
         {
             var model = await _unitOfWork.LanguageRepository.GetAllAsync();

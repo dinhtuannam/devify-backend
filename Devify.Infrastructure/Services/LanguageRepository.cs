@@ -20,7 +20,14 @@ namespace Devify.Infrastructure.Services
         {
             try
             {
-                var model = await _dbSet.ToListAsync();
+                var model = await _dbSet.Where(ln => ln.Status == "active")
+                .Select(ln => new Language
+                {
+                    LanguageId = ln.LanguageId,
+                    Name = ln.Name,
+                    DateCreated = ln.DateCreated,
+                    DateUpdated = ln.DateUpdated,
+                }).ToListAsync();
                 return model;
             }
             catch (Exception ex)

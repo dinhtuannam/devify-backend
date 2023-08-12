@@ -1,6 +1,7 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
+using Devify.Entity.Enums;
 using Devify.Infrastructure.Persistance;
 using Devify.Infrastructure.SeedWorks;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +35,15 @@ namespace Devify.Infrastructure.Services
         {
             try
             {
-                var model = await _dbSet.Include(c=>c.Courses).ToListAsync();
+                var model = await _dbSet.Where(c => c.Status == CommonEnum.AVAILABLE)
+                .Select(c => new Category
+                {
+                    CategoryId = c.CategoryId,
+                    CategoryName = c.CategoryName,
+                    Description = c.Description,
+                    DateCreated = c.DateCreated,
+                    DateUpdated = c.DateUpdated
+                }).ToListAsync();
                 return model;
             }
             catch(Exception ex)
