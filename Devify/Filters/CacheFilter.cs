@@ -2,6 +2,7 @@
 using Devify.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace Devify.Filters
@@ -22,6 +23,13 @@ namespace Devify.Filters
                 await next();
                 return;
             }
+            context.HttpContext.Request.EnableBuffering();
+            using (StreamReader stream = new StreamReader(context.HttpContext.Request.Body))
+            {
+                string body = await stream.ReadToEndAsync();
+
+            }
+
             var cacheKey = generateCacheKeyFromRequest(context.HttpContext.Request);
             var cacheService = context.HttpContext.RequestServices.GetRequiredService<IUnitOfWork>();
             var cacheResponse = await cacheService.CacheRepository.GetCacheResponseAsync(cacheKey);

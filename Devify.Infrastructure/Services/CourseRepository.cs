@@ -4,6 +4,7 @@ using Devify.Entity;
 using Devify.Infrastructure.Persistance;
 using Devify.Infrastructure.SeedWorks;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Devify.Infrastructure.Services
@@ -220,6 +221,70 @@ namespace Devify.Infrastructure.Services
                 return null;
             }
             
+        }
+
+        public async Task<DataListDTO<IEnumerable<SearchCourseList>>> SearchCourse(CourseSearchParams parameters)
+        {
+            var dataList = new DataListDTO<IEnumerable<SearchCourseList>>();
+            var query = _context.Courses.AsQueryable().Where(course => course.Status == "1");
+                          
+            if(parameters.category != null && parameters.category.Count > 0 )
+            {
+                query = query.Where(course => course.Category != null && parameters.category.Contains(course.Category.CategoryName));
+            }
+            if (parameters.level != null && parameters.level.Count > 0)
+            {
+                query = query.Where(course => course.CourseLevel != null && parameters.level.Contains(course.CourseLevel.LevelName));
+            }
+            if (parameters.language != null && parameters.language.Count > 0)
+            {
+                query = query.Where(course => course.CourseLanguages
+                .Any(cl => parameters.language.Contains(cl.Language.Name)));
+            }
+            if (!string.IsNullOrEmpty(parameters.query))
+            {
+                query = query.Where(course => course.Title.Contains(parameters.query));
+            }
+            dataList.Items = await query
+                .Include(c => c.Creator).ThenInclude(c => c.User)
+                .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
+                .Include(c => c.Category)
+                .Skip(parameters.pageSize * (parameters.page-1) )
+                .Take(parameters.pageSize)
+                .Select(c => new SearchCourseList
+            {
+                CourseId = c.CourseId,
+                Title = c.Title,
+                Purchased = c.Purchased,
+                Price = c.Price,
+                Slug = c.Slug,
+                Image = c.Image,
+                Creator = new DetailCourseCreator
+                {
+                    CreatorId = c.Creator.CreatorId,
+                    DisplayName = c.Creator.User.DisplayName,
+                    Slug = c.Creator.Slug,
+                    Image = c.Creator.User.Image
+                },
+                CourseCategory = new DetailCourseCategory
+                {
+                    CategoryId = c.Category.CategoryId,
+                    CategoryName = c.Category.CategoryName
+                },
+                CourseLevel = new DetailCourseLevel
+                {
+                    CourseLevelId = c.CourseLevel.CourseLevelId,
+                    LevelName = c.CourseLevel.LevelName
+                },
+                CourseLanguages = c.CourseLanguages.Select(cl => new DetailCourseLanguageList
+                {
+                    LanguageId = cl.Language.LanguageId,
+                    Name = cl.Language.Name
+                }).ToList()
+            }).ToListAsync();
+            dataList.TotalRecords = query.Count();
+            Console.WriteLine($"[CourseService] -> GetAllCourseAsync -> success ");
+            return dataList;
         }
     }
 }

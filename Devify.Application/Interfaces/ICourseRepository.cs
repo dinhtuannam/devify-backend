@@ -9,6 +9,7 @@ namespace Devify.Application.Interfaces
         Task<LearningCourseDTO> GetLearningCourse(string slug);
         Task<LearningLessonDTO> GetLearningLesson(string slug,Guid LessonId);
         Task<DataListDTO<IEnumerable<AllCourseList>>> GetAllCourse();
-        
+        Task<DataListDTO<IEnumerable<SearchCourseList>>> SearchCourse(CourseSearchParams parameters);
+
     }
 }

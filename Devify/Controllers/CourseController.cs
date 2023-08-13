@@ -6,6 +6,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Devify.Filters;
 using Devify.Entity;
+using Devify.Application.Interfaces;
+using AutoMapper.Configuration.Annotations;
 
 namespace Devify.Controllers
 {
@@ -14,9 +16,11 @@ namespace Devify.Controllers
     public class CourseController : ControllerBase
     {
         private IMediator _mediator;
-        public CourseController(IMediator mediator)
+        private IUnitOfWork _unitOfWork;
+        public CourseController(IMediator mediator, IUnitOfWork unitOfWork)
         {
             _mediator = mediator;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("slug/{slug}", Name = "get-course-by-slug")]
@@ -42,7 +46,14 @@ namespace Devify.Controllers
             });
         }
 
-        
+        [HttpGet("search", Name = "search-course")]
+        [Cache(120)]
+        public async Task<IActionResult> searchCourse([FromQuery] CourseSearchParams model)
+        {
+            var result = await _unitOfWork.CourseRepository.SearchCourse(model);
+            return Ok(result);
+        }
+
         [HttpGet]
         [Cache(120)]
         public async Task<IActionResult> getAllCourse()

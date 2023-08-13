@@ -17,6 +17,20 @@ namespace Devify.Application.DTO
         public  IEnumerable<DetailCourseLanguageList> CourseLanguages { get; set; } = new List<DetailCourseLanguageList>();       
     }
 
+    public class SearchCourseList
+    {
+        public Guid CourseId { get; set; }
+        public string Title { get; set; }
+        public long Purchased { get; set; }
+        public double Price { get; set; }
+        public string? Slug { get; set; }
+        public string Image { get; set; }
+        public DetailCourseCreator Creator { get; set; }
+        public DetailCourseCategory CourseCategory { get; set; }
+        public DetailCourseLevel CourseLevel { get; set; }
+        public IEnumerable<DetailCourseLanguageList> CourseLanguages { get; set; } = new List<DetailCourseLanguageList>();
+    }
+
     public class DetailCourseDTO
     {
         public Guid CourseId { get; set; }
@@ -70,6 +84,11 @@ namespace Devify.Application.DTO
         public string CategoryName { get; set; }
     }
 
+    public class DetailCourseLevel
+    {
+        public string CourseLevelId { get; set; }
+        public string LevelName { get; set; }
+    }
 
     // ==============================================================================================
     // ======================================= Command DTO ==========================================
@@ -113,4 +132,6 @@ namespace Devify.Application.DTO
         public string CourseTitle { get; set; }
         public string? CourseSlug { get; set; }
     }
+
+
 }
