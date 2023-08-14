@@ -1,6 +1,11 @@
-﻿using Devify.Application.Interfaces;
+﻿using AutoMapper;
+using Devify.Application.DTO;
+using Devify.Application.Features.Category.Commands;
+using Devify.Application.Interfaces;
 using Devify.Entity;
 using Devify.Filters;
+using Devify.Models;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,13 +15,14 @@ namespace Devify.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ILogger<CategoryController> _logger;
+        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-
-        public CategoryController(ILogger<CategoryController> logger, IUnitOfWork unitOfWork)
+        private readonly IMediator _mediator;
+        public CategoryController(IMapper mapper, IUnitOfWork unitOfWork,IMediator mediator)
         {
-            _logger = logger;
+            _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -36,21 +42,40 @@ namespace Devify.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddNewCategory(Category model)
+        public async Task<IActionResult> AddNewCategory([FromForm] CreateCategoryModel model)
         {
-            return Ok();
+
+            if (ModelState.IsValid)
+            {
+                
+                var newCategory = _mapper.Map<Category>(model);
+                var result = await _mediator.Send(new CreateCategoryCommand { newCategory = newCategory});
+                return Ok(result);
+            }
+            
+            else
+                return BadRequest(ModelState);
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public async Task<IActionResult> DeleteCategory(string id)
         {
             return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory(Category model)
+        public async Task<IActionResult> UpdateCategory([FromForm] UpdateCategoryModel model)
         {
-            return Ok();
+
+            if (ModelState.IsValid)
+            {
+                var updateCategory = _mapper.Map<Category>(model);
+                var result = await _mediator.Send(new UpdateCategoryCommand { newCategory = updateCategory });
+                return Ok(result);
+            }
+
+            else
+                return BadRequest(ModelState);
         }
     }
 }

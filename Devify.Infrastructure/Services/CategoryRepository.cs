@@ -51,6 +51,12 @@ namespace Devify.Infrastructure.Services
                 return new List<Category>();
             }
         }
+
+       /* public override async Task<bool> UpdateAsAsync(Category category)
+        {
+
+            return true;
+        } */
     
     }
 }

@@ -10,9 +10,13 @@ namespace Devify.Entity
     {
         [Key]
         public Guid CourseId { get; set; }
+        [Required(ErrorMessage = "Trường name là bắt buộc.")]
+        [RegularExpression(@"^[A-Za-z0-9\s]+$", ErrorMessage = "Tên chỉ được chứa chữ cái, số và khoảng trắng.")]
+        [MaxLength(50, ErrorMessage = "Tên không được dài hơn 20 kí tự.")]
         public string Title { get; set; }
         public long Purchased { get; set; }
         public double Price { get; set; }
+        [MaxLength(100, ErrorMessage = "Tên không được dài hơn 20 kí tự.")]
         public string? Description { get; set; }
         public string? Slug { get; set; }
         public string? Image { get; set; }

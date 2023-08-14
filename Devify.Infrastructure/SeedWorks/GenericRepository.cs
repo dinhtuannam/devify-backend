@@ -53,9 +53,20 @@ namespace Devify.Infrastructure.SeedWorks
             return await _dbSet.FindAsync(id);
         }
 
-        public virtual Task<bool> UpdateAsAsync(T entity)
+        public virtual bool UpdateEntity(T entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _dbSet.Attach(entity);
+                _context.Entry(entity).State = EntityState.Modified;
+                Console.WriteLine($"[UpdateEntity] -> successfully ");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[UpdateEntity] -> failed -> Exception : {ex.Message}");
+                return false;
+            }
         }
         public virtual IQueryable<T> GetAll()
         {

@@ -1,4 +1,6 @@
-﻿namespace Devify.Application.Commons
+﻿using System.Text;
+
+namespace Devify.Application.Commons
 {
     public static class AutoGenerate
     {
@@ -16,6 +18,22 @@
             string randomString = new string(randomChars);
 
             return s + "-" + randomString;
+        }
+
+        public static string GenerateID(string type,int length = 8)
+        {
+            const string characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+            Random random = new Random();
+
+            StringBuilder idBuilder = new StringBuilder($"{type}-");
+
+            for (int i = 0; i < length; i++)
+            {
+                int randomIndex = random.Next(0, characters.Length);
+                idBuilder.Append(characters[randomIndex]);
+            }
+
+            return idBuilder.ToString();
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using Devify.Infrastructure.SeedWorks;
+using Devify.Mappings;
 
 namespace Devify.Installers
 {
@@ -34,6 +35,7 @@ namespace Devify.Installers
 
             //  =========================  Cấu hình AutoMapper ===============================
             services.AddAutoMapper(typeof(AutoMapperConfig));
+            services.AddAutoMapper(typeof(CategoryMapper));
 
 
             //  ===========================  Cấu hình MediatR ================================
