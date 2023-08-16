@@ -40,27 +40,27 @@ namespace Devify.Controllers
             return Ok(model);
         }
 
-
         [HttpPost]
         public async Task<IActionResult> AddNewCategory([FromForm] CreateCategoryModel model)
         {
-
             if (ModelState.IsValid)
             {
-                
                 var newCategory = _mapper.Map<Category>(model);
                 var result = await _mediator.Send(new CreateCategoryCommand { newCategory = newCategory});
                 return Ok(result);
             }
-            
-            else
-                return BadRequest(ModelState);
+            return BadRequest(ModelState);
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteCategory(string id)
         {
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                var result = await _mediator.Send(new DeleteCategoryCommand { DeleteID = id });
+                return Ok(result);
+            }
+            return BadRequest(ModelState);
         }
 
         [HttpPut]
@@ -73,9 +73,7 @@ namespace Devify.Controllers
                 var result = await _mediator.Send(new UpdateCategoryCommand { newCategory = updateCategory });
                 return Ok(result);
             }
-
-            else
-                return BadRequest(ModelState);
+            return BadRequest(ModelState);
         }
     }
 }

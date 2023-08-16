@@ -2,6 +2,7 @@
 using Devify.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
 
 namespace Devify.Infrastructure.SeedWorks
 {
@@ -36,10 +37,19 @@ namespace Devify.Infrastructure.SeedWorks
             }
         }
 
-        public virtual Task<bool> DeleteById(string id)
+        public virtual async Task<bool> DeleteAsAsync(T entity)
         {
-            throw new NotImplementedException();
-        }       
+            try
+            {
+                _dbSet.Remove(entity);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"[DeleteAsAsync] -> failed -> Exception : {ex.Message}");
+                return false;
+            }
+        }
 
         public virtual IQueryable<T> GetByCondition(Expression<Func<T, bool>> condition)
         {

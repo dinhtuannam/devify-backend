@@ -51,7 +51,13 @@ namespace Devify.Controllers
         public async Task<IActionResult> searchCourse([FromQuery] CourseSearchParams model)
         {
             var result = await _unitOfWork.CourseRepository.SearchCourse(model);
-            return Ok(result);
+            return Ok(new API_Response_VM
+            {
+                Success = true,
+                Message = "searching course sucessfully",
+                Data = result,
+                ErrCode = "200"
+            });
         }
 
         [HttpGet]

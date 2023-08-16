@@ -24,8 +24,8 @@ namespace Devify.Application.DTO
             get { return _pageSize; }
             set { _pageSize = (value != 0) ? value : 12; }
         }
-        public List<string>? category { get; set; }
-        public List<string>? language { get; set; }
-        public List<string>? level { get; set; }
+        public List<string>? cat { get; set; }
+        public List<string>? lang { get; set; }
+        public List<string>? lvl { get; set; }
     }
 }

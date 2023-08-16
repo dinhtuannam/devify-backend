@@ -228,18 +228,18 @@ namespace Devify.Infrastructure.Services
             var dataList = new DataListDTO<IEnumerable<SearchCourseList>>();
             var query = _context.Courses.AsQueryable().Where(course => course.Status == "1");
                           
-            if(parameters.category != null && parameters.category.Count > 0 )
+            if(parameters.cat != null && parameters.cat.Count > 0 )
             {
-                query = query.Where(course => course.Category != null && parameters.category.Contains(course.Category.CategoryName));
+                query = query.Where(course => course.Category != null && parameters.cat.Contains(course.Category.CategoryName));
             }
-            if (parameters.level != null && parameters.level.Count > 0)
+            if (parameters.lvl != null && parameters.lvl.Count > 0)
             {
-                query = query.Where(course => course.CourseLevel != null && parameters.level.Contains(course.CourseLevel.LevelName));
+                query = query.Where(course => course.CourseLevel != null && parameters.lvl.Contains(course.CourseLevel.LevelName));
             }
-            if (parameters.language != null && parameters.language.Count > 0)
+            if (parameters.lang != null && parameters.lang.Count > 0)
             {
                 query = query.Where(course => course.CourseLanguages
-                .Any(cl => parameters.language.Contains(cl.Language.Name)));
+                .Any(cl => parameters.lang.Contains(cl.Language.Name)));
             }
             if (!string.IsNullOrEmpty(parameters.query))
             {

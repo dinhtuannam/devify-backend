@@ -1,6 +1,11 @@
-﻿using Devify.Application.Interfaces;
+﻿using AutoMapper;
+using Devify.Application.Features.Language.Commands;
+using Devify.Application.Interfaces;
 using Devify.Entity;
 using Devify.Filters;
+using Devify.Models;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers
@@ -9,13 +14,14 @@ namespace Devify.Controllers
     [ApiController]
     public class LanguageController : ControllerBase
     {
-        private readonly ILogger<LanguageController> _logger;
         private readonly IUnitOfWork _unitOfWork;
-
-        public LanguageController(ILogger<LanguageController> logger, IUnitOfWork unitOfWork)
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
+        public LanguageController(IMediator mediator, IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _logger = logger;
+            _mediator = mediator;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -26,23 +32,37 @@ namespace Devify.Controllers
             return Ok(model);
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> AddNewLanguage(Language model)
+        public async Task<IActionResult> AddNewLanguage(CreateLanguageModel model)
         {
-            return Ok();
+            if(ModelState.IsValid)
+            {
+                var result = await _mediator.Send(new CreateLanguageCommand { newLanguage = _mapper.Map<Language>(model) });
+                return Ok(result);
+            }
+            return BadRequest(ModelState);
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteLanguage(int id)
+        public async Task<IActionResult> DeleteLanguage(string id)
         {
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                var result = await _mediator.Send(new DeleteLanguageCommand { DeleteID = id });
+                return Ok(result);
+            }
+            return BadRequest(ModelState);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateLanguage(Language model)
+        public async Task<IActionResult> UpdateLanguage(UpdateLanguageModel model)
         {
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                var result = await _mediator.Send(new UpdateLanguageCommand { updateLanguage = _mapper.Map<Language>(model) });
+                return Ok(result);
+            }
+            return BadRequest(ModelState);
         }
     }
 }
