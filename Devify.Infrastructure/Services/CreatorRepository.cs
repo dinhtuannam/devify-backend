@@ -17,13 +17,11 @@ namespace Devify.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<DetailCreatorDTO> GetCreatorBySlug(string slug)
+        public async Task<DetailCreatorPublicDTO> GetCreatorBySlug(string slug)
         {
             try
             {
-                var query = await _unitOfWork.CreatorRepository.GetByCondition(condition: ls => ls.Slug == slug)
-                .Include(cr => cr.User)
-                .Select(cr => new DetailCreatorDTO
+                var query = GetMulti(c => c.Slug == slug, new string[] { "User" }).Select(cr => new DetailCreatorPublicDTO
                 {
                     CreatorId = cr.CreatorId,
                     Slug = cr.Slug,
@@ -31,19 +29,13 @@ namespace Devify.Infrastructure.Services
                     LinkedInUrl = cr.LinkedInUrl,
                     DisplayName = cr.User.DisplayName,
                     Image = cr.User.Image,
-                    UserName = cr.User.UserName,
-                    Email = cr.User.Email,
-                    PhoneNumber = cr.User.PhoneNumber
-                })
-                .FirstOrDefaultAsync();
+                }).FirstOrDefault(); ;
                 return query;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return null;
             }
-            
-
         }
 
         public async Task<DetailCreatorDTO> GetDetailCreator(string id)

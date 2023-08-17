@@ -50,7 +50,7 @@ namespace Devify.Infrastructure.SeedWorks
             LevelRepository = new LevelRepository(_context, this);
             AuthRepository = new AuthRepository(_userManager , _signInManager);
             TokenRepository = new TokenRepository(_context, _userManager);
-            AccountRepository = new AccountRepository(_userManager);
+            AccountRepository = new AccountRepository(_userManager,_context);
             CacheRepository = new CacheRepository(_distributedCache, _connectionMultiplexer);
             FirebaseRepository = new FirebaseRepository();
         }

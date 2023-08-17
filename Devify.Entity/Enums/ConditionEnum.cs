@@ -10,5 +10,6 @@ namespace Devify.Entity.Enums
     {
         SLUG = 1 ,
         ID = 2,
+        Name = 3,
     }
 }

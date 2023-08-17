@@ -33,21 +33,10 @@ namespace Devify.Controllers
                 condition = id,
                 type = ConditionEnum.ID
             });
-            if(result == null)
+            return new JsonResult(result)
             {
-                return NotFound(new API_Response_VM
-                {
-                    Success = false,
-                    Message = "Something wrong, please try again later !",
-                    ErrCode = "404"
-                });
-            }
-            return Ok(new API_Response_VM
-            {
-                Success = true,
-                Message = $"get creator with id :{id} successfully",
-                Data = result
-            });
+                StatusCode = int.Parse(result.ErrCode)
+            };
         }
 
         [HttpGet("slug/{slug}")]
@@ -58,25 +47,14 @@ namespace Devify.Controllers
                 condition = slug,
                 type = ConditionEnum.SLUG
             });
-            if (result == null)
+            return new JsonResult(result)
             {
-                return NotFound(new API_Response_VM
-                {
-                    Success = false,
-                    Message = "Something wrong, please try again later !",
-                    ErrCode = "404"
-                });
-            }
-            return Ok(new API_Response_VM
-            {
-                Success = true,
-                Message = $"get creator with slug :{slug} successfully",
-                Data = result
-            });
+                StatusCode = int.Parse(result.ErrCode)
+            }; 
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewCreatort(Slider model)
+        public async Task<IActionResult> AddNewCreator(Slider model)
         {
             return Ok();
         }

@@ -1,5 +1,6 @@
 ﻿using Devify.Application.DTO.ResponseDTO;
 using Devify.Application.Features.Account.Queries;
+using Devify.Application.Interfaces;
 using Devify.Entity;
 using Devify.Filters;
 using Devify.Models;
@@ -13,16 +14,19 @@ namespace Devify.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public AccountController(IMediator mediator)
+        private readonly IUnitOfWork _unitOfWork;
+        public AccountController(IMediator mediator, IUnitOfWork unitOfWork)
         {
             _mediator = mediator;
+            _unitOfWork = unitOfWork;
+
         }
 
         [HttpGet("{id}/current", Name = "getCurrentUser")]
         [AuthorizeId]
         public async Task<IActionResult> getUserInformation(string id)
         {
-            var account = await _mediator.Send(new GetUserInformationById { Id = id });
+            var account = await _mediator.Send(new GetCurrentUserQuery { Id = id });
             if(account != null)
             {
                 return Ok(new API_Response_VM
@@ -38,6 +42,13 @@ namespace Devify.Controllers
                 Message = "Not found account",
                 ErrCode = "404"
         });
+        }
+
+        [HttpGet("{id}", Name = "getDetailAccount")]
+        //[AuthorizeId]
+        public async Task<IActionResult> getDetailAccount(string id)
+        {
+            return Ok(await _unitOfWork.AccountRepository.getUserById(id));
         }
 
         [HttpPost]

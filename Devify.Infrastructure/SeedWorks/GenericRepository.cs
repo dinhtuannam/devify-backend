@@ -17,11 +17,60 @@ namespace Devify.Infrastructure.SeedWorks
             _dbSet = context.Set<T>();
         }
 
+        // ===================================== QUERIES ======================================= 
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
         }
+        public IEnumerable<T> GetAll(string[] includes = null)
+        {
+            if (includes != null && includes.Count() > 0)
+            {
+                var query = _dbSet.Include(includes.First());
+                foreach (var include in includes.Skip(1))
+                    query = query.Include(include);
+                return query.AsQueryable();
+            }
 
+            return _dbSet.AsQueryable();
+        }
+        public int CountRecords(Expression<Func<T, bool>> where = null)
+        {
+            try
+            {
+                return where != null ? _dbSet.Where(where).Count() : _dbSet.Count();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DeleteAsAsync] -> failed -> Exception : {ex.Message}");
+                return 0;
+            }
+        }
+        public virtual IQueryable<T> GetByCondition(Expression<Func<T, bool>> condition)
+        {
+            IQueryable<T> query = _dbSet;
+            query = query.Where(condition);
+            return query;
+        }
+        public virtual async Task<T> GetById(string id)
+        {
+            return await _dbSet.FindAsync(id);
+        }
+        public virtual IEnumerable<T> GetMulti(Expression<Func<T, bool>> predicate, string[] includes = null)
+        {
+            //HANDLE INCLUDES FOR ASSOCIATED OBJECTS IF APPLICABLE
+            if (includes != null && includes.Count() > 0)
+            {
+                var query = _dbSet.Include(includes.First());
+                foreach (var include in includes.Skip(1))
+                    query = query.Include(include);
+                return query.Where<T>(predicate).AsQueryable<T>();
+            }
+
+            return _dbSet.Where<T>(predicate).AsQueryable<T>();
+        }
+
+        // ===================================== COMMANDS ======================================= 
         public virtual async Task<bool> AddAsAsync(T entity)
         {
             try
@@ -36,7 +85,6 @@ namespace Devify.Infrastructure.SeedWorks
                 return false;
             }
         }
-
         public virtual async Task<bool> DeleteAsAsync(T entity)
         {
             try
@@ -44,25 +92,12 @@ namespace Devify.Infrastructure.SeedWorks
                 _dbSet.Remove(entity);
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"[DeleteAsAsync] -> failed -> Exception : {ex.Message}");
                 return false;
             }
         }
-
-        public virtual IQueryable<T> GetByCondition(Expression<Func<T, bool>> condition)
-        {
-            IQueryable<T> query = _dbSet;
-            query = query.Where(condition);
-            return query;
-        }
-
-        public virtual async Task<T> GetById(string id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
-
         public virtual bool UpdateEntity(T entity)
         {
             try
@@ -78,9 +113,6 @@ namespace Devify.Infrastructure.SeedWorks
                 return false;
             }
         }
-        public virtual IQueryable<T> GetAll()
-        {
-            return _dbSet;
-        }
+
     }
 }

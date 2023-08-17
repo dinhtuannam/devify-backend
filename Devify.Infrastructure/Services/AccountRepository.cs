@@ -1,14 +1,17 @@
-﻿using Devify.Application.Interfaces;
+﻿using Devify.Application.DTO;
+using Devify.Application.Interfaces;
 using Devify.Entity;
+using Devify.Infrastructure.Persistance;
+using Devify.Infrastructure.SeedWorks;
 using Microsoft.AspNetCore.Identity;
 using System.Threading;
 
 namespace Devify.Infrastructure.Services
 {
-    public class AccountRepository : IAccountRepository
+    public class AccountRepository : GenericRepository<ApplicationUser>, IAccountRepository  
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        public AccountRepository(UserManager<ApplicationUser> userManager)
+        public AccountRepository(UserManager<ApplicationUser> userManager, ApplicationDbContext context) : base(context)
         {
             _userManager = userManager;
         }
@@ -27,6 +30,26 @@ namespace Devify.Infrastructure.Services
                 return null;
             }
             
+        }
+
+        public async Task<DetailAccountDTO> getUserById(string id)
+        {
+            return GetMulti(x=>x.Id == id,new string[] { "Creator" }).Select(u=>new DetailAccountDTO
+            {
+                Id = id,
+                Username = u.UserName,
+                DisplayName = u.DisplayName,
+                Image = u.Image,
+                Email= u.Email,
+                PhoneNumber= u.PhoneNumber,
+                Creator = new Creator
+                {
+                    CreatorId = id,
+                    FacebookUrl = u.Creator.FacebookUrl,
+                    LinkedInUrl = u.Creator.LinkedInUrl,
+                    Slug = u.Creator.Slug,                  
+                },
+            }).FirstOrDefault();
         }
 
         public async Task<ApplicationUser> getUserByName(string name)

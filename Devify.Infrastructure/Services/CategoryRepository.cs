@@ -22,7 +22,7 @@ namespace Devify.Infrastructure.Services
         {
             try
             {
-                var model = await _DbContext.Categories.Where(c => c.CategoryName == name).ToListAsync();
+                var model = GetMulti(x=> x.CategoryName == name);
                 return model;
             }
             catch (Exception ex)
@@ -51,12 +51,6 @@ namespace Devify.Infrastructure.Services
                 return new List<Category>();
             }
         }
-
-       /* public override async Task<bool> UpdateAsAsync(Category category)
-        {
-
-            return true;
-        } */
     
     }
 }

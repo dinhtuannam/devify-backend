@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using Devify.Models;
+using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Net;
 
 namespace Devify.Middlewares
@@ -32,7 +34,14 @@ namespace Devify.Middlewares
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            return context.Response.WriteAsync(exception.Message);
+            var response = new API_Response_VM
+            {
+                Success = false,
+                Message = exception.Message,
+                ErrCode = "500"
+            };
+            var jsonResponse = JsonConvert.SerializeObject(response);
+            return context.Response.WriteAsync(jsonResponse);
         }
     }
 }
