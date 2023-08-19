@@ -21,6 +21,8 @@ namespace Devify.Infrastructure.Persistance
         public DbSet<Order> Orders { get; set; }
         public DbSet<DetailOrder> DetailOrders { get; set; }
         public DbSet<CourseLevel> CourseLevels { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Nofication> Nofications { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseLazyLoadingProxies(false).UseSqlServer("Server=Admin-PC\\SQLEXPRESS;Database=dbDevify;Trusted_Connection=True;MultipleActiveResultSets=true;trustServerCertificate=true;");
 

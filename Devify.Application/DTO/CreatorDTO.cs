@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Devify.Application.DTO
+﻿namespace Devify.Application.DTO
 {
     public class DetailCreatorDTO
     {
@@ -23,8 +17,9 @@ namespace Devify.Application.DTO
     {
         public string CreatorId { get; set; }
         public string Slug { get; set; }
-        public string FacebookUrl { get; set; }
-        public string LinkedInUrl { get; set; }
+        public string? AboutMe { get; set; }
+        public string? FacebookUrl { get; set; }
+        public string? LinkedInUrl { get; set; }
         public string DisplayName { get; set; }
         public string Image { get; set; }    
     }

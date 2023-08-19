@@ -25,11 +25,40 @@ namespace Devify.Infrastructure.Services
                 {
                     CreatorId = cr.CreatorId,
                     Slug = cr.Slug,
+                    AboutMe = cr.AboutMe,
                     FacebookUrl = cr.FacebookUrl,
                     LinkedInUrl = cr.LinkedInUrl,
                     DisplayName = cr.User.DisplayName,
                     Image = cr.User.Image,
                 }).FirstOrDefault(); ;
+                return query;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<DetailCreatorDTO> GetDetailCreator(string id)
+        {
+
+            try
+            {
+                var query = await _unitOfWork.CreatorRepository.GetByCondition(condition: ls => ls.CreatorId == id)
+                .Include(cr => cr.User)
+                .Select(cr => new DetailCreatorDTO
+                {
+                    CreatorId = cr.CreatorId,
+                    Slug = cr.Slug,
+                    FacebookUrl = cr.FacebookUrl,
+                    LinkedInUrl = cr.LinkedInUrl,
+                    DisplayName = cr.User.DisplayName,
+                    Image = cr.User.Image,
+                    UserName = cr.User.UserName,
+                    Email = cr.User.Email,
+                    PhoneNumber = cr.User.PhoneNumber
+                })
+                .FirstOrDefaultAsync();
                 return query;
             }
             catch (Exception ex)
@@ -68,7 +97,8 @@ namespace Devify.Infrastructure.Services
                 {
                     CreatorId = c.CreatorId
                 }).FirstOrDefaultAsync();
-                if(creatorFind == null) {
+                if (creatorFind == null)
+                {
                     return null;
                 }
                 var query = _unitOfWork.CourseRepository.GetMulti(c => c.CreatorId == creatorFind.CreatorId)
@@ -87,35 +117,7 @@ namespace Devify.Infrastructure.Services
             {
                 return null;
             }
-           
-        }
 
-        public async Task<DetailCreatorDTO> GetDetailCreator(string id)
-        {
-
-            try
-            {
-                var query = await _unitOfWork.CreatorRepository.GetByCondition(condition: ls => ls.CreatorId == id)
-                .Include(cr => cr.User)
-                .Select(cr => new DetailCreatorDTO
-                {
-                    CreatorId = cr.CreatorId,
-                    Slug = cr.Slug,
-                    FacebookUrl = cr.FacebookUrl,
-                    LinkedInUrl = cr.LinkedInUrl,
-                    DisplayName = cr.User.DisplayName,
-                    Image = cr.User.Image,
-                    UserName = cr.User.UserName,
-                    Email = cr.User.Email,
-                    PhoneNumber = cr.User.PhoneNumber
-                })
-                .FirstOrDefaultAsync();
-                return query;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
         }
     }
 }

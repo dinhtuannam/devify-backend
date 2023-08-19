@@ -20,5 +20,6 @@ namespace Devify.Entity
         public Guid ChapterId { get; set; }
         public  Chapter Chapter { get; set; }
         public LessonEnum Status { get; set; }
+        public ICollection<Comment>? Comments { get; } = new List<Comment>();
     }
 }

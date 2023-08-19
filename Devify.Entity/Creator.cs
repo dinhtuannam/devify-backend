@@ -10,6 +10,7 @@ namespace Devify.Entity
         [ForeignKey("User")]
         public string CreatorId {  get; set; }
         public string Slug { get; set; }
+        public string? AboutMe { get; set; }
         public string? FacebookUrl { get; set; }
         public string? LinkedInUrl { get; set; }
         public ApplicationUser User { get; set; }
