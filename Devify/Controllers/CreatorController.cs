@@ -53,6 +53,34 @@ namespace Devify.Controllers
             }; 
         }
 
+        [HttpGet("slug/{slug}/courses")]
+        public async Task<IActionResult> GetCreatorCoursesBySlug(string slug)
+        {
+            var result = await _mediator.Send(new GetCreatorCoursesQuery
+            {
+                condition = slug,
+                type = ConditionEnum.SLUG
+            });
+            return new JsonResult(result)
+            {
+                StatusCode = int.Parse(result.ErrCode)
+            };
+        }
+
+        [HttpGet("{id}/courses")]
+        public async Task<IActionResult> GetCreatorCoursesById(string id)
+        {
+            var result = await _mediator.Send(new GetCreatorCoursesQuery
+            {
+                condition = id,
+                type = ConditionEnum.ID
+            });
+            return new JsonResult(result)
+            {
+                StatusCode = int.Parse(result.ErrCode)
+            };
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddNewCreator(Slider model)
         {

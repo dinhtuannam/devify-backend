@@ -38,6 +38,58 @@ namespace Devify.Infrastructure.Services
             }
         }
 
+        public IEnumerable<CreatorCoursesDTO> GetCreatorCoursesById(string id)
+        {
+            try
+            {
+                var query = _unitOfWork.CourseRepository.GetMulti(c => c.CreatorId == id)
+                    .Select(course => new CreatorCoursesDTO
+                    {
+                        CourseId = course.CourseId,
+                        Title = course.Title,
+                        Image = course.Image,
+                        Description = course.Description,
+                        Price = course.Price,
+                        Slug = course.Slug
+                    }).ToList();
+                return query;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<CreatorCoursesDTO>> GetCreatorCoursesBySlug(string slug)
+        {
+            try
+            {
+                var creatorFind = await GetByCondition(x => x.Slug == slug).Select(c => new Creator
+                {
+                    CreatorId = c.CreatorId
+                }).FirstOrDefaultAsync();
+                if(creatorFind == null) {
+                    return null;
+                }
+                var query = _unitOfWork.CourseRepository.GetMulti(c => c.CreatorId == creatorFind.CreatorId)
+                    .Select(course => new CreatorCoursesDTO
+                    {
+                        CourseId = course.CourseId,
+                        Title = course.Title,
+                        Image = course.Image,
+                        Description = course.Description,
+                        Price = course.Price,
+                        Slug = course.Slug
+                    }).ToList();
+                return query;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+           
+        }
+
         public async Task<DetailCreatorDTO> GetDetailCreator(string id)
         {
 

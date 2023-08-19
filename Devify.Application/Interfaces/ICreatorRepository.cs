@@ -7,5 +7,7 @@ namespace Devify.Application.Interfaces
     {
         Task<DetailCreatorDTO> GetDetailCreator(string id);
         Task<DetailCreatorPublicDTO> GetCreatorBySlug(string slug);
+        Task<IEnumerable<CreatorCoursesDTO>> GetCreatorCoursesBySlug(string slug);
+        IEnumerable<CreatorCoursesDTO> GetCreatorCoursesById(string id);
     }
 }

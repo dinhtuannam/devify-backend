@@ -22,28 +22,6 @@ namespace Devify.Controllers
 
         }
 
-        [HttpGet("{id}/current", Name = "getCurrentUser")]
-        [AuthorizeId]
-        public async Task<IActionResult> getUserInformation(string id)
-        {
-            var account = await _mediator.Send(new GetCurrentUserQuery { Id = id });
-            if(account != null)
-            {
-                return Ok(new API_Response_VM
-                {
-                    Success = true,
-                    Message = "Get account information successfully",
-                    Data = account
-                });
-            }
-            return NotFound(new API_Response_VM
-            {
-                Success = false,
-                Message = "Not found account",
-                ErrCode = "404"
-        });
-        }
-
         [HttpGet("{id}", Name = "getDetailAccount")]
         //[AuthorizeId]
         public async Task<IActionResult> getDetailAccount(string id)
