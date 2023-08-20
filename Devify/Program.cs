@@ -1,3 +1,5 @@
+using Devify.Application.Interfaces;
+using Devify.Infrastructure.Services;
 using Devify.Installers;
 using Devify.Middlewares;
 
@@ -10,6 +12,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 
 builder.Services.InstallerServicesInAssembly(builder.Configuration);
+builder.Services.AddScoped<IVnPayService,VnPayRepository>();
 var app = builder.Build();
 
 
