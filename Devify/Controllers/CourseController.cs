@@ -151,5 +151,49 @@ namespace Devify.Controllers
         {
             return Ok();
         }
+
+        [HttpPost("{courseId}/chapter")]
+        public async Task<IActionResult> CreateCourseChapter([FromForm] CreateCourseChapterRequest model, Guid courseId)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _mediator.Send(new CreateCourseChapterCommand { request = model , CourseId = courseId });
+                return result.Success ? Ok(result) : BadRequest(result);
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpPut("{courseId}/chapter")]
+        public async Task<IActionResult> UpdateCourseChapter([FromForm] UpdateCourseChapterRequest model, Guid courseId)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _mediator.Send(new UpdateCourseChapterCommand {  UpdateCourseChapterRequest = model, CourseId = courseId });
+                return result.Success ? Ok(result) : BadRequest(result);
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpPost("{courseId}/chapter/{chapterId}/lesson")]
+        public async Task<IActionResult> CreateCourseLesson([FromForm] CreateCourseRequest model, string courseId , string chapterId)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _mediator.Send(new CreateCourseCommand { request = model });
+                return result.Success ? Ok(result) : BadRequest(result);
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpPut("{courseId}/chapter/{chapterId}/lesson")]
+        public async Task<IActionResult> UpdateCourseLesson([FromForm] CreateCourseRequest model, string courseId, string chapterId)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _mediator.Send(new CreateCourseCommand { request = model });
+                return result.Success ? Ok(result) : BadRequest(result);
+            }
+            return BadRequest(ModelState);
+        }
     }
 }

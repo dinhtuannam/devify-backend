@@ -14,14 +14,15 @@ namespace Devify.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IVnPayService _vpnPayService;
-
-        public PaymentController(IVnPayService vpnPayService)
+        private readonly IConfiguration _configuration;
+        public PaymentController(IVnPayService vpnPayService, IConfiguration configuration)
         {
             _vpnPayService = vpnPayService;
+            _configuration = configuration;
         }
 
-        [HttpPost]
-        public IActionResult Payment( PaymentInformationModel model)
+        [HttpPost("vnpay")]
+        public IActionResult Payment(OrderCheckoutDTO model)
         {
             var url = _vpnPayService.CreatePaymentUrl(model, HttpContext);
             return Ok(url);
@@ -31,7 +32,11 @@ namespace Devify.Controllers
         public IActionResult PaymentCallback()
         {
             var response = _vpnPayService.PaymentExecute(Request.Query);
-            return Ok(response);
+            var frontendUrl = _configuration.GetValue<string>("FrontendUrl");
+            if(response.VnPayResponseCode == "00")
+            return Redirect($"{frontendUrl}/cart/success");
+            else
+                return Redirect($"{frontendUrl}/bad-request");
         }
     }
 }

@@ -27,6 +27,7 @@ namespace Devify.Infrastructure.SeedWorks
         public ISliderRepository SliderRepository { get; private set; }
         public ICreatorRepository CreatorRepository { get; private set; }
         public ILevelRepository LevelRepository { get; private set; }
+        public IChapterRepository ChapterRepository { get; private set; }
 
         public UnitOfWork(
             ApplicationDbContext context,
@@ -47,6 +48,7 @@ namespace Devify.Infrastructure.SeedWorks
             LessonRepository = new LessonRepository(_context,this);
             CreatorRepository = new CreatorRepository(_context,this);
             SliderRepository = new SliderReposotory(_context,this);
+            ChapterRepository = new ChapterRepository(_context, this);
             LevelRepository = new LevelRepository(_context, this);
             AuthRepository = new AuthRepository(_userManager , _signInManager);
             TokenRepository = new TokenRepository(_context, _userManager);
