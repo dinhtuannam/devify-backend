@@ -13,5 +13,6 @@ namespace Devify.Application.Interfaces
         Task<ApiResponse> RenewToken(string refreshTokenRequest);
         bool IsTokenIdEqualRequestId(string token, string requestId);
         bool ValidateToken(string token);
+        TokenInfoDecoded DecodedToken(string token);    
     }
 }

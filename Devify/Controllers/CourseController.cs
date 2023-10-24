@@ -22,6 +22,12 @@ namespace Devify.Controllers
             _mediator = mediator;
             _unitOfWork = unitOfWork;
         }
+        [HttpGet("home", Name = "home")]
+        [Cache(120)]
+        public async Task<IActionResult> getHomeCourses()
+        {
+            return Ok();
+        }
 
         [HttpGet("slug/{slug}", Name = "get-course-by-slug")]
         [Cache(120)]

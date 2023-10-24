@@ -235,5 +235,40 @@ namespace Devify.Infrastructure.Services
                 return false;
             }
         }
+
+        public TokenInfoDecoded DecodedToken(string token)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var secretKeyBytes = Encoding.UTF8.GetBytes(JWT_Key);
+                var tokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = ValidAudience,
+                    ValidIssuer = ValidIssuer,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
+                    ClockSkew = TimeSpan.Zero,
+                    ValidateLifetime = true
+                };
+
+                SecurityToken securityToken;
+                ClaimsPrincipal principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+                TokenInfoDecoded tokenInfo = new TokenInfoDecoded
+                {
+                    Id = principal.FindFirst("Id")?.Value,
+                    RoleId = principal.FindFirst("RoleId")?.Value,
+                    Token = token
+                };
+
+                return tokenInfo;
+            }
+            catch(Exception ex)
+            {
+                return new TokenInfoDecoded();
+            }
+        }
     }
 }

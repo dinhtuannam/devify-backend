@@ -17,6 +17,11 @@ namespace Devify.Middlewares
             return builder.UseMiddleware<ExceptionMiddleware>();
         }
 
+        public static IApplicationBuilder UseTokenMiddleware(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<TokenMiddleware>();
+        }
+
         public static void ConfigureExceptionHandler(this IApplicationBuilder app)
         {
             app.UseExceptionHandler(appError =>

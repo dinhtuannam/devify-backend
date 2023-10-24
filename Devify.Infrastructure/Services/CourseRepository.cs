@@ -188,7 +188,7 @@ namespace Devify.Infrastructure.Services
                     Name = ls.Name,
                     Description = ls.Description,
                     Video = ls.Video,
-                    CourseId = ls.Chapter.CourseId,
+                    CourseId = ls.Chapter.CourseId.GetValueOrDefault(),
                 })
                 .FirstOrDefaultAsync();
                 if(lesson == null)

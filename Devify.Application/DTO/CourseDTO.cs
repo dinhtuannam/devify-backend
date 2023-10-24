@@ -111,6 +111,18 @@ namespace Devify.Application.DTO
         public string CourseLevelId { get; set; }
     }
 
+    public class UpdateCourseRequest
+    {
+        public Guid CourseId { get; set; }
+        public string Title { get; set; }
+        public double Price { get; set; }
+        public string? Description { get; set; }
+        public string Status { get; set; }
+        public IFormFile Image { get; set; }
+        public string CategoryId { get; set; }
+        public string CourseLevelId { get; set; }
+    }
+
     public class CreateCourseChapterRequest
     {
         public string Name { get; set; }
@@ -119,6 +131,23 @@ namespace Devify.Application.DTO
     }
 
     public class UpdateCourseChapterRequest
+    {
+        public Guid ChapterId { get; set; }
+        public string Name { get; set; }
+        public int? Step { get; set; }
+        public string? Description { get; set; }
+        public CommonEnum Status { get; set; }
+
+    }
+
+    public class CreateCourseLessonRequest
+    {
+        public string Name { get; set; }
+        public int? Step { get; set; }
+        public string? Description { get; set; }
+    }
+
+    public class UpdateCourseLessonRequest
     {
         public Guid ChapterId { get; set; }
         public string Name { get; set; }

@@ -7,7 +7,7 @@ namespace Devify.Entity
     {
         public Guid OrderId { get; set; }
         public Guid CourseId { get; set; }
-        public double CoursePrice { get; set; }
+        public double CoursePrice { get; set; } = 0;
         public Order Order { get; set; }
         public Course Course { get; set; }
 

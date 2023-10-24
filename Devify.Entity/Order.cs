@@ -11,9 +11,9 @@ namespace Devify.Entity
         public Guid OrderId { get; set; }
         [ForeignKey("User")]
         public string UserBuyId { get; set; }
-        public string? Description { get; set; }
-        public double Total { get; set; }
-        public ApplicationUser User { get; set; }
-        public ICollection<DetailOrder> DetailOrders { get; set; } = new List<DetailOrder>();
+        public string? Description { get; set; } = "";
+        public double Total { get; set; } = 0;
+        public ApplicationUser? User { get; set; }
+        public ICollection<DetailOrder>? DetailOrders { get; set; } = new List<DetailOrder>();
     }
 }

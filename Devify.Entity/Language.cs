@@ -9,8 +9,8 @@ namespace Devify.Entity
     {
         [Key]
         public string LanguageId { get; set; }
-        public string Name { get; set; }
-        public string Status { get; set; }
-        public  ICollection<Course_Language> CourseLanguages { get; } = new List<Course_Language>();
+        public string Name { get; set; } = "";
+        public string Status { get; set; } = "active";
+        public  ICollection<Course_Language>? CourseLanguages { get; } = new List<Course_Language>();
     }
 }

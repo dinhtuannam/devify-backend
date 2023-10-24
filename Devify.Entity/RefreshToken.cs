@@ -9,12 +9,12 @@ namespace Devify.Entity
         [Key]
         public Guid Id { get; set; }
         [ForeignKey("Account")]
-        public string AccountId { get; set; }
-        public  ApplicationUser Account { get; set; }
-        public string Token { get; set; }
-        public string JwtId { get; set; }
-        public bool IsUsed { get; set; }
-        public bool IsRevoked { get; set; }
+        public string? AccountId { get; set; }
+        public  ApplicationUser? Account { get; set; }
+        public string Token { get; set; } = "";
+        public string JwtId { get; set; } = "";
+        public bool IsUsed { get; set; } = false;
+        public bool IsRevoked { get; set; } = true;
         public DateTime Expired { get; set; }
     }
 }

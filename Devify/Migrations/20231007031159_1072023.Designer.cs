@@ -4,6 +4,7 @@ using Devify.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Devify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231007031159_1072023")]
+    partial class _1072023
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,15 +100,15 @@ namespace Devify.Migrations
                         {
                             Id = "ff045d07-be86-4a4e-bfa4-0264ec832c12",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b794aa62-49da-4045-9c43-2b048da2ba24",
+                            ConcurrencyStamp = "5cacfd63-257e-425a-b5b5-6d0b3479682a",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "SUPERADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMc7mKj2GuhMdUUrGahZkca/SbuaYIUjA75qvOcnOeYc49kx9j/Ovba9Ojgx6XVj+Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBvcYdxMbNvW6GrbB06qvsmPwac9Pgaizc75yBZkQYgARY5VGg0+KLUXHqFVzXsN4A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6335ba2b-51f6-4a34-9e34-c65f1df71f4a",
+                            SecurityStamp = "38e49da7-0f26-442d-8ef8-f0dbef05d403",
                             TwoFactorEnabled = false,
                             UserName = "SuperAdmin"
                         },
@@ -113,15 +116,15 @@ namespace Devify.Migrations
                         {
                             Id = "e0ed2b3d-2c72-4a84-bd60-1ff9a78ee084",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a9f1372e-2e31-4d82-9c5f-2457e9879513",
+                            ConcurrencyStamp = "f9cd6004-18d1-4866-b362-d4f5a0b43e2d",
                             Email = "manager@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MANAGER@GMAIL.COM",
                             NormalizedUserName = "SUPERMANAGER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEeSzQ+1uZ3TsGEfBBjmxO5cYOuR2YHgigoEfeQYwVrC3k8Xq3Xe7lFMBaLLtVOzhQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPDRpsXvmRWSCWBXUg8zxM1+1Z0uMVjEJVJGk+6lUIMH7u4/wXZo2HstTxgqp3otqA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d51f7846-eab0-4ef5-a101-40821c80404f",
+                            SecurityStamp = "b09a0b2d-721f-470b-a36e-d3dedea95f38",
                             TwoFactorEnabled = false,
                             UserName = "SuperManager"
                         },
@@ -129,15 +132,15 @@ namespace Devify.Migrations
                         {
                             Id = "8b4a17e1-4a1a-44e3-9a95-c2b59b7a7a4c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "39d10025-b9e5-4fef-98fa-273adea56f79",
+                            ConcurrencyStamp = "6bbf4f8e-1d8c-4699-8b82-a9652e587630",
                             Email = "duocdev26@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "DUOCDEV26@GMAIL.COM",
                             NormalizedUserName = "DUOCDEV",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAZrtRJneOKVmZJ+/d3+gLHEVnrh/EtCTEIfQiHG2k87gqlAv0LtEg/cxFUKYtjFlw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJAYzFFOafD+2yUA7q0ccziRKQGHl7ylTSwpNmeVwanwGHsRMF4iXsm/DxprftwGhg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "96f7c687-6fb6-47eb-a8e4-8c06affac188",
+                            SecurityStamp = "a9506f2c-bf9e-49b9-b00e-457fd50d8e4a",
                             TwoFactorEnabled = false,
                             UserName = "DuocDev"
                         },
@@ -145,15 +148,15 @@ namespace Devify.Migrations
                         {
                             Id = "d9e03227-9b87-40b5-9c7b-3a8578b6c04c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "215fd385-7faa-4304-a5c8-23cc828e350b",
+                            ConcurrencyStamp = "73e4e58b-9da2-45c3-9bd3-5bd2cdbadb2d",
                             Email = "codedao6@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CODEDAO@GMAIL.COM",
                             NormalizedUserName = "TOIDICODEDAO",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJ7fipmCwB65TKdhaWNdW4LHRkumqreDw+jTtWq3gN2i9NHoLmgKM8T3rdlkUjXLog==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBpwdRGx8wdaYXoDTc9IGg+iX+nS8x5yWdk0SmUIy8xcLHRSWAaxyvZd2oOi15X2Sw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ab06a85e-2217-4e89-8699-dc3bcee7b152",
+                            SecurityStamp = "512282a0-fd88-4c7b-b806-9abc8d78e4f6",
                             TwoFactorEnabled = false,
                             UserName = "ToiDiCodeDao"
                         },
@@ -161,15 +164,15 @@ namespace Devify.Migrations
                         {
                             Id = "51274390-9171-49dd-a3e7-6e23fbf327fb",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b0669c87-74de-4a99-8ddc-a2456aa59ac1",
+                            ConcurrencyStamp = "26dcc454-208f-46fd-b602-53e865aff1e1",
                             Email = "hoidanit@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "HOIDANIT@GMAIL.COM",
                             NormalizedUserName = "HOIDANIT",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMxTpx5CZdNhZZR0xrJ1aPgRkL9IzsHOXeBI75tyQHhwwozyPtzG7JNasodUJcqzxg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKziBNfWwI8pPXGWCtGoRb41qRoHg6Z4+aRjoLR6z3JlkElPs13XkeR67IDfXCa0VQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "10a57b28-7d55-4449-bbcc-5bd49d8eabdb",
+                            SecurityStamp = "4e3aa393-2f3f-4f31-b2b9-cc8b54e83927",
                             TwoFactorEnabled = false,
                             UserName = "HoiDanIT"
                         },
@@ -177,15 +180,15 @@ namespace Devify.Migrations
                         {
                             Id = "9b2eb0a3-7d3c-4671-8d16-30c69d20a7c9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3a0bf3fa-7172-4722-a2ea-15730a63d0d5",
+                            ConcurrencyStamp = "721d327b-2d58-4eb7-ad5d-f09d4c385593",
                             Email = "tedulms@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "TEDULMS@GMAIL.COM",
                             NormalizedUserName = "TEDULMS",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGlwhaw9oe3Q6XLvz11cyt+UjaE+YRzzmdmEQO+0k8vLv3PCPeZQTK/cj6g/nD0HGA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIUh1oglwCoRPeAJCWMv/6x1GJdJA+gYXv4xtOwdbwxCTf/uMgSb4aYoUFrph7y4aQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c91dc6ac-eda4-4ae9-876a-b62ceead4857",
+                            SecurityStamp = "4ad13aed-1c32-4b57-b6c7-38e74c088a0e",
                             TwoFactorEnabled = false,
                             UserName = "TeduLMS"
                         },
@@ -193,15 +196,15 @@ namespace Devify.Migrations
                         {
                             Id = "3f9f0d9e-67af-4a8d-9aa6-5f2270fc9fbb",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0e830c6c-0287-412f-b58c-001a0a62f42c",
+                            ConcurrencyStamp = "3a8491fc-b280-4e12-92d6-e8ea27181e32",
                             Email = "customer@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CUSTOMER@GMAIL.COM",
                             NormalizedUserName = "CUSTOMER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJjwax+aZHF+o9q3DugayodzRleweiqYKmAlqh2dfksuyZd0H+p/m9InnQKVXHvVfw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMXOa9ZQXnmXuQWa2c1MD5hU5cbr75YrIllND16kzGgODraurgbXKMd8+uXHulX28Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f4dd9a13-76eb-4634-adc8-652c74f08ea9",
+                            SecurityStamp = "748b0493-e353-4f64-ab04-191862a0c3ac",
                             TwoFactorEnabled = false,
                             UserName = "Customer"
                         },
@@ -209,15 +212,15 @@ namespace Devify.Migrations
                         {
                             Id = "6e6e4976-631d-46fb-91ea-11e70fb7087a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "05eae9d6-3e89-49e7-bc52-161827666f97",
+                            ConcurrencyStamp = "bb6fcd47-9e77-46af-becf-235b688bac6e",
                             Email = "clone@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CLONE@GMAIL.COM",
                             NormalizedUserName = "CLONE",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMpBuhxXPM8EnrSg07XeD782/RLtTm7l0Gje3sGSxtZHUkJQQT1qy5Zo0E6bmIVZzA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEUSEX6NWYLlP1hx+vaVUHEGvBWS1kugzLnI6Sdc2C5tt18nxPGPB14+jJMRzqHf7g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "56295ac2-636d-4b6d-b406-863e2549ccf5",
+                            SecurityStamp = "862b54c1-c19c-422c-9b79-e68dbd9c8292",
                             TwoFactorEnabled = false,
                             UserName = "Clone"
                         },
@@ -225,15 +228,15 @@ namespace Devify.Migrations
                         {
                             Id = "2b2e0d9b-74dd-4928-8c24-1a3156d9fc41",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d2ff0855-2988-45d8-885a-cb2dc9b8b5d0",
+                            ConcurrencyStamp = "e2e03f9a-b734-4df8-8769-034958db8e82",
                             Email = "guest@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "GUEST@GMAIL.COM",
                             NormalizedUserName = "GUEST",
-                            PasswordHash = "AQAAAAIAAYagAAAAENZv56h33AVhndOvH95SISTt8FpO13IYkzKGp/toka4B+x2Spj+bHMPXlE42aA+w8Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDbP8FJ1a2Qv5hB4RgXukAI1+VdhtG7WfpWp8izdmluhN2x/i/pyJYqWUuz9uxk79A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4dae6c66-c105-46a3-967e-bdf1dc34a8dc",
+                            SecurityStamp = "ed3586c4-9659-4b43-8291-bb01d2e1142b",
                             TwoFactorEnabled = false,
                             UserName = "Guest"
                         });
@@ -246,7 +249,8 @@ namespace Devify.Migrations
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -255,7 +259,8 @@ namespace Devify.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -271,7 +276,7 @@ namespace Devify.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CourseId")
+                    b.Property<Guid>("CourseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DateCreated")
@@ -282,16 +287,19 @@ namespace Devify.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<int?>("Step")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("ChapterId");
@@ -319,7 +327,7 @@ namespace Devify.Migrations
                     b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("LessonId")
+                    b.Property<Guid>("LessonId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("ParentId")
@@ -339,12 +347,15 @@ namespace Devify.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CategoryId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CourseLevelId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("DateCreated")
@@ -444,6 +455,7 @@ namespace Devify.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Slug")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CreatorId");
@@ -499,7 +511,7 @@ namespace Devify.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ChapterId")
+                    b.Property<Guid>("ChapterId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DateCreated")
@@ -515,6 +527,7 @@ namespace Devify.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
@@ -524,6 +537,7 @@ namespace Devify.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Video")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("LessonId");
@@ -556,6 +570,7 @@ namespace Devify.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("NotificationId");
@@ -639,6 +654,7 @@ namespace Devify.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
@@ -648,6 +664,7 @@ namespace Devify.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SliderId");
@@ -859,7 +876,9 @@ namespace Devify.Migrations
                 {
                     b.HasOne("Devify.Entity.Course", "Course")
                         .WithMany("Chapters")
-                        .HasForeignKey("CourseId");
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Course");
                 });
@@ -868,7 +887,9 @@ namespace Devify.Migrations
                 {
                     b.HasOne("Devify.Entity.Lesson", "Lesson")
                         .WithMany("Comments")
-                        .HasForeignKey("LessonId");
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Lesson");
                 });
@@ -877,15 +898,21 @@ namespace Devify.Migrations
                 {
                     b.HasOne("Devify.Entity.Category", "Category")
                         .WithMany("Courses")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Devify.Entity.CourseLevel", "CourseLevel")
                         .WithMany("Courses")
-                        .HasForeignKey("CourseLevelId");
+                        .HasForeignKey("CourseLevelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Devify.Entity.Creator", "Creator")
                         .WithMany("Courses")
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
 
@@ -947,7 +974,9 @@ namespace Devify.Migrations
                 {
                     b.HasOne("Devify.Entity.Chapter", "Chapter")
                         .WithMany("Lessons")
-                        .HasForeignKey("ChapterId");
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Chapter");
                 });
@@ -956,7 +985,9 @@ namespace Devify.Migrations
                 {
                     b.HasOne("Devify.Entity.ApplicationUser", "User")
                         .WithMany("Notifications")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

@@ -13,9 +13,9 @@ namespace Devify.Entity
     {
         [Key]
         public string CourseLevelId { get; set; }
-        public string LevelName { get; set; }
-        public string LevelDescription { get; set; }
-        public CommonEnum Status { get; set; }
-        public ICollection<Course> Courses { get; } = new List<Course>();
+        public string LevelName { get; set; } = "";
+        public string LevelDescription { get; set; } = "";
+        public CommonEnum Status { get; set; } = CommonEnum.AVAILABLE;
+        public ICollection<Course>? Courses { get; } = new List<Course>();
     }
 }

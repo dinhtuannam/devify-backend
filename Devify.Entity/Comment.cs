@@ -10,11 +10,11 @@ namespace Devify.Entity
     {
         [Key]
         public int Id { get; set; }
-        public string Content { get; set; }
-        public int? ParentId { get; set; }
+        public string Content { get; set; } = "";
+        public int? ParentId { get; set; } = 0;
 
         [ForeignKey("Lesson")]
-        public Guid LessonId { get; set; }
-        public Lesson Lesson { get; set; }
+        public Guid? LessonId { get; set; }
+        public Lesson? Lesson { get; set; }
     }
 }

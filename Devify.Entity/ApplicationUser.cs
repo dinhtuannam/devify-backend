@@ -13,6 +13,6 @@ namespace Devify.Entity
         public string? Image { get; set; }
         public Creator? Creator { get; set; }
         public ICollection<Order>? Orders { get; } = new List<Order>();
-        public ICollection<Nofication>? Nofications { get; } = new List<Nofication>();
+        public ICollection<Notification>? Notifications { get; } = new List<Notification>();
     }
 }

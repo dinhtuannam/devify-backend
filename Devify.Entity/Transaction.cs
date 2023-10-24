@@ -13,9 +13,9 @@ namespace Devify.Entity
     {
         [Key]
         public Guid TransactionId { get; set; }
-        public string PaymentMethod { get; set; }
+        public string PaymentMethod { get; set; } = "";
         public DateTime TransactionDate { get; set; }
-        public double Amount { get; set; }
+        public double Amount { get; set; } = 0;
 
     }
 }
