@@ -141,7 +141,7 @@ namespace Devify.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _mediator.Send(new CreateCourseCommand { request = model });
-                return result.Success ? Ok(result) : BadRequest(result);
+                return result.result ? Ok(result) : BadRequest(result);
             }
             return BadRequest(ModelState);
         }
@@ -164,7 +164,7 @@ namespace Devify.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _mediator.Send(new CreateCourseChapterCommand { request = model , CourseId = courseId });
-                return result.Success ? Ok(result) : BadRequest(result);
+                return result.result ? Ok(result) : BadRequest(result);
             }
             return BadRequest(ModelState);
         }
@@ -175,7 +175,7 @@ namespace Devify.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _mediator.Send(new UpdateCourseChapterCommand {  UpdateCourseChapterRequest = model, CourseId = courseId });
-                return result.Success ? Ok(result) : BadRequest(result);
+                return result.result ? Ok(result) : BadRequest(result);
             }
             return BadRequest(ModelState);
         }
@@ -186,7 +186,7 @@ namespace Devify.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _mediator.Send(new CreateCourseCommand { request = model });
-                return result.Success ? Ok(result) : BadRequest(result);
+                return result.result ? Ok(result) : BadRequest(result);
             }
             return BadRequest(ModelState);
         }
@@ -197,7 +197,7 @@ namespace Devify.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _mediator.Send(new CreateCourseCommand { request = model });
-                return result.Success ? Ok(result) : BadRequest(result);
+                return result.result ? Ok(result) : BadRequest(result);
             }
             return BadRequest(ModelState);
         }

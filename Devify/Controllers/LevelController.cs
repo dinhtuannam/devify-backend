@@ -1,88 +1,76 @@
 ﻿using Devify.Application.Commons;
+using Devify.Application.DTO;
+using Devify.Application.Features.Level.Commands;
+using Devify.Application.Features.Level.Queries;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using Devify.Filters;
 using Devify.Models;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers
 {
-    [Route("api/level")]
+    [Route("api/[controller]")]
     [ApiController]
     public class LevelController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public LevelController(ILogger<LanguageController> logger, IUnitOfWork unitOfWork)
+        private IMediator _mediator;
+        public LevelController(IMediator mediator)
         {
-            _unitOfWork = unitOfWork;
+            _mediator = mediator;
         }
 
         [HttpGet]
+        [Route("get-all-level")]
         public async Task<IActionResult> GetAllLevel()
         {
-            //var model = await _unitOfWork.LevelRepository.GetAll();
-            return Ok("model");
+            ApiResponse api = await _mediator.Send(new GetAllLevelQuery());
+            return Ok(api);
+        }
+
+        [HttpGet]
+        [Route("{code}/get-level")]
+        public async Task<IActionResult> GetLevel(string code)
+        {
+            ApiResponse api = await _mediator.Send(new GetLevelQuery(code));
+            return Ok(api);
         }
 
         [HttpPost]
+        [Route("create-new-level")]
         public async Task<IActionResult> CreateLevel(CreateLevelModel model)
         {
-           /* SqlLevel newLevel = new SqlLevel();
-            newLevel.CourseLevelId = AutoGenerate.GenerateID("level", 8);
-            newLevel.LevelName = model.LevelName;
-            newLevel.LevelDescription = model.LevelDescription;
-            newLevel.Status = Entity.Enums.CommonEnum.AVAILABLE;
-            newLevel.DateCreated = DateTime.Now;
-            newLevel.DateUpdated = DateTime.Now;
-            bool res = await _unitOfWork.LevelRepository.AddAsAsync(newLevel);
-            if (res)
+            ApiResponse api = await _mediator.Send(new CreateLevelCommand(model.code,model.name,model.des));
+            if (!api.result)
             {
-                await _unitOfWork.CompleteAsync();
-                return Ok(new API_Response_VM
-                {
-                    Success = true,
-                    Message = "Create level successfully",
-                    ErrCode = "200",
-                    Data = newLevel
-                });
-            }              */
-            return BadRequest();
+                return BadRequest(api);
+            }
+            return Ok(api);
         }
 
         [HttpPut]
+        [Route("edit-level")]
         public async Task<IActionResult> UpdateLevel(UpdateLevelModel model)
         {
-           /* SqlLevel m_level = _unitOfWork.LevelRepository.GetByCondition(l => l.CourseLevelId == model.CourseLevelId).FirstOrDefault();
-            if (m_level == null)
-                return BadRequest();
-            m_level.LevelName = model.LevelName;
-            m_level.LevelDescription = model.LevelDescription;
-            m_level.Status = model.Status;
-            m_level.DateUpdated = DateTime.Now;
-            bool res = _unitOfWork.LevelRepository.UpdateEntity(m_level);
-            if (res)
+            ApiResponse api = await _mediator.Send(new UpdateLevelCommand(model.code, model.name, model.des));
+            if (!api.result)
             {
-                await _unitOfWork.CompleteAsync();
-                return Ok();
-            }   */
-            return BadRequest();
+                return BadRequest(api);
+            }
+            return Ok(api);
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteLevel(string id)
+        [Route("{code}")]
+        public async Task<IActionResult> DeleteLevel(string code)
         {
-            /*SqlLevel m_level = _unitOfWork.LevelRepository.GetByCondition(l => l.CourseLevelId == id).FirstOrDefault();
-            if (m_level == null)
-                return BadRequest();
-            m_level.Status = CommonEnum.DELETED;
-            m_level.DateUpdated = DateTime.Now;
-            bool res = _unitOfWork.LevelRepository.UpdateEntity(m_level);
-            if (res)
+            ApiResponse api = await _mediator.Send(new DeleteLevelCommand(code));
+            if (!api.result)
             {
-                await _unitOfWork.CompleteAsync();
-                return Ok();
-            }*/
-            return BadRequest();
+                return BadRequest(api);
+            }
+            return Ok(api);
         }
     }
 }

@@ -22,24 +22,24 @@ namespace Devify.Application.Features.Auth.Commands
             {
                 var apiResponse = new ApiResponse
                 {
-                    Success = true,
-                    Message = "Đăng nhập thành công",
+                    result = true,
+                    message = "Đăng nhập thành công",
                 };
                 var loginResult = await _unitOfWork.AuthRepository.Login(command.username, command.password);
                 if(loginResult == null)
                 {
-                    apiResponse.Success = false;
-                    apiResponse.Message = "Tên đăng nhập hoặc mật khẩu không đúng";
-                    apiResponse.ErrCode = "500";
+                    apiResponse.result = false;
+                    apiResponse.message = "Tên đăng nhập hoặc mật khẩu không đúng";
+                    apiResponse.code = 500;
                     return apiResponse;
                 }
                 var userInformation = _mapper.Map<Account_Information_DTO>(loginResult);
                 var tokenResult = await _unitOfWork.TokenRepository.GenerateToken(loginResult);
                 if(tokenResult == null)
                 {
-                    apiResponse.Success = false;
-                    apiResponse.Message = "Đã xảy ra lỗi vui lòng thử lại sau";
-                    apiResponse.ErrCode = "500";
+                    apiResponse.result = false;
+                    apiResponse.message = "Đã xảy ra lỗi vui lòng thử lại sau";
+                    apiResponse.code = 500;
                     return apiResponse;
                 }
                /* var responseData = new LoginResponse

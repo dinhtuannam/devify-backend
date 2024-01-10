@@ -44,9 +44,9 @@ namespace Devify.Application.Features.Language.Commands
                 else*/
                     return new ApiResponse
                     {
-                        Success = false,
-                        Message = "Delete language failed",
-                        ErrCode = "500",
+                        result = false,
+                        message = "Delete language failed",
+                        code = 500,
                     };
 
             }

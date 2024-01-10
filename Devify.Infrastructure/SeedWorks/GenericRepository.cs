@@ -32,7 +32,7 @@ namespace Devify.Infrastructure.SeedWorks
             {
                 query = query.Where(e => EF.Property<string>(e, "id") == id && EF.Property<bool>(e, "isdeleted") == true);
             }
-            else if (delete == -1)
+            else if (delete == 0)
             {
                 query = query.Where(e => EF.Property<string>(e, "id") == id && EF.Property<bool>(e, "isdeleted") == false);
             }
@@ -55,7 +55,7 @@ namespace Devify.Infrastructure.SeedWorks
             {
                 query = query.Where(e => EF.Property<string>(e, "code") == code && EF.Property<bool>(e, "isdeleted") == true);
             }
-            else if (delete == -1)
+            else if (delete == 0)
             {
                 query = query.Where(e => EF.Property<string>(e, "code") == code && EF.Property<bool>(e, "isdeleted") == false);
             }

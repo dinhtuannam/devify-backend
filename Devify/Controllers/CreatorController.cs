@@ -30,7 +30,7 @@ namespace Devify.Controllers
             });
             return new JsonResult(result)
             {
-                StatusCode = int.Parse(result.ErrCode)
+                StatusCode = int.Parse(result.code.ToString())
             };
         }
 
@@ -44,7 +44,7 @@ namespace Devify.Controllers
             });
             return new JsonResult(result)
             {
-                StatusCode = int.Parse(result.ErrCode)
+                StatusCode = int.Parse(result.code.ToString())
             }; 
         }
 
@@ -58,7 +58,7 @@ namespace Devify.Controllers
             });
             return new JsonResult(result)
             {
-                StatusCode = int.Parse(result.ErrCode)
+                StatusCode = int.Parse(result.code.ToString())
             };
         }
 
@@ -72,7 +72,7 @@ namespace Devify.Controllers
             });
             return new JsonResult(result)
             {
-                StatusCode = int.Parse(result.ErrCode)
+                StatusCode = int.Parse(result.code.ToString())
             };
         }
 

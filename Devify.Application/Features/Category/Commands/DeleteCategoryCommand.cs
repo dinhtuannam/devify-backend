@@ -43,9 +43,9 @@ namespace Devify.Application.Features.Category.Commands
                 else*/
                     return new ApiResponse
                     {
-                        Success = false,
-                        Message = "Delete category failed",
-                        ErrCode = "500",
+                        result = false,
+                        message = "Delete category failed",
+                        code = 500,
                     };
 
             }

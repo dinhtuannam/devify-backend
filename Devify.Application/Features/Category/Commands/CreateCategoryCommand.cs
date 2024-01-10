@@ -39,9 +39,9 @@ namespace Devify.Application.Features.Category.Commands
                 else*/
                     return new ApiResponse
                     {
-                        Success = false,
-                        Message = "Create new category failed",
-                        ErrCode = "500",
+                        result = false,
+                        message = "Create new category failed",
+                        code = 500,
                     };
 
             }

@@ -24,7 +24,7 @@ namespace Loship.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _mediator.Send(new LoginCommand { username = model.Name, password = model.Password });
-                return result.Success ? Ok(result) : BadRequest(result);
+                return result.result ? Ok(result) : BadRequest(result);
             }
             return BadRequest("Vui lòng điền đầy đủ tên đăng nhập và mật khẩu");
         }

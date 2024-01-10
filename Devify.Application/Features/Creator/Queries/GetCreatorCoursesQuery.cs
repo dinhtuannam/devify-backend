@@ -21,9 +21,9 @@ namespace Devify.Application.Features.Creator.Queries
             {
                 ApiResponse response = new ApiResponse
                 {
-                    Success = true,
-                    Message = "Get creator info successfully",
-                    ErrCode = "200"
+                    result = true,
+                    message = "Get creator info successfully",
+                    code = 200
                 };
                 /*if (query.type == ConditionEnum.SLUG)
                 {
@@ -55,9 +55,9 @@ namespace Devify.Application.Features.Creator.Queries
                 }*/
                 return new ApiResponse
                 {
-                    Success = false,
-                    Message = "Something wrong",
-                    ErrCode = "500"
+                    result = false,
+                    message = "Something wrong",
+                    code = 500
                 };
             }
         }

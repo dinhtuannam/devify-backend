@@ -180,8 +180,8 @@ namespace Devify.Infrastructure.Services
                 Console.WriteLine($"[TokenService] -> RenewToken -> with refreshTokenRequest: {refreshTokenRequest} -> failed , Exception: {ex.Message}");
                 return new ApiResponse
                 {
-                    Success = false,
-                    Message = "Something went wrong"
+                    result = false,
+                    message = "Something went wrong"
                 };
             }
         }

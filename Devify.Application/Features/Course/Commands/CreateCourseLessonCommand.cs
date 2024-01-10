@@ -19,9 +19,9 @@ namespace Devify.Application.Features.Course.Commands
             {
                 var apiResponse = new ApiResponse
                 {
-                    Success = true,
-                    Message = "create course lesson successfully",
-                    ErrCode = "200"
+                    result = true,
+                    message = "create course lesson successfully",
+                    code = 200
                 };
                 /*CreateCourseLessonRequest req = command.request;
                 Guid chapterRequestId = command.ChapterId;

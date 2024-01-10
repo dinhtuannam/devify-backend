@@ -45,9 +45,9 @@ namespace Devify.Application.Features.Category.Commands
                 }*/
                 return new ApiResponse
                 {
-                    Success = false,
-                    Message = "Something wrong please try again",
-                    ErrCode = "500",
+                    result = false,
+                    message = "Something wrong please try again",
+                    code = 500,
                 };
 
             }

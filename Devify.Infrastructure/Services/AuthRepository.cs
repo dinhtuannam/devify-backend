@@ -77,8 +77,8 @@ namespace Devify.Infrastructure.Services
                 Console.WriteLine($"[AuthService] -> Register -> failed -> Exception: {ex} ");
                 return new ApiResponse
                 {
-                    Success = false,
-                    Message = ex.Message
+                    result = false,
+                    message = ex.Message
                 };
             }
             
@@ -131,8 +131,8 @@ namespace Devify.Infrastructure.Services
 
             return new ApiResponse
             {
-                Success = true,
-                Message = "Password must greater than 8 characters",
+                result = true,
+                message = "Password must greater than 8 characters",
             };
         }
     }
