@@ -1,10 +1,6 @@
-﻿using Devify.Application.Commons;
-using Devify.Application.DTO;
-using Devify.Application.DTO.ResponseDTO;
+﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
-using Devify.Entity;
 using MediatR;
-using System.Diagnostics;
 
 namespace Devify.Application.Features.Course.Commands
 {
@@ -25,7 +21,7 @@ namespace Devify.Application.Features.Course.Commands
                     Success = true,
                     Message = "create course successfully", 
                 };
-                var createCourseResult = false;
+                /*var createCourseResult = false;
                 var firebaseResult = new FirebaseDTO();
                 var isSlugValid = _unitOfWork.CourseRepository.GetByCondition(c => c.Slug == command.request.Slug).ToList();
                 if (isSlugValid.Count > 0)
@@ -34,7 +30,7 @@ namespace Devify.Application.Features.Course.Commands
                     newSlug = AutoGenerate.GenerateRandomString(newSlug, 5);
                     command.request.Slug = newSlug;
                 }
-                var newCourse = new Entity.Course
+                var newCourse = new Entity.SqlCourse
                 {
                     CourseId = new Guid(),
                     Title = command.request.Title,
@@ -66,7 +62,7 @@ namespace Devify.Application.Features.Course.Commands
                     apiResponse.Success = false;
                     apiResponse.Message = "create course failed";
                 }
-                await _unitOfWork.CompleteAsync();
+                await _unitOfWork.CompleteAsync();*/
                 return apiResponse;
             }
         }

@@ -7,8 +7,8 @@ namespace Devify.Mappings
     public class CategoryMapper : Profile
     {
         public CategoryMapper() {
-            CreateMap<CreateCategoryModel, Category>();
-            CreateMap<UpdateCategoryModel, Category>();
+            CreateMap<CreateCategoryModel, SqlCategory>();
+            CreateMap<UpdateCategoryModel, SqlCategory>();
         }
     }
 }

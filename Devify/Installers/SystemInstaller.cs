@@ -11,14 +11,16 @@ namespace Devify.Installers
             
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Devify Server", Version = "v1" });
 
                 // Thêm xác thực vào Swagger
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = "JWT Authorization header using the Bearer scheme",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer"
+                    Description = @"JWT Bearer",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -29,7 +31,10 @@ namespace Devify.Installers
                             {
                                 Type = ReferenceType.SecurityScheme,
                                 Id = "Bearer"
-                            }
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
                         },
                         new string[] { }
                     }
@@ -40,16 +45,14 @@ namespace Devify.Installers
 
             //  =======================================================================
             //  =========================  Cấu hình Cors ==============================
-            services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+            services.AddCors(options =>
+            {
+                options.AddPolicy("HTTPSystem", builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin => true).WithExposedHeaders("Grpc-Status", "Grpc-Encoding", "Grpc-Accept-Encoding");
+                });
+            });
 
-
-            //  =======================================================================
-            //  =========================  Cấu hình Policy ============================
-            services.AddAuthorization(options =>
-             {
-                 options.AddPolicy("RequireAdminRole", policy =>
-                     policy.RequireClaim("RoleId", "Admin"));
-             });
         }
     }
 }

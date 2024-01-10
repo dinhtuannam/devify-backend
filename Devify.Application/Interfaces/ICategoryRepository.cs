@@ -3,8 +3,8 @@ using Devify.Entity;
 
 namespace Devify.Application.Interfaces
 {
-    public interface ICategoryRepository : IGenericRepository<Category>
+    public interface ICategoryRepository : IGenericRepository<SqlCategory>
     {
-        Task<IEnumerable<Category>> SearchAsAsync(string name);
+        Task<IEnumerable<SqlCategory>> SearchAsAsync(string name);
     }
 }

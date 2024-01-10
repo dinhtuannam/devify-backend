@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Devify.Application.DTO;
-using Microsoft.AspNetCore.Identity;
 
 namespace Devify.Application.Mappings
 {
@@ -22,7 +20,7 @@ namespace Devify.Application.Mappings
             CreateMap<Chapter, Detail_Course_ChapterList>();
             CreateMap<Lesson, Detail_Course_LessonList>();*/
 
-            CreateMap<IdentityUser, Account_Information_DTO>();
+            //CreateMap<IdentityUser, Account_Information_DTO>();
         }
     }
 }

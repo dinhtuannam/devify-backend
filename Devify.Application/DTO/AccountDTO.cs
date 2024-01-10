@@ -22,7 +22,7 @@ namespace Devify.Application.DTO
         public string Image { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public Creator? Creator { get; set; }
+        //public Creator? Creator { get; set; }
 
         public ICollection<CourseOwnerDTO> Courses = new List<CourseOwnerDTO>();
     }

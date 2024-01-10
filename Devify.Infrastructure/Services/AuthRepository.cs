@@ -1,27 +1,20 @@
 ﻿using Devify.Entity;
-using Microsoft.AspNetCore.Identity;
 using Devify.Application.Interfaces;
-using Devify.Application.DTO.RequestDTO;
-using Devify.Application.DTO.ResponseDTO;
 using Devify.Application.DTO;
-using System.Runtime.InteropServices;
 
 namespace Devify.Infrastructure.Services
 {
     public class AuthRepository : IAuthRepository
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        public AuthRepository(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager) 
+        public AuthRepository() 
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+
         }
-        public async Task<ApplicationUser> Login(string name, string password)
+        public async Task<SqlUser> Login(string name, string password)
         {
             try
             {
-                var result = await _signInManager.PasswordSignInAsync(name, password, false, false);
+                /*var result = await _signInManager.PasswordSignInAsync(name, password, false, false);
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByNameAsync(name);
@@ -29,7 +22,7 @@ namespace Devify.Infrastructure.Services
                     Console.WriteLine($"[AuthService] -> Login with name: {name} and password: {password} -> return true -> successfully  ");
                     return user;
                 }
-                Console.WriteLine($"[AuthService] -> Login with name: {name} and password: {password} -> return false -> successfully  ");
+                Console.WriteLine($"[AuthService] -> Login with name: {name} and password: {password} -> return false -> successfully  ");*/
                 return null;
             }
             catch(Exception ex)
@@ -39,11 +32,11 @@ namespace Devify.Infrastructure.Services
             }
             
         }
-        public async Task<ApiResponse> Register(RegisterRequest model)
+        public async Task<ApiResponse> Register(string username, string password, string email, string phone)
         {
             try
             {
-                var validateResult = await ValidateRegister(model);
+                /*var validateResult = await ValidateRegister(model);
                 if (validateResult.Success == false)
                 {
                     Console.WriteLine($"[AuthService] -> Register -> return false -> successfully  ");
@@ -76,7 +69,8 @@ namespace Devify.Infrastructure.Services
                         Success = false,
                         Message = "Username or password are not correct"
                     };
-                }
+                }*/
+                return null;
             }
             catch(Exception ex)
             {
@@ -89,9 +83,9 @@ namespace Devify.Infrastructure.Services
             }
             
         }
-        public async Task<ApiResponse> ValidateRegister(RegisterRequest model)
+        public async Task<ApiResponse> ValidateRegister(string username, string password, string email, string phone)
         {
-            if (model.Username.Contains(" "))
+            /*if (model.Username.Contains(" "))
                 return new ApiResponse
                 {
                     Success = false,
@@ -133,7 +127,7 @@ namespace Devify.Infrastructure.Services
                 {
                     Success = false,
                     Message = "Email must contains @",
-                };
+                };*/
 
             return new ApiResponse
             {

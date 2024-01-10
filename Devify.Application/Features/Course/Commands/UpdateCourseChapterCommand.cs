@@ -1,14 +1,6 @@
-﻿using Devify.Application.Commons;
-using Devify.Application.DTO;
-using Devify.Application.DTO.ResponseDTO;
+﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
-using Devify.Entity;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Devify.Application.Features.Course.Commands
 {
@@ -31,9 +23,9 @@ namespace Devify.Application.Features.Course.Commands
                     Success = true,
                     Message = "create course successfully",
                 };
-                UpdateCourseChapterRequest req = command.UpdateCourseChapterRequest;
+                /*UpdateCourseChapterRequest req = command.UpdateCourseChapterRequest;
                 Guid CourseIdReq = command.CourseId;
-                Chapter curChapter = _unitOfWork.ChapterRepository
+                SqlChapter curChapter = _unitOfWork.ChapterRepository
                                                 .GetByCondition(c => c.ChapterId == req.ChapterId && c.CourseId == CourseIdReq &&  c.Status != Entity.Enums.CommonEnum.DELETED )
                                                 .FirstOrDefault();
                 if(curChapter == null)
@@ -57,7 +49,7 @@ namespace Devify.Application.Features.Course.Commands
                 curChapter.Status = req.Status;
                 curChapter.DateUpdated = DateTime.Now;
                 var update = _unitOfWork.ChapterRepository.UpdateEntity(curChapter);
-                await _unitOfWork.CompleteAsync();
+                await _unitOfWork.CompleteAsync();*/
                 return apiResponse;
             }
         }

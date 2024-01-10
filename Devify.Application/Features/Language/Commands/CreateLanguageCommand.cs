@@ -1,6 +1,4 @@
-﻿using Devify.Application.Commons;
-using Devify.Application.DTO.ResponseDTO;
-using Devify.Application.Features.Category.Commands;
+﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using MediatR;
 
@@ -9,7 +7,7 @@ namespace Devify.Application.Features.Language.Commands
 {
     public class CreateLanguageCommand : IRequest<ApiResponse>
     {
-        public Entity.Language newLanguage {  get; set; }
+        public Entity.SqlLanguage newLanguage {  get; set; }
         public class CreateLanguageCommandHandler : IRequestHandler<CreateLanguageCommand, ApiResponse>
         {
             private readonly IUnitOfWork _unitOfWork;
@@ -20,7 +18,7 @@ namespace Devify.Application.Features.Language.Commands
 
             public async Task<ApiResponse> Handle(CreateLanguageCommand request, CancellationToken cancellationToken)
             {
-                request.newLanguage.LanguageId = AutoGenerate.GenerateID("lang",6);
+                /*request.newLanguage.LanguageId = AutoGenerate.GenerateID("lang",6);
                 request.newLanguage.Status = "active";
                 request.newLanguage.DateCreated = DateTime.Now;
                 request.newLanguage.DateUpdated = DateTime.Now;
@@ -36,7 +34,7 @@ namespace Devify.Application.Features.Language.Commands
                         Data = request.newLanguage
                     };
                 }
-                else
+                else*/
                     return new ApiResponse
                     {
                         Success = false,

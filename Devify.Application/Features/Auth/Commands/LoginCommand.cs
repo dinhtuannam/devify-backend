@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using Devify.Application.Commons;
 using Devify.Application.DTO;
-using Devify.Application.DTO.ResponseDTO;
-using Devify.Application.Features.Course.Commands;
 using Devify.Application.Interfaces;
 using MediatR;
-using System.Security.Principal;
 
 namespace Devify.Application.Features.Auth.Commands
 {
@@ -46,13 +42,13 @@ namespace Devify.Application.Features.Auth.Commands
                     apiResponse.ErrCode = "500";
                     return apiResponse;
                 }
-                var responseData = new LoginResponse
+               /* var responseData = new LoginResponse
                 {
                     AccessToken = tokenResult.AccessToken,
                     RefreshToken = tokenResult.RefreshToken,
                     Info = userInformation
                 };
-                apiResponse.Data = responseData;
+                apiResponse.Data = responseData;*/
                 return apiResponse;
             }
         }

@@ -8,108 +8,101 @@ namespace Devify.Infrastructure.SeedWorks
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected ApplicationDbContext _context;
+        protected DataContext _context;
         protected DbSet<T> _dbSet;
 
-        public GenericRepository(ApplicationDbContext context)
+        public GenericRepository(DataContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();
         }
 
         // ===================================== QUERIES ======================================= 
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
-        {
-            return await _dbSet.ToListAsync();
-        }
-        public IEnumerable<T> GetAll(string[] includes = null)
-        {
-            if (includes != null && includes.Count() > 0)
-            {
-                var query = _dbSet.Include(includes.First());
-                foreach (var include in includes.Skip(1))
-                    query = query.Include(include);
-                return query.AsQueryable();
-            }
-
-            return _dbSet.AsQueryable();
-        }
-        public int CountRecords(Expression<Func<T, bool>> where = null)
-        {
-            try
-            {
-                return where != null ? _dbSet.Where(where).Count() : _dbSet.Count();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[DeleteAsAsync] -> failed -> Exception : {ex.Message}");
-                return 0;
-            }
-        }
-        public virtual IQueryable<T> GetByCondition(Expression<Func<T, bool>> condition)
+        public virtual IQueryable<T> GetCondition(Expression<Func<T, bool>> condition)
         {
             IQueryable<T> query = _dbSet;
             query = query.Where(condition);
             return query;
         }
-        public virtual async Task<T> GetById(string id)
+        public virtual IQueryable<T> GetID(string id, int delete)
         {
-            return await _dbSet.FindAsync(id);
-        }
-        public virtual IEnumerable<T> GetMulti(Expression<Func<T, bool>> predicate, string[] includes = null)
-        {
-            //HANDLE INCLUDES FOR ASSOCIATED OBJECTS IF APPLICABLE
-            if (includes != null && includes.Count() > 0)
+            IQueryable<T> query = _dbSet;
+
+            if (delete == 1)
             {
-                var query = _dbSet.Include(includes.First());
-                foreach (var include in includes.Skip(1))
-                    query = query.Include(include);
-                return query.Where<T>(predicate).AsQueryable<T>();
+                query = query.Where(e => EF.Property<string>(e, "id") == id && EF.Property<bool>(e, "isdeleted") == true);
+            }
+            else if (delete == -1)
+            {
+                query = query.Where(e => EF.Property<string>(e, "id") == id && EF.Property<bool>(e, "isdeleted") == false);
+            }
+            else
+            {
+                query = query.Where(e => EF.Property<string>(e, "id") == id);
             }
 
-            return _dbSet.Where<T>(predicate).AsQueryable<T>();
+            return query.AsQueryable();
         }
+        public virtual IQueryable<T> GetAll()
+        {
+            return _dbSet;
+        }
+        public virtual IQueryable<T> GetCode(string code, int delete)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (delete == 1)
+            {
+                query = query.Where(e => EF.Property<string>(e, "code") == code && EF.Property<bool>(e, "isdeleted") == true);
+            }
+            else if (delete == -1)
+            {
+                query = query.Where(e => EF.Property<string>(e, "code") == code && EF.Property<bool>(e, "isdeleted") == false);
+            }
+            else
+            {
+                query = query.Where(e => EF.Property<string>(e, "code") == code);
+            }
+
+            return query.AsQueryable();
+        }
+
 
         // ===================================== COMMANDS ======================================= 
-        public virtual async Task<bool> AddAsAsync(T entity)
+        public virtual bool Insert(T entity)
         {
             try
             {
-                await _dbSet.AddAsync(entity);
-                Console.WriteLine($"[AddAsAsync] -> successfully ");
+                _dbSet.Add(entity);
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[AddAsAsync] -> failed -> Exception : {ex.Message}");
                 return false;
             }
         }
-        public virtual async Task<bool> DeleteAsAsync(T entity)
+        public virtual bool Delete(T entity)
         {
             try
             {
-                _dbSet.Remove(entity);
+                 _dbSet.Remove(entity);
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DeleteAsAsync] -> failed -> Exception : {ex.Message}");
                 return false;
             }
         }
-        public virtual bool UpdateEntity(T entity)
+        public virtual bool Update(T entity)
         {
             try
             {
                 _dbSet.Attach(entity);
                 _context.Entry(entity).State = EntityState.Modified;
-                Console.WriteLine($"[UpdateEntity] -> successfully ");
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[UpdateEntity] -> failed -> Exception : {ex.Message}");
                 return false;
             }
         }

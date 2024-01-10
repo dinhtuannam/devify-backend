@@ -6,9 +6,9 @@ namespace Devify.Application.DTO
     {
         public CategoryDTO()
         {
-            Courses = new List<Course>(); // Initialize the property in the constructor
+            Courses = new List<SqlCourse>(); // Initialize the property in the constructor
         }
         public string CategoryId { get; set; }
-        public ICollection<Course> Courses { get; set; }
+        public ICollection<SqlCourse> Courses { get; set; }
     }
 }

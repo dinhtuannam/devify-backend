@@ -1,8 +1,6 @@
-﻿using Devify.Entity;
-using Devify.Entity.Enums;
+﻿
 using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+
 
 namespace Devify.Application.DTO
 {
@@ -136,7 +134,6 @@ namespace Devify.Application.DTO
         public string Name { get; set; }
         public int? Step { get; set; }
         public string? Description { get; set; }
-        public CommonEnum Status { get; set; }
 
     }
 
@@ -153,7 +150,7 @@ namespace Devify.Application.DTO
         public string Name { get; set; }
         public int? Step { get; set; }
         public string? Description { get; set; }
-        public CommonEnum Status { get; set; }
+
 
     }
 

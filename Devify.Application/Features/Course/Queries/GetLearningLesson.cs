@@ -1,7 +1,6 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Devify.Application.Features.Course.Queries
 {

@@ -1,7 +1,5 @@
 ﻿using Devify.Application.DTO;
-using Devify.Application.DTO.ResponseDTO;
 using Devify.Application.Interfaces;
-using Devify.Entity.Enums;
 using MediatR;
 
 
@@ -10,7 +8,7 @@ namespace Devify.Application.Features.Creator.Queries
     public class GetCreatorCoursesQuery : IRequest<ApiResponse>
     {
         public string condition { get; set; }
-        public ConditionEnum type { get; set; }
+        //public ConditionEnum type { get; set; }
 
         public class GetCreatorCoursesQueryHandler : IRequestHandler<GetCreatorCoursesQuery, ApiResponse>
         {
@@ -27,7 +25,7 @@ namespace Devify.Application.Features.Creator.Queries
                     Message = "Get creator info successfully",
                     ErrCode = "200"
                 };
-                if (query.type == ConditionEnum.SLUG)
+                /*if (query.type == ConditionEnum.SLUG)
                 {
                     IEnumerable<CreatorCoursesDTO> result = new List<CreatorCoursesDTO>();
                     result = await _unitOfWork.CreatorRepository.GetCreatorCoursesBySlug(query.condition);
@@ -54,7 +52,7 @@ namespace Devify.Application.Features.Creator.Queries
                     response.Success = false;
                     response.Message = "Get creator info failed";
                     return response;
-                }
+                }*/
                 return new ApiResponse
                 {
                     Success = false,

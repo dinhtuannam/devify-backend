@@ -1,15 +1,15 @@
 ﻿using Devify.Application.Commons;
-using Devify.Application.DTO.ResponseDTO;
-using Devify.Application.Features.Course.Commands;
+using Devify.Application.DTO;
+
 using Devify.Application.Interfaces;
-using Devify.Entity;
+
 using MediatR;
 
 namespace Devify.Application.Features.Category.Commands
 {
     public class CreateCategoryCommand : IRequest<ApiResponse>
     {
-        public Entity.Category newCategory { get; set; }
+        public Entity.SqlCategory newCategory { get; set; }
         public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, ApiResponse>
         {
             private readonly IUnitOfWork _unitOfWork;
@@ -20,7 +20,7 @@ namespace Devify.Application.Features.Category.Commands
 
             public async Task<ApiResponse> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
             {
-                request.newCategory.CategoryId = AutoGenerate.GenerateID("cat");
+                /*request.newCategory.CategoryId = AutoGenerate.GenerateID("cat");
                 request.newCategory.Status = Entity.Enums.CommonEnum.AVAILABLE;
                 request.newCategory.DateCreated = DateTime.Now;
                 request.newCategory.DateUpdated = DateTime.Now;
@@ -36,7 +36,7 @@ namespace Devify.Application.Features.Category.Commands
                         Data = request.newCategory
                     };
                 }
-                else
+                else*/
                     return new ApiResponse
                     {
                         Success = false,

@@ -8,8 +8,8 @@ namespace Devify.Mappings
     {
         public LanguageMapper()
         {
-            CreateMap<CreateLanguageModel, Language>();
-            CreateMap<UpdateLanguageModel, Language>();
+            CreateMap<CreateLanguageModel, SqlLanguage>();
+            CreateMap<UpdateLanguageModel, SqlLanguage>();
         }
     }
 }

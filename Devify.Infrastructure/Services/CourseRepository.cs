@@ -9,11 +9,11 @@ using System.Linq.Expressions;
 
 namespace Devify.Infrastructure.Services
 {
-    public class CourseRepository : GenericRepository<Course>, ICourseRepository
+    public class CourseRepository : GenericRepository<SqlCourse>, ICourseRepository
     {
-        private readonly ApplicationDbContext _DbContext;
+        private readonly DataContext _DbContext;
         private readonly IUnitOfWork _unitOfWork;
-        public CourseRepository(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        public CourseRepository(DataContext context, IUnitOfWork unitOfWork) : base(context)
         {
             _DbContext = context;
             _unitOfWork = unitOfWork;
@@ -24,7 +24,7 @@ namespace Devify.Infrastructure.Services
             var dataList = new DataListDTO<IEnumerable<AllCourseList>>();
             try
             {               
-                var query = await _context.Courses.AsNoTracking()
+                /*var query = await _context.Courses.AsNoTracking()
                     .Include(c => c.Creator).ThenInclude(c => c.User)
                     .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
                     .ToListAsync();
@@ -50,7 +50,7 @@ namespace Devify.Infrastructure.Services
                     }).ToList()
                 });
                 dataList.TotalRecords = query.Count;
-                Console.WriteLine($"[CourseService] -> GetAllCourseAsync -> success ");
+                Console.WriteLine($"[CourseService] -> GetAllCourseAsync -> success ");*/
                 return dataList;
             }
             catch(Exception ex)
@@ -67,7 +67,7 @@ namespace Devify.Infrastructure.Services
         {
             try
             {
-                var query = await _context.Courses.AsNoTracking()
+                /*var query = await _context.Courses.AsNoTracking()
                         .Include(c => c.Creator).ThenInclude(c => c.User)
                         .Include(c => c.Chapters.OrderBy(c => c.Step)).ThenInclude(c => c.Lessons.OrderBy(l => l.Step))
                         .Include(c => c.Category)
@@ -113,8 +113,9 @@ namespace Devify.Infrastructure.Services
                         })
                     })
                 };
-                Console.WriteLine($"[CourseService] -> GetCourseBySlug width slug: {slug} -> successfully");
-                return course;
+                Console.WriteLine($"[CourseService] -> GetCourseBySlug width slug: {slug} -> successfully");*/
+                return null;
+                
             }
             catch (Exception ex)
             {
@@ -128,32 +129,33 @@ namespace Devify.Infrastructure.Services
         {
             try
             {
-                var query = await _context.Courses
-                    .Include(c => c.Chapters.OrderBy(c => c.Step)).ThenInclude(c => c.Lessons.OrderBy(l => l.Name))
-                    .Where(c => c.Slug == slug).FirstOrDefaultAsync();
-                if (query == null)
-                    return null;
-                var course = new LearningCourseDTO
-                {
-                    CourseId = query.CourseId,
-                    Title = query.Title,
-                    Description = query.Description,
-                    Slug = query.Slug,
-                    Image = query.Image,
-                    Chapters = query.Chapters.Select(item => new DetailCourseChapterList
-                    {
-                        ChapterId = item.ChapterId,
-                        Name = item.Name,
-                        Description = item.Description,
-                        Lessons = item.Lessons.Select(lsItem => new DetailCourseLessonList
-                        {
-                            LessonId = lsItem.LessonId,
-                            Name = lsItem.Name
-                        })
-                    })
-                };
-                Console.WriteLine($"[CourseService] -> GetLearningCourse width slug: {slug} -> successfully");
-                return course;
+                /* var query = await _context.Courses
+                     .Include(c => c.Chapters.OrderBy(c => c.Step)).ThenInclude(c => c.Lessons.OrderBy(l => l.Name))
+                     .Where(c => c.Slug == slug).FirstOrDefaultAsync();
+                 if (query == null)
+                     return null;
+                 var course = new LearningCourseDTO
+                 {
+                     CourseId = query.CourseId,
+                     Title = query.Title,
+                     Description = query.Description,
+                     Slug = query.Slug,
+                     Image = query.Image,
+                     Chapters = query.Chapters.Select(item => new DetailCourseChapterList
+                     {
+                         ChapterId = item.ChapterId,
+                         Name = item.Name,
+                         Description = item.Description,
+                         Lessons = item.Lessons.Select(lsItem => new DetailCourseLessonList
+                         {
+                             LessonId = lsItem.LessonId,
+                             Name = lsItem.Name
+                         })
+                     })
+                 };
+                 Console.WriteLine($"[CourseService] -> GetLearningCourse width slug: {slug} -> successfully");
+                 return course;*/
+                return null;
             }
             catch (Exception ex)
             {
@@ -162,11 +164,11 @@ namespace Devify.Infrastructure.Services
             }
         }
 
-        public override async Task<bool> AddAsAsync(Course course)
+        public override bool Insert(SqlCourse course)
         {
             try
             {
-                var result = await _dbSet.AddAsync(course);
+                var result = _dbSet.AddAsync(course);
                 return true;
             }
             catch (Exception ex)
@@ -180,7 +182,7 @@ namespace Devify.Infrastructure.Services
         {
             try
             {               
-                var lesson = await _unitOfWork.LessonRepository.GetByCondition(condition: ls => ls.LessonId == LessonId)
+                /*var lesson = await _unitOfWork.LessonRepository.GetByCondition(condition: ls => ls.LessonId == LessonId)
                 .Include(ls => ls.Chapter).ThenInclude(ch => ch.Course)
                 .Select(ls => new LearningLessonDTO
                 {
@@ -197,7 +199,7 @@ namespace Devify.Infrastructure.Services
                 }
                 var course = await _unitOfWork.CourseRepository.GetByCondition(condition: c => c.Slug == slug)
                      .Include(c => c.Creator)
-                     .Select(c => new Course
+                     .Select(c => new SqlCourse
                      {
                          CourseId = c.CourseId,
                          Title = c.Title,
@@ -213,7 +215,7 @@ namespace Devify.Infrastructure.Services
                     lesson.CourseSlug = course.Slug;
                     return lesson;
 
-                }
+                }*/
                 return null;
             }
             catch(Exception ex)
@@ -225,7 +227,7 @@ namespace Devify.Infrastructure.Services
 
         public async Task<DataListDTO<IEnumerable<SearchCourseList>>> SearchCourse(CourseSearchParams parameters)
         {
-            var dataList = new DataListDTO<IEnumerable<SearchCourseList>>();
+            /*var dataList = new DataListDTO<IEnumerable<SearchCourseList>>();
             var query = _context.Courses.AsQueryable().Where(course => course.Status == "1");
                           
             if(parameters.cat != null && parameters.cat.Count > 0 )
@@ -284,7 +286,8 @@ namespace Devify.Infrastructure.Services
             }).ToListAsync();
             dataList.TotalRecords = query.Count();
             Console.WriteLine($"[CourseService] -> GetAllCourseAsync -> success ");
-            return dataList;
+            return dataList;*/
+            return null;
         }
     }
 }

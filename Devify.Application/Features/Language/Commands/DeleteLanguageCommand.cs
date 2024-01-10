@@ -1,5 +1,5 @@
 ﻿using Devify.Application.Commons;
-using Devify.Application.DTO.ResponseDTO;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using MediatR;
 
@@ -19,7 +19,7 @@ namespace Devify.Application.Features.Language.Commands
 
             public async Task<ApiResponse> Handle(DeleteLanguageCommand request, CancellationToken cancellationToken)
             {
-                var currentLanguage = _unitOfWork.LanguageRepository.GetByCondition(c => c.LanguageId == request.DeleteID).FirstOrDefault();
+                /*var currentLanguage = _unitOfWork.LanguageRepository.GetByCondition(c => c.LanguageId == request.DeleteID).FirstOrDefault();
                 if (currentLanguage == null)
                 {
                     return new ApiResponse
@@ -41,7 +41,7 @@ namespace Devify.Application.Features.Language.Commands
                         Data = currentLanguage
                     };
                 }
-                else
+                else*/
                     return new ApiResponse
                     {
                         Success = false,

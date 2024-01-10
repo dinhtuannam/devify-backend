@@ -27,9 +27,9 @@ namespace Devify.Controllers
 
         [HttpGet]
         [Cache(3600)]
-        public async Task<IActionResult> GetALlCategory()
+        public IActionResult GetALlCategory()
         {
-            var model = await _unitOfWork.CategoryRepository.GetAllAsync();
+            var model =  _unitOfWork.CategoryRepository.GetAll().ToList();
             return Ok(model);
         }
 
@@ -45,7 +45,7 @@ namespace Devify.Controllers
         {
             if (ModelState.IsValid)
             {
-                var newCategory = _mapper.Map<Category>(model);
+                var newCategory = _mapper.Map<SqlCategory>(model);
                 var result = await _mediator.Send(new CreateCategoryCommand { newCategory = newCategory});
                 return Ok(result);
             }
@@ -69,7 +69,7 @@ namespace Devify.Controllers
 
             if (ModelState.IsValid)
             {
-                var updateCategory = _mapper.Map<Category>(model);
+                var updateCategory = _mapper.Map<SqlCategory>(model);
                 var result = await _mediator.Send(new UpdateCategoryCommand { newCategory = updateCategory });
                 return Ok(result);
             }

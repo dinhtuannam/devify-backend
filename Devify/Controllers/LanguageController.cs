@@ -26,9 +26,9 @@ namespace Devify.Controllers
 
         [HttpGet]
         [Cache(3600)]
-        public async Task<IActionResult> GetALlLanguage()
+        public IActionResult GetALlLanguage()
         {
-            var model = await _unitOfWork.LanguageRepository.GetAllAsync();
+            var model = _unitOfWork.LanguageRepository.GetAll().ToList();
             return Ok(model);
         }
 
@@ -37,7 +37,7 @@ namespace Devify.Controllers
         {
             if(ModelState.IsValid)
             {
-                var result = await _mediator.Send(new CreateLanguageCommand { newLanguage = _mapper.Map<Language>(model) });
+                var result = await _mediator.Send(new CreateLanguageCommand { newLanguage = _mapper.Map<SqlLanguage>(model) });
                 return Ok(result);
             }
             return BadRequest(ModelState);
@@ -59,7 +59,7 @@ namespace Devify.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _mediator.Send(new UpdateLanguageCommand { updateLanguage = _mapper.Map<Language>(model) });
+                var result = await _mediator.Send(new UpdateLanguageCommand { updateLanguage = _mapper.Map<SqlLanguage>(model) });
                 return Ok(result);
             }
             return BadRequest(ModelState);

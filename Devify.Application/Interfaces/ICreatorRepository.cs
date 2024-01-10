@@ -3,7 +3,7 @@ using Devify.Entity;
 
 namespace Devify.Application.Interfaces
 {
-    public interface ICreatorRepository : IGenericRepository<Creator>
+    public interface ICreatorRepository : IGenericRepository<SqlUser>
     {
         Task<DetailCreatorDTO> GetDetailCreator(string id);
         Task<DetailCreatorPublicDTO> GetCreatorBySlug(string slug);

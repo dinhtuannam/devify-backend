@@ -1,11 +1,6 @@
 ﻿using Devify.Application.Features.Creator.Queries;
-using Devify.Entity;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Devify.Entity.Enums;
-using Devify.Application.DTO.ResponseDTO;
-using Devify.Models;
 
 namespace Devify.Controllers
 {
@@ -31,7 +26,7 @@ namespace Devify.Controllers
             var result = await _mediator.Send(new GetCreatorByConditionQuery
             {
                 condition = id,
-                type = ConditionEnum.ID
+                //type = ConditionEnum.ID
             });
             return new JsonResult(result)
             {
@@ -45,7 +40,7 @@ namespace Devify.Controllers
             var result = await _mediator.Send(new GetCreatorByConditionQuery
             {
                 condition = slug,
-                type = ConditionEnum.SLUG
+                //type = ConditionEnum.SLUG
             });
             return new JsonResult(result)
             {
@@ -59,7 +54,7 @@ namespace Devify.Controllers
             var result = await _mediator.Send(new GetCreatorCoursesQuery
             {
                 condition = slug,
-                type = ConditionEnum.SLUG
+                //type = ConditionEnum.SLUG
             });
             return new JsonResult(result)
             {
@@ -73,7 +68,7 @@ namespace Devify.Controllers
             var result = await _mediator.Send(new GetCreatorCoursesQuery
             {
                 condition = id,
-                type = ConditionEnum.ID
+                
             });
             return new JsonResult(result)
             {
@@ -81,22 +76,6 @@ namespace Devify.Controllers
             };
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddNewCreator(Slider model)
-        {
-            return Ok();
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteCreator(int id)
-        {
-            return Ok();
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateCreator(Slider model)
-        {
-            return Ok();
-        }
+       
     }
 }

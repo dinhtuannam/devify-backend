@@ -1,4 +1,5 @@
-﻿using Devify.Entity;
+﻿using Devify.Application.DTO;
+using Devify.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Devify.Application.Interfaces
 {
-    public interface ILessonRepository : IGenericRepository<Lesson>
+    public interface ILessonRepository : IGenericRepository<SqlLesson>
     {
+        public List<LessonItem> getAllLesson();
     }
 }

@@ -2,7 +2,6 @@
 using Devify.Entity;
 using Devify.Infrastructure.Persistance;
 using Devify.Infrastructure.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Distributed;
 using StackExchange.Redis;
 
@@ -10,9 +9,7 @@ namespace Devify.Infrastructure.SeedWorks
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly DataContext _context;
         private readonly IDistributedCache _distributedCache;
         private readonly IConnectionMultiplexer _connectionMultiplexer;
         public ICategoryRepository CategoryRepository { get; private set; }
@@ -24,21 +21,17 @@ namespace Devify.Infrastructure.SeedWorks
         public IAccountRepository AccountRepository { get; private set; }
         public ICacheRepository CacheRepository { get; private set; }
         public ILessonRepository LessonRepository { get; private set; }
-        public ISliderRepository SliderRepository { get; private set; }
         public ICreatorRepository CreatorRepository { get; private set; }
         public ILevelRepository LevelRepository { get; private set; }
         public IChapterRepository ChapterRepository { get; private set; }
+        public IRoleRepository RoleRepository { get; private set; }
 
         public UnitOfWork(
-            ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
+            DataContext context,
             IDistributedCache distributedCache,
             IConnectionMultiplexer connectionMultiplexer )
         {
             _context = context;
-            _userManager = userManager;
-            _signInManager = signInManager;
             _distributedCache = distributedCache;
             _connectionMultiplexer = connectionMultiplexer;
 
@@ -47,19 +40,19 @@ namespace Devify.Infrastructure.SeedWorks
             CourseRepository = new CourseRepository(_context, this);
             LessonRepository = new LessonRepository(_context,this);
             CreatorRepository = new CreatorRepository(_context,this);
-            SliderRepository = new SliderReposotory(_context,this);
             ChapterRepository = new ChapterRepository(_context, this);
             LevelRepository = new LevelRepository(_context, this);
-            AuthRepository = new AuthRepository(_userManager , _signInManager);
-            TokenRepository = new TokenRepository(_context, _userManager);
-            AccountRepository = new AccountRepository(_userManager,_context);
+            AuthRepository = new AuthRepository();
+            TokenRepository = new TokenRepository(_context);
+            AccountRepository = new AccountRepository(_context);
             CacheRepository = new CacheRepository(_distributedCache, _connectionMultiplexer);
             FirebaseRepository = new FirebaseRepository();
+            RoleRepository = new RoleRepository(_context,this);
         }
 
-        public async Task CompleteAsync()
+        public async Task<int> CompleteAsync()
         {
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
 
         public void Dispose()

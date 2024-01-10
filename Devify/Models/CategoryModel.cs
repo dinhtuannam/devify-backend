@@ -1,5 +1,4 @@
-﻿using Devify.Entity.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Devify.Models
 {
@@ -23,7 +22,7 @@ namespace Devify.Models
         public string CategoryName { get; set; }
         [MaxLength(100)]
         public string? Description { get; set; }
-        [Required]
-        public CommonEnum Status { get; set; }
+        //[Required]
+        //public CommonEnum Status { get; set; }
     }
 }

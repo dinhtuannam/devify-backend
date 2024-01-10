@@ -1,9 +1,4 @@
-﻿using Devify.Application.DTO.ResponseDTO;
-using Devify.Application.Features.Account.Queries;
-using Devify.Application.Interfaces;
-using Devify.Entity;
-using Devify.Filters;
-using Devify.Models;
+﻿using Devify.Application.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,20 +24,9 @@ namespace Devify.Controllers
             return Ok(await _unitOfWork.AccountRepository.getUserById(id));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddNewAccount(Slider model)
-        {
-            return Ok();
-        }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteAccount(int id)
-        {
-            return Ok();
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateAccount(Slider model)
         {
             return Ok();
         }

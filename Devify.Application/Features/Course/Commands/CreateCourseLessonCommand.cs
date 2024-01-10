@@ -1,13 +1,6 @@
 ﻿using Devify.Application.DTO;
-using Devify.Application.DTO.ResponseDTO;
 using Devify.Application.Interfaces;
-using Devify.Entity;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Devify.Application.Features.Course.Commands
 {
@@ -30,9 +23,9 @@ namespace Devify.Application.Features.Course.Commands
                     Message = "create course lesson successfully",
                     ErrCode = "200"
                 };
-                CreateCourseLessonRequest req = command.request;
+                /*CreateCourseLessonRequest req = command.request;
                 Guid chapterRequestId = command.ChapterId;
-                Entity.Chapter chapter = _unitOfWork.ChapterRepository.GetMulti(c => c.ChapterId == chapterRequestId && c.Status != Entity.Enums.CommonEnum.DELETED, new string[] { "Lessons" }).FirstOrDefault();
+                Entity.SqlChapter chapter = _unitOfWork.ChapterRepository.GetMulti(c => c.ChapterId == chapterRequestId && c.Status != Entity.Enums.CommonEnum.DELETED, new string[] { "Lessons" }).FirstOrDefault();
                 if (chapter == null)
                 {
                     apiResponse.Success = false;
@@ -40,7 +33,7 @@ namespace Devify.Application.Features.Course.Commands
                     apiResponse.ErrCode = "400";
                     return apiResponse;
                 }
-                Lesson curStep = chapter.Lessons.Where(c => c.Step == req.Step).FirstOrDefault();
+                SqlLesson curStep = chapter.Lessons.Where(c => c.Step == req.Step).FirstOrDefault();
                 if (curStep != null)
                 {
                     apiResponse.Success = false;
@@ -48,7 +41,7 @@ namespace Devify.Application.Features.Course.Commands
                     apiResponse.ErrCode = "400";
                     return apiResponse;
                 }
-                Lesson newLesson = new Lesson
+                SqlLesson newLesson = new SqlLesson
                 {
                     LessonId = new Guid(),
                     Name = req.Name,
@@ -60,7 +53,7 @@ namespace Devify.Application.Features.Course.Commands
                     DateUpdated = DateTime.Now
                 };
                 await _unitOfWork.LessonRepository.AddAsAsync(newLesson);
-                await _unitOfWork.CompleteAsync();
+                await _unitOfWork.CompleteAsync();*/
                 return apiResponse;
             }
         }

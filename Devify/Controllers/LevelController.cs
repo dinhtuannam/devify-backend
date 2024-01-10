@@ -1,7 +1,6 @@
 ﻿using Devify.Application.Commons;
 using Devify.Application.Interfaces;
 using Devify.Entity;
-using Devify.Entity.Enums;
 using Devify.Filters;
 using Devify.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -21,14 +20,14 @@ namespace Devify.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllLevel()
         {
-            var model = await _unitOfWork.LevelRepository.GetAllAsync();
-            return Ok(model);
+            //var model = await _unitOfWork.LevelRepository.GetAll();
+            return Ok("model");
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateLevel(CreateLevelModel model)
         {
-            CourseLevel newLevel = new CourseLevel();
+           /* SqlLevel newLevel = new SqlLevel();
             newLevel.CourseLevelId = AutoGenerate.GenerateID("level", 8);
             newLevel.LevelName = model.LevelName;
             newLevel.LevelDescription = model.LevelDescription;
@@ -46,14 +45,14 @@ namespace Devify.Controllers
                     ErrCode = "200",
                     Data = newLevel
                 });
-            }              
+            }              */
             return BadRequest();
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateLevel(UpdateLevelModel model)
         {
-            CourseLevel m_level = _unitOfWork.LevelRepository.GetByCondition(l => l.CourseLevelId == model.CourseLevelId).FirstOrDefault();
+           /* SqlLevel m_level = _unitOfWork.LevelRepository.GetByCondition(l => l.CourseLevelId == model.CourseLevelId).FirstOrDefault();
             if (m_level == null)
                 return BadRequest();
             m_level.LevelName = model.LevelName;
@@ -65,14 +64,14 @@ namespace Devify.Controllers
             {
                 await _unitOfWork.CompleteAsync();
                 return Ok();
-            }   
+            }   */
             return BadRequest();
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteLevel(string id)
         {
-            CourseLevel m_level = _unitOfWork.LevelRepository.GetByCondition(l => l.CourseLevelId == id).FirstOrDefault();
+            /*SqlLevel m_level = _unitOfWork.LevelRepository.GetByCondition(l => l.CourseLevelId == id).FirstOrDefault();
             if (m_level == null)
                 return BadRequest();
             m_level.Status = CommonEnum.DELETED;
@@ -82,7 +81,7 @@ namespace Devify.Controllers
             {
                 await _unitOfWork.CompleteAsync();
                 return Ok();
-            }
+            }*/
             return BadRequest();
         }
     }

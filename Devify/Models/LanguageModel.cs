@@ -1,5 +1,4 @@
-﻿using Devify.Entity.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Devify.Models
 {

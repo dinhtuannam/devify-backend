@@ -3,26 +3,24 @@ using Devify.Application.Interfaces;
 using Devify.Entity;
 using Devify.Infrastructure.Persistance;
 using Devify.Infrastructure.SeedWorks;
-using Microsoft.AspNetCore.Identity;
 using System.Threading;
 
 namespace Devify.Infrastructure.Services
 {
-    public class AccountRepository : GenericRepository<ApplicationUser>, IAccountRepository  
+    public class AccountRepository : GenericRepository<SqlUser>, IAccountRepository  
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        public AccountRepository(UserManager<ApplicationUser> userManager, ApplicationDbContext context) : base(context)
+        public AccountRepository(DataContext context) : base(context)
         {
-            _userManager = userManager;
         }
 
-        public async Task<ApplicationUser> getCurrentUser(string id)
+        public async Task<SqlUser> getCurrentUser(string id)
         {
             try
             {
-                var result = await _userManager.FindByIdAsync(id);
+                /*var result = await _userManager.FindByIdAsync(id);
                 Console.WriteLine($"[AccountService] -> getAccountInformation with id:{id} -> successfully");
-                return result;
+                return result;*/
+                return null;
             }
             catch(Exception ex) 
             {
@@ -34,31 +32,33 @@ namespace Devify.Infrastructure.Services
 
         public async Task<DetailAccountDTO> getUserById(string id)
         {
-            return GetMulti(x=>x.Id == id,new string[] { "Creator" }).Select(u=>new DetailAccountDTO
-            {
-                Id = id,
-                Username = u.UserName,
-                DisplayName = u.DisplayName,
-                Image = u.Image,
-                Email= u.Email,
-                PhoneNumber= u.PhoneNumber,
-                Creator = new Creator
-                {
-                    CreatorId = id,
-                    FacebookUrl = u.Creator.FacebookUrl,
-                    LinkedInUrl = u.Creator.LinkedInUrl,
-                    Slug = u.Creator.Slug,                  
-                },
-            }).FirstOrDefault();
+            /* return GetMulti(x=>x.Id == id,new string[] { "Creator" }).Select(u=>new DetailAccountDTO
+             {
+                 Id = id,
+                 Username = u.UserName,
+                 DisplayName = u.DisplayName,
+                 Image = u.Image,
+                 Email= u.Email,
+                 PhoneNumber= u.PhoneNumber,
+                 Creator = new Creator
+                 {
+                     CreatorId = id,
+                     FacebookUrl = u.Creator.FacebookUrl,
+                     LinkedInUrl = u.Creator.LinkedInUrl,
+                     Slug = u.Creator.Slug,                  
+                 },
+             }).FirstOrDefault();*/
+            return null;
         }
 
-        public async Task<ApplicationUser> getUserByName(string name)
+        public async Task<SqlUser> getUserByName(string name)
         {
             try
             {
-                var result = await _userManager.FindByNameAsync(name);
+                /*var result = await _userManager.FindByNameAsync(name);
                 Console.WriteLine($"[AccountService] -> getUserByName with id:{name} -> successfully");
-                return result;
+                return result;*/
+                return null;
             }
             catch (Exception ex)
             {

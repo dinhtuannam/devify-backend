@@ -3,7 +3,7 @@ using Devify.Entity;
 
 namespace Devify.Application.Interfaces
 {
-    public interface ICourseRepository : IGenericRepository<Course>
+    public interface ICourseRepository : IGenericRepository<SqlCourse>
     {
         Task<DetailCourseDTO> GetCourseBySlug(string slug);
         Task<LearningCourseDTO> GetLearningCourse(string slug);

@@ -11,10 +11,10 @@
         IAccountRepository AccountRepository { get; }
         ICacheRepository CacheRepository { get; }
         ILessonRepository LessonRepository { get; }
-        ISliderRepository SliderRepository { get; } 
         ICreatorRepository CreatorRepository { get; }   
         ILevelRepository LevelRepository { get; }
         IChapterRepository ChapterRepository { get; }
-        Task CompleteAsync();
+        IRoleRepository RoleRepository { get; }
+        Task<int> CompleteAsync();
     }
 }

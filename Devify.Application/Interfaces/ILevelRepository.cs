@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Devify.Application.Interfaces
 {
-    public interface ILevelRepository : IGenericRepository<CourseLevel>
+    public interface ILevelRepository : IGenericRepository<SqlLevel>
     {
     }
 }

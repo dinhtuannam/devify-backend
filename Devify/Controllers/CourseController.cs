@@ -153,7 +153,7 @@ namespace Devify.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCourse(Course model)
+        public async Task<IActionResult> UpdateCourse(SqlCourse model)
         {
             return Ok();
         }

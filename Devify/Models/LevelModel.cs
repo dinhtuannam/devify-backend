@@ -1,5 +1,4 @@
-﻿using Devify.Entity.Enums;
-using Devify.Entity;
+﻿using Devify.Entity;
 using System.ComponentModel.DataAnnotations;
 
 namespace Devify.Models
@@ -22,7 +21,7 @@ namespace Devify.Models
         [MaxLength(20, ErrorMessage = "Tên không được dài hơn 20 kí tự.")]
         public string LevelName { get; set; }
         public string LevelDescription { get; set; }
-        [Required(ErrorMessage = "Trường status là bắt buộc.")]
-        public CommonEnum Status { get; set; }
+        //[Required(ErrorMessage = "Trường status là bắt buộc.")]
+
     }
 }

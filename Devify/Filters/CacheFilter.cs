@@ -66,26 +66,4 @@ namespace Devify.Filters
     }
 }
 
-public interface person
-{
-    public string name { get; set; }
-    public abstract void count();
-
-    public  void coun2t()
-    {
-        int a = 2;
-    }
-}
-
-
-
-public class A : person
-{
-    public string name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-    public void count()
-    {
-        throw new NotImplementedException();
-    }
-}
 

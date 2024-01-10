@@ -1,5 +1,4 @@
-﻿
-using Devify.Application.DTO.ResponseDTO;
+﻿using Devify.Application.DTO;
 using MediatR;
 
 namespace Devify.Application.Features.Auth.Commands

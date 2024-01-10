@@ -1,10 +1,7 @@
-﻿using Azure.Core;
-using Devify.Application.DTO;
-using Devify.Application.DTO.ResponseDTO;
+﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using Devify.Infrastructure.Persistance;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,21 +16,19 @@ namespace Devify.Infrastructure.Services
         private readonly string JWT_Key = "DEVIFY_AUTHENTICATE_JWT_KEY";
         private readonly string ValidAudience = "User";
         private readonly string ValidIssuer = "https://localhost:7221";
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ApplicationDbContext _context;
-        public TokenRepository(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        private readonly DataContext _context;
+        public TokenRepository(DataContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
-        public async Task AddTokenAsync(RefreshToken token)
+        public async Task AddTokenAsync(SqlToken token)
         {
             try
             {
-                await _context.AddAsync(token);
+                /*await _context.(token);
                 await _context.SaveChangesAsync();
-                Console.WriteLine($"[TokenService] -> AddAsAsync -> with RefreshToken: {token} -> successfully ");
+                Console.WriteLine($"[TokenService] -> AddAsAsync -> with RefreshToken: {token} -> successfully ");*/
             }
             catch (Exception ex)
             {
@@ -42,18 +37,18 @@ namespace Devify.Infrastructure.Services
             
         }
 
-        public DateTime ConvertUnixTimeToDateTime(long utcExpireDate)
+        private DateTime ConvertUnixTimeToDateTime(long utcExpireDate)
         {
             var dateTimeInterval = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             dateTimeInterval.AddSeconds(utcExpireDate).ToUniversalTime();
             return dateTimeInterval;
         }
 
-        public async Task<Token> GenerateToken(ApplicationUser account)
+        public async Task<Token> GenerateToken(SqlUser account)
         {
             try
             {
-                var jwtTokenHandler = new JwtSecurityTokenHandler();
+                /*var jwtTokenHandler = new JwtSecurityTokenHandler();
                 var secretKeyBytes = Encoding.UTF8.GetBytes(JWT_Key);
                 var roles = await _userManager.GetRolesAsync(account);
                 var roleName = roles[0];
@@ -79,7 +74,7 @@ namespace Devify.Infrastructure.Services
                 var accessToken = jwtTokenHandler.WriteToken(token);
                 var refreshToken = GenerateRefreshToken();
 
-                var refreshTokenEntity = new RefreshToken
+                var refreshTokenEntity = new SqlToken
                 {
                     Id = Guid.NewGuid(),
                     AccountId = account.Id,
@@ -95,11 +90,12 @@ namespace Devify.Infrastructure.Services
                 {
                     AccessToken = accessToken,
                     RefreshToken = refreshToken
-                };
+                };*/
+                return null;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[TokenService] -> GenerateToken -> with Username: {account.UserName} -> failed , Exception: {ex.Message}");
+                
                 return null;
             }
 
@@ -143,7 +139,7 @@ namespace Devify.Infrastructure.Services
             try
             {
                 // check 4 : check refresh token exist in db ?
-                var storedToken = _context.RefreshTokens.FirstOrDefault(x => x.Token == refreshTokenRequest);
+                /*var storedToken = _context.RefreshTokens.FirstOrDefault(x => x.Token == refreshTokenRequest);
                 if (storedToken == null)
                     return new ApiResponse
                     {
@@ -176,7 +172,8 @@ namespace Devify.Infrastructure.Services
                     Success = true,
                     Message = "Renew Token Success",
                     Data = token
-                };
+                };*/
+                return null;
             }
             catch (Exception ex)
             {
@@ -269,6 +266,11 @@ namespace Devify.Infrastructure.Services
             {
                 return new TokenInfoDecoded();
             }
+        }
+
+        DateTime ITokenRepository.ConvertUnixTimeToDateTime(long utcExpireDate)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -4,10 +4,10 @@ using Devify.Entity;
 
 namespace Devify.Application.Interfaces
 {
-    public interface IAccountRepository : IGenericRepository<ApplicationUser>
+    public interface IAccountRepository : IGenericRepository<SqlUser>
     {
-        public Task<ApplicationUser> getCurrentUser(string id);
-        public Task<ApplicationUser> getUserByName(string name);
+        public Task<SqlUser> getCurrentUser(string id);
+        public Task<SqlUser> getUserByName(string name);
         public Task<DetailAccountDTO> getUserById(string id);
     }
 }

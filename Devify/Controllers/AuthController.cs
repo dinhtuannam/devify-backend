@@ -1,10 +1,6 @@
 ﻿using Devify.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
 using Devify.Application.Interfaces;
-using Devify.Application.DTO.RequestDTO;
-using Devify.Entity;
-using Devify.Application.Features.Course.Commands;
 using Devify.Application.Features.Auth.Commands;
 using MediatR;
 
@@ -40,11 +36,11 @@ namespace Loship.Controllers
         }
 
         [HttpPost("register", Name = "register")]
-        public async Task<IActionResult> Register(RegisterRequest model)
+        public async Task<IActionResult> Register(string username, string password, string email, string phone)
         {
             if (ModelState.IsValid)
             {
-                var result = await _unitOfWork.AuthRepository.Register(model);
+                var result = await _unitOfWork.AuthRepository.Register(username,password,email,phone);
                 return Ok(result);
             }
             return BadRequest();

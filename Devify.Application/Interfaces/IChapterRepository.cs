@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Devify.Application.Interfaces
 {
-    public interface IChapterRepository : IGenericRepository<Chapter>
+    public interface IChapterRepository : IGenericRepository<SqlChapter>
     {
     }
 }

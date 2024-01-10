@@ -16,18 +16,7 @@ namespace Devify.Installers
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             //  =========================  DbContext ========================================
-            services.AddDbContext<ApplicationDbContext>(option =>
-            {
-                option.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Devify"))
-                .LogTo(Console.WriteLine, new[] {DbLoggerCategory.Database.Command.Name},LogLevel.Information);
-            });
-
-
-            //  =========================  Identity ========================================
-            services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
-                    .AddEntityFrameworkStores<ApplicationDbContext>()
-                    .AddDefaultTokenProviders();
-
+            services.AddDbContext<DataContext>(options => options.UseNpgsql(DataContext.configSql));
 
             //  =========================  Cấu hình Repository ==============================
             services.AddScoped<IUnitOfWork, UnitOfWork>();

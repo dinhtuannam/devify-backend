@@ -22,13 +22,7 @@ namespace Devify.Controllers
         [Cache(120)]
         public async Task<IActionResult> getAllSlider()
         {
-            return Ok(_unitOfWork.SliderRepository.GetAll());
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddNewSlider(Slider model)
-        {
-            return Ok();
+            return Ok("_unitOfWork.SliderRepository.GetAll()");
         }
 
         [HttpDelete]
@@ -37,10 +31,5 @@ namespace Devify.Controllers
             return Ok();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateSlider(Slider model)
-        {
-            return Ok();
-        }
     }
 }

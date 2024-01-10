@@ -1,5 +1,4 @@
-﻿using Devify.Application.DTO.ResponseDTO;
-using Devify.Application.Features.Category.Commands;
+﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using MediatR;
 
@@ -7,7 +6,7 @@ namespace Devify.Application.Features.Language.Commands
 {
     public class UpdateLanguageCommand : IRequest<ApiResponse>
     {
-        public Entity.Language updateLanguage { get; set; }
+        public Entity.SqlLanguage updateLanguage { get; set; }
         public class UpdateLanguageCommandHandler : IRequestHandler<UpdateLanguageCommand, ApiResponse>
         {
             private readonly IUnitOfWork _unitOfWork;
@@ -18,7 +17,7 @@ namespace Devify.Application.Features.Language.Commands
 
             public async Task<ApiResponse> Handle(UpdateLanguageCommand request, CancellationToken cancellationToken)
             {
-                var currentLanguage = _unitOfWork.LanguageRepository.GetByCondition(c => c.LanguageId == request.updateLanguage.LanguageId).FirstOrDefault();
+                /*var currentLanguage = _unitOfWork.LanguageRepository.GetByCondition(c => c.LanguageId == request.updateLanguage.LanguageId).FirstOrDefault();
                 if (currentLanguage == null)
                 {
                     return new ApiResponse
@@ -41,7 +40,7 @@ namespace Devify.Application.Features.Language.Commands
                         Message = "Update language successfully",
                         ErrCode = "200",
                     };
-                }
+                }*/
                 return new ApiResponse
                 {
                     Success = false,

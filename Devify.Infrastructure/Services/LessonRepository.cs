@@ -1,24 +1,37 @@
-﻿using Devify.Application.Interfaces;
+﻿using Devify.Application.DTO;
+using Devify.Application.Interfaces;
 using Devify.Entity;
 using Devify.Infrastructure.Persistance;
 using Devify.Infrastructure.SeedWorks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Devify.Infrastructure.Services
 {
-    public class LessonRepository : GenericRepository<Lesson>, ILessonRepository
+    public class LessonRepository : GenericRepository<SqlLesson>, ILessonRepository
     {
-        private readonly ApplicationDbContext _DbContext;
         private readonly IUnitOfWork _unitOfWork;
-        public LessonRepository(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        public LessonRepository(DataContext context, IUnitOfWork unitOfWork) : base(context)
         {
-            _DbContext = context;
             _unitOfWork = unitOfWork;
         }
 
+        public List<LessonItem> getAllLesson()
+        {
+            List<LessonItem> list = new List<LessonItem>();
+            List<SqlLesson> lessons = _unitOfWork.LessonRepository.GetAll().Where(s => s.isdeleted == false).ToList();
+            foreach(SqlLesson lesson in lessons)
+            {
+                LessonItem item = new LessonItem();
+                item.code = lesson.code;
+                item.name = lesson.name;
+                item.des = lesson.des;
+                item.step = lesson.step;
+                item.image = lesson.image;
+                item.video = lesson.video;
+                item.createDate = lesson.DateCreated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+                list.Add(item);
+            }
+            return list;
+        }
     }
 }

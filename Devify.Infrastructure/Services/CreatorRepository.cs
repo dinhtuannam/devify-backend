@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Devify.Infrastructure.Services
 {
-    public class CreatorRepository : GenericRepository<Creator>, ICreatorRepository 
+    public class CreatorRepository : GenericRepository<SqlUser>, ICreatorRepository 
     {
-        private readonly ApplicationDbContext _DbContext;
+        private readonly DataContext _DbContext;
         private readonly IUnitOfWork _unitOfWork;
-        public CreatorRepository(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        public CreatorRepository(DataContext context, IUnitOfWork unitOfWork) : base(context)
         {
             _DbContext = context;
             _unitOfWork = unitOfWork;
@@ -21,17 +21,18 @@ namespace Devify.Infrastructure.Services
         {
             try
             {
-                var query = GetMulti(c => c.Slug == slug, new string[] { "User" }).Select(cr => new DetailCreatorPublicDTO
-                {
-                    CreatorId = cr.CreatorId,
-                    Slug = cr.Slug,
-                    AboutMe = cr.AboutMe,
-                    FacebookUrl = cr.FacebookUrl,
-                    LinkedInUrl = cr.LinkedInUrl,
-                    DisplayName = cr.User.DisplayName,
-                    Image = cr.User.Image,
-                }).FirstOrDefault(); ;
-                return query;
+                /* var query = GetMulti(c => c.Slug == slug, new string[] { "User" }).Select(cr => new DetailCreatorPublicDTO
+                 {
+                     CreatorId = cr.CreatorId,
+                     Slug = cr.Slug,
+                     AboutMe = cr.AboutMe,
+                     FacebookUrl = cr.FacebookUrl,
+                     LinkedInUrl = cr.LinkedInUrl,
+                     DisplayName = cr.User.DisplayName,
+                     Image = cr.User.Image,
+                 }).FirstOrDefault(); ;
+                 return query;*/
+                return null;
             }
             catch (Exception ex)
             {
@@ -44,7 +45,7 @@ namespace Devify.Infrastructure.Services
 
             try
             {
-                var query = await _unitOfWork.CreatorRepository.GetByCondition(condition: ls => ls.CreatorId == id)
+                /*var query = await _unitOfWork.CreatorRepository.GetByCondition(condition: ls => ls.CreatorId == id )
                 .Include(cr => cr.User)
                 .Select(cr => new DetailCreatorDTO
                 {
@@ -59,7 +60,8 @@ namespace Devify.Infrastructure.Services
                     PhoneNumber = cr.User.PhoneNumber
                 })
                 .FirstOrDefaultAsync();
-                return query;
+                return query;*/
+                return null;
             }
             catch (Exception ex)
             {
@@ -71,7 +73,7 @@ namespace Devify.Infrastructure.Services
         {
             try
             {
-                var query = _unitOfWork.CourseRepository.GetMulti(c => c.CreatorId == id)
+                /*var query = _unitOfWork.CourseRepository.GetMulti(c => c.CreatorId == id)
                     .Select(course => new CreatorCoursesDTO
                     {
                         CourseId = course.CourseId,
@@ -81,7 +83,8 @@ namespace Devify.Infrastructure.Services
                         Price = course.Price,
                         Slug = course.Slug
                     }).ToList();
-                return query;
+                return query;*/
+                return null;
             }
             catch (Exception)
             {
@@ -93,7 +96,7 @@ namespace Devify.Infrastructure.Services
         {
             try
             {
-                var creatorFind = await GetByCondition(x => x.Slug == slug).Select(c => new Creator
+                /*var creatorFind = await GetByCondition(x => x.Slug == slug).Select(c => new Creator
                 {
                     CreatorId = c.CreatorId
                 }).FirstOrDefaultAsync();
@@ -111,7 +114,8 @@ namespace Devify.Infrastructure.Services
                         Price = course.Price,
                         Slug = course.Slug
                     }).ToList();
-                return query;
+                return query;*/
+                return null;
             }
             catch (Exception)
             {

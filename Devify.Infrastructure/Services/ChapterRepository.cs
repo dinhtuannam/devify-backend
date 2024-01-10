@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Devify.Infrastructure.Services
 {
-    public class ChapterRepository : GenericRepository<Chapter>, IChapterRepository
+    public class ChapterRepository : GenericRepository<SqlChapter>, IChapterRepository
     {
-        private readonly ApplicationDbContext _DbContext;
+        private readonly DataContext _DbContext;
         private readonly IUnitOfWork _unitOfWork;
-        public ChapterRepository(ApplicationDbContext context, IUnitOfWork unitOfWork) : base(context)
+        public ChapterRepository(DataContext context, IUnitOfWork unitOfWork) : base(context)
         {
             _DbContext = context;
             _unitOfWork = unitOfWork;
