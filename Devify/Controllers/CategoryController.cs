@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Devify.Application.DTO;
 using Devify.Application.Features.Category.Commands;
+using Devify.Application.Features.Category.Queries;
+using Devify.Application.Features.Language.Commands;
+using Devify.Application.Features.Language.Queries;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using Devify.Filters;
@@ -15,65 +18,64 @@ namespace Devify.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
-        public CategoryController(IMapper mapper, IUnitOfWork unitOfWork,IMediator mediator)
+        public CategoryController(IMediator mediator)
         {
-            _mapper = mapper;
-            _unitOfWork = unitOfWork;
             _mediator = mediator;
         }
 
         [HttpGet]
+        [Route("get-all-categories")]
         [Cache(3600)]
-        public IActionResult GetALlCategory()
+        public async Task<IActionResult> GetAllCategories()
         {
-            var model =  _unitOfWork.CategoryRepository.GetAll().ToList();
-            return Ok(model);
+            ApiResponse api = await _mediator.Send(new GetAllCategoryQuery());
+            return Ok(api);
         }
 
-        [HttpGet("name/{name}")]
-        public async Task<IActionResult> GetCategoryByName(string name)
+        [HttpGet]
+        [Route("{code}/get-language")]
+        [Cache(3600)]
+        public async Task<IActionResult> GetCategory(string code)
         {
-            var model = await _unitOfWork.CategoryRepository.SearchAsAsync(name);
-            return Ok(model);
+            ApiResponse api = await _mediator.Send(new GetCategoryQuery(code));
+            return Ok(api);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewCategory([FromForm] CreateCategoryModel model)
+        [Route("create-new-category")]
+        public async Task<IActionResult> AddNewCategory(CreateCategoryModel model)
         {
-            if (ModelState.IsValid)
+            ApiResponse res = await _mediator.Send(new CreateCategoryCommand(model.code, model.name, model.des));
+            if (!res.result)
             {
-                var newCategory = _mapper.Map<SqlCategory>(model);
-                var result = await _mediator.Send(new CreateCategoryCommand { newCategory = newCategory});
-                return Ok(result);
+                return BadRequest(res);
             }
-            return BadRequest(ModelState);
+            return Ok(res);
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteCategory(string id)
+        [Route("{code}")]
+        public async Task<IActionResult> DeleteCategory(string code)
         {
-            if (ModelState.IsValid)
+            ApiResponse res = await _mediator.Send(new DeleteCategoryCommand(code));
+            if (!res.result)
             {
-                var result = await _mediator.Send(new DeleteCategoryCommand { DeleteID = id });
-                return Ok(result);
+                return BadRequest(res);
             }
-            return BadRequest(ModelState);
+            return Ok(res);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory([FromForm] UpdateCategoryModel model)
+        [Route("edit-category")]
+        public async Task<IActionResult> UpdateCategory(UpdateCategoryModel model)
         {
-
-            if (ModelState.IsValid)
+            ApiResponse res = await _mediator.Send(new UpdateCategoryCommand(model.code, model.name, model.des));
+            if (!res.result)
             {
-                var updateCategory = _mapper.Map<SqlCategory>(model);
-                var result = await _mediator.Send(new UpdateCategoryCommand { newCategory = updateCategory });
-                return Ok(result);
+                return BadRequest(res);
             }
-            return BadRequest(ModelState);
+            return Ok(res);
         }
     }
 }

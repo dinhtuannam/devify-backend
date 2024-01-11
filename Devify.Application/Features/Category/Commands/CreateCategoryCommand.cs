@@ -1,49 +1,52 @@
 ﻿using Devify.Application.Commons;
 using Devify.Application.DTO;
-
 using Devify.Application.Interfaces;
-
+using Devify.Entity;
 using MediatR;
 
 namespace Devify.Application.Features.Category.Commands
 {
     public class CreateCategoryCommand : IRequest<ApiResponse>
     {
-        public Entity.SqlCategory newCategory { get; set; }
-        public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, ApiResponse>
+        public string code { get; set; } = "";
+        public string name { get; set; } = "";
+        public string des { get; set; } = "";
+
+        public CreateCategoryCommand(string code, string name, string des)
+        {
+            this.code = code;
+            this.name = name;
+            this.des = des;
+        }
+
+        public class Handler : IRequestHandler<CreateCategoryCommand, ApiResponse>
         {
             private readonly IUnitOfWork _unitOfWork;
-            public CreateCategoryCommandHandler(IUnitOfWork unitOfWork)
+            public Handler(IUnitOfWork unitOfWork)
             {
                 _unitOfWork = unitOfWork;
             }
 
-            public async Task<ApiResponse> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+            public async Task<ApiResponse> Handle(CreateCategoryCommand query, CancellationToken cancellationToken)
             {
-                /*request.newCategory.CategoryId = AutoGenerate.GenerateID("cat");
-                request.newCategory.Status = Entity.Enums.CommonEnum.AVAILABLE;
-                request.newCategory.DateCreated = DateTime.Now;
-                request.newCategory.DateUpdated = DateTime.Now;
-                var createResult = await _unitOfWork.CategoryRepository.AddAsAsync(request.newCategory);
-                if (createResult)
+                SqlCategory cat = await _unitOfWork.CategoryRepository.createCategory(query.code, query.name, query.des);
+                if (string.IsNullOrEmpty(cat.code))
                 {
-                    await _unitOfWork.CompleteAsync();
-                    return new ApiResponse
-                    {
-                        Success = true,
-                        Message = "Create new category successfully",
-                        ErrCode = "200",
-                        Data = request.newCategory
-                    };
-                }
-                else*/
-                    return new ApiResponse
+                    return new ApiResponse()
                     {
                         result = false,
-                        message = "Create new category failed",
-                        code = 500,
+                        message = "Create category failed",
+                        data = "",
+                        code = 400
                     };
-
+                }
+                return new ApiResponse()
+                {
+                    result = true,
+                    message = "Create category successfully",
+                    data = "",
+                    code = 200
+                };
             }
         }
     }

@@ -1,5 +1,7 @@
 ﻿using Devify.Application.DTO;
+using Devify.Application.Features.Language.Commands;
 using Devify.Application.Interfaces;
+using Devify.Entity;
 using MediatR;
 
 
@@ -7,49 +9,43 @@ namespace Devify.Application.Features.Category.Commands
 {
     public class UpdateCategoryCommand : IRequest<ApiResponse>
     {
-        public Entity.SqlCategory newCategory { get; set; }
-        public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, ApiResponse>
+        public string code { get; set; } = "";
+        public string name { get; set; } = "";
+        public string des { get; set; } = "";
+        public UpdateCategoryCommand(string code, string name, string des)
+        {
+            this.code = code;
+            this.name = name;
+            this.des = des;
+        }
+        public class Handler : IRequestHandler<UpdateCategoryCommand, ApiResponse>
         {
             private readonly IUnitOfWork _unitOfWork;
-            public UpdateCategoryCommandHandler(IUnitOfWork unitOfWork)
+            public Handler(IUnitOfWork unitOfWork)
             {
                 _unitOfWork = unitOfWork;
             }
 
-            public async Task<ApiResponse> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
+            public async Task<ApiResponse> Handle(UpdateCategoryCommand query, CancellationToken cancellationToken)
             {
-                /*var currentCategory = _unitOfWork.CategoryRepository.GetByCondition(c => c.CategoryId == request.newCategory.CategoryId).FirstOrDefault();
-                if(currentCategory == null)
+                SqlCategory cat = await _unitOfWork.CategoryRepository.updateCategory(query.code, query.name, query.des);
+                if (string.IsNullOrEmpty(cat.code))
                 {
-                    return new ApiResponse
+                    return new ApiResponse()
                     {
-                        Success = false,
-                        Message = "Category invalid",
-                        ErrCode = "404",
+                        result = false,
+                        message = "Update category failed",
+                        data = "",
+                        code = 400
                     };
                 }
-                currentCategory.CategoryName = request.newCategory.CategoryName;
-                currentCategory.Description = request.newCategory.Description;
-                currentCategory.Status = request.newCategory.Status;
-                currentCategory.DateUpdated = DateTime.Now;
-                var updateResult =  _unitOfWork.CategoryRepository.UpdateEntity(currentCategory);
-                if (updateResult)
+                return new ApiResponse()
                 {
-                    await _unitOfWork.CompleteAsync();
-                    return new ApiResponse
-                    {
-                        Success = true,
-                        Message = "Update category successfully",
-                        ErrCode = "200",                  
-                    };
-                }*/
-                return new ApiResponse
-                {
-                    result = false,
-                    message = "Something wrong please try again",
-                    code = 500,
+                    result = true,
+                    message = "Update category successfully",
+                    data = "",
+                    code = 200
                 };
-
             }
         }
     }
