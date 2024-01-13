@@ -12,19 +12,18 @@ namespace Devify.Infrastructure.SeedWorks
         private readonly DataContext _context;
         private readonly IDistributedCache _distributedCache;
         private readonly IConnectionMultiplexer _connectionMultiplexer;
-        public ICategoryRepository CategoryRepository { get; private set; }
-        public ILanguageRepository LanguageRepository { get; private set; }
-        public ICourseRepository CourseRepository { get; private set; }
-        public IFirebaseRepository FirebaseRepository { get; private set; } 
-        public IAuthRepository AuthRepository { get; private set; } 
-        public ITokenRepository TokenRepository { get; private set; }
-        public IAccountRepository AccountRepository { get; private set; }
-        public ICacheRepository CacheRepository { get; private set; }
-        public ILessonRepository LessonRepository { get; private set; }
-        public ICreatorRepository CreatorRepository { get; private set; }
-        public ILevelRepository LevelRepository { get; private set; }
-        public IChapterRepository ChapterRepository { get; private set; }
-        public IRoleRepository RoleRepository { get; private set; }
+        public ICategoryRepository category { get; private set; }
+        public ILanguageRepository language { get; private set; }
+        public ICourseRepository course { get; private set; }
+        public IFirebaseRepository firebase { get; private set; } 
+        public ITokenRepository token { get; private set; }
+        public IUserRepository user { get; private set; }
+        public ICacheRepository cache { get; private set; }
+        public ILessonRepository lesson { get; private set; }
+        public ICreatorRepository creator { get; private set; }
+        public ILevelRepository level { get; private set; }
+        public IChapterRepository chapter { get; private set; }
+        public IRoleRepository role { get; private set; }
 
         public UnitOfWork(
             DataContext context,
@@ -35,19 +34,18 @@ namespace Devify.Infrastructure.SeedWorks
             _distributedCache = distributedCache;
             _connectionMultiplexer = connectionMultiplexer;
 
-            CategoryRepository = new CategoryRepository(_context,this);
-            LanguageRepository = new LanguageRepository(_context,this);
-            CourseRepository = new CourseRepository(_context, this);
-            LessonRepository = new LessonRepository(_context,this);
-            CreatorRepository = new CreatorRepository(_context,this);
-            ChapterRepository = new ChapterRepository(_context, this);
-            LevelRepository = new LevelRepository(_context, this);
-            AuthRepository = new AuthRepository();
-            TokenRepository = new TokenRepository(_context);
-            AccountRepository = new AccountRepository(_context);
-            CacheRepository = new CacheRepository(_distributedCache, _connectionMultiplexer);
-            FirebaseRepository = new FirebaseRepository();
-            RoleRepository = new RoleRepository(_context,this);
+            category = new CategoryRepository(_context,this);
+            language = new LanguageRepository(_context,this);
+            course = new CourseRepository(_context, this);
+            lesson = new LessonRepository(_context,this);
+            creator = new CreatorRepository(_context,this);
+            chapter = new ChapterRepository(_context, this);
+            level = new LevelRepository(_context, this);
+            token = new TokenRepository(_context,this);
+            user = new UserRepository(_context,this);
+            cache = new CacheRepository(_distributedCache, _connectionMultiplexer);
+            firebase = new FirebaseRepository();
+            role = new RoleRepository(_context,this);
         }
 
         public async Task<int> CompleteAsync()

@@ -29,7 +29,7 @@ namespace Devify.Application.Features.Category.Commands
 
             public async Task<ApiResponse> Handle(CreateCategoryCommand query, CancellationToken cancellationToken)
             {
-                SqlCategory cat = await _unitOfWork.CategoryRepository.createCategory(query.code, query.name, query.des);
+                SqlCategory cat = await _unitOfWork.category.createCategory(query.code, query.name, query.des);
                 if (string.IsNullOrEmpty(cat.code))
                 {
                     return new ApiResponse()

@@ -18,7 +18,7 @@ namespace Devify.Infrastructure.Services
 
         public async Task<SqlCategory> createCategory(string code, string name, string des)
         {
-            SqlCategory? cat = _unitOfWork.CategoryRepository.GetCode(code, 0).FirstOrDefault();
+            SqlCategory? cat = _unitOfWork.category.GetCode(code, 0).FirstOrDefault();
             if (cat != null)
             {
                 return new SqlCategory();
@@ -31,7 +31,7 @@ namespace Devify.Infrastructure.Services
                 des = des,
                 isdeleted = false
             };
-            _unitOfWork.CategoryRepository.Insert(m_cat);
+            _unitOfWork.category.Insert(m_cat);
             int row = await _unitOfWork.CompleteAsync();
             if (row <= 0)
             {
@@ -42,7 +42,7 @@ namespace Devify.Infrastructure.Services
 
         public async Task<bool> deleteCategory(string code)
         {
-            SqlCategory? cat = _unitOfWork.CategoryRepository.GetCode(code, 0).FirstOrDefault();
+            SqlCategory? cat = _unitOfWork.category.GetCode(code, 0).FirstOrDefault();
             if (cat == null)
             {
                 return false;
@@ -60,7 +60,7 @@ namespace Devify.Infrastructure.Services
 
         public List<CategoryItem> getAllCategories()
         {
-            List<CategoryItem> list = _unitOfWork.CategoryRepository.GetCondition(s => s.isdeleted == false)
+            List<CategoryItem> list = _unitOfWork.category.GetCondition(s => s.isdeleted == false)
                                                  .Select(s => new CategoryItem
                                                  {
                                                      code = s.code,
@@ -73,7 +73,7 @@ namespace Devify.Infrastructure.Services
 
         public CategoryItem getCategory(string code)
         {
-            SqlCategory? cat = _unitOfWork.CategoryRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo(code) == 0).FirstOrDefault();
+            SqlCategory? cat = _unitOfWork.category.GetCondition(s => s.isdeleted == false && s.code.CompareTo(code) == 0).FirstOrDefault();
             if (cat == null)
             {
                 return new CategoryItem();
@@ -89,7 +89,7 @@ namespace Devify.Infrastructure.Services
 
         public async Task<SqlCategory> updateCategory(string code, string name, string des)
         {
-            SqlCategory? cat = _unitOfWork.CategoryRepository.GetCode(code, 0).FirstOrDefault();
+            SqlCategory? cat = _unitOfWork.category.GetCode(code, 0).FirstOrDefault();
             if (cat == null)
             {
                 return new SqlCategory();

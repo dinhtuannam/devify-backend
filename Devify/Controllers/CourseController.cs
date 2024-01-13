@@ -37,18 +37,19 @@ namespace Devify.Controllers
             
             if (courseResult == null)
             {
-                return NotFound(new API_Response_VM
+                return NotFound(new ApiResponse
                 {
-                    Success = false,
-                    Message = $"Cannot not find course with slug = {slug}",
-                    ErrCode = "404"
+                    result = false,
+                    message = $"Cannot not find course with slug = {slug}",
+                    code = 404
                 });
             }
-            return Ok(new API_Response_VM
+            return Ok(new ApiResponse
             {
-                Success = true,
-                Message = "Get course success",
-                Data = courseResult
+                result = true,
+                message = "Get course success",
+                data = courseResult,
+                code = 200
             });
         }
 
@@ -56,13 +57,13 @@ namespace Devify.Controllers
         [Cache(120)]
         public async Task<IActionResult> searchCourse([FromQuery] CourseSearchParams model)
         {
-            var result = await _unitOfWork.CourseRepository.SearchCourse(model);
-            return Ok(new API_Response_VM
+            var result = await _unitOfWork.course.SearchCourse(model);
+            return Ok(new ApiResponse
             {
-                Success = true,
-                Message = "searching course sucessfully",
-                Data = result,
-                ErrCode = "200"
+                result = true,
+                message = "searching course sucessfully",
+                data = result,
+                code = 200
             });
         }
 
@@ -72,17 +73,17 @@ namespace Devify.Controllers
         {
             var courseResult = await _mediator.Send(new GetAllCourse());
             if (courseResult == null)
-                return NotFound(new API_Response_VM
+                return NotFound(new ApiResponse
                 {
-                    Success = false,
-                    Message = "Something wrong, please try again later !",
-                    ErrCode = "404"
+                    result = false,
+                    message = "Something wrong, please try again later !",
+                    code = 404
                 });
-            return Ok(new API_Response_VM
+            return Ok(new ApiResponse
             {
-                Success = true,
-                Message = "Get all course success",
-                Data = courseResult
+                result = true,
+                message = "Get all course success",
+                data = courseResult
             });
         }
 
@@ -95,42 +96,41 @@ namespace Devify.Controllers
 
             if (courseResult == null)
             {
-                return NotFound(new API_Response_VM
+                return NotFound(new ApiResponse
                 {
-                    Success = false,
-                    Message = $"Cannot not find learning course with slug = {slug}",
-                    ErrCode = "404"
+                    result = false,
+                    message = $"Cannot not find learning course with slug = {slug}",
+                    code = 404
                 });
             }
-            return Ok(new API_Response_VM
+            return Ok(new ApiResponse
             {
-                Success = true,
-                Message = "Get course success",
-                Data = courseResult
+                result = true,
+                message = "Get course success",
+                data = courseResult
                 
             });
         }
 
         [HttpGet("{slug}/lesson/{lessonId}", Name = "get-learning-lesson")]
-        [CourseOwner]
         [Cache(120)]
         public async Task<IActionResult> getLearningLesson(string slug,Guid lessonId)
         {
             var courseResult = await _mediator.Send(new GetLearningLesson { slugRequest = slug, lessonIdRequest = lessonId });
             if (courseResult == null)
             {
-                return NotFound(new API_Response_VM
+                return NotFound(new ApiResponse
                 {
-                    Success = false,
-                    Message = $"Cannot not find learning lesson with id = {lessonId}",
-                    ErrCode = "404"
+                    result = false,
+                    message = $"Cannot not find learning lesson with id = {lessonId}",
+                    code = 404
                 });
             }
-            return Ok(new API_Response_VM
+            return Ok(new ApiResponse
             {
-                Success = true,
-                Message = "Get leaning lesson success",
-                Data = courseResult
+                result = true,
+                message = "Get leaning lesson success",
+                data = courseResult
 
             });
         }

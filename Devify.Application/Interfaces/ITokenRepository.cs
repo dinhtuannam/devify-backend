@@ -6,12 +6,10 @@ namespace Devify.Application.Interfaces
 {
     public interface ITokenRepository
     {
-        Task AddTokenAsync(SqlToken token);
-        Task<Token> GenerateToken(SqlUser account);
-        DateTime ConvertUnixTimeToDateTime(long utcExpireDate);
-        Task<ApiResponse> RenewToken(string refreshTokenRequest);
-        bool IsTokenIdEqualRequestId(string token, string requestId);
-        bool ValidateToken(string token);
-        TokenInfoDecoded DecodedToken(string token);    
+        public TokenDecodedInfo DecodeToken(string token);
+        public Task<TokenDTO> GenerateToken(string user);
+        public Task<SqlToken> CreateToken(string accessToken, string refreshToken, string user);
+        public Task<TokenDTO> RenewToken(string refreshToken);
+        public Task<int> DeleteRevokedToken();
     }
 }

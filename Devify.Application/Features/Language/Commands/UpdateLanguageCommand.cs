@@ -26,7 +26,7 @@ namespace Devify.Application.Features.Language.Commands
 
             public async Task<ApiResponse> Handle(UpdateLanguageCommand query, CancellationToken cancellationToken)
             {
-                SqlLanguage lang = await _unitOfWork.LanguageRepository.updateLanguage(query.code, query.name, query.des);
+                SqlLanguage lang = await _unitOfWork.language.updateLanguage(query.code, query.name, query.des);
                 if (string.IsNullOrEmpty(lang.code))
                 {
                     return new ApiResponse()

@@ -1,9 +1,13 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using Devify.Infrastructure.Persistance;
+using Devify.Infrastructure.SeedWorks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
+using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -11,61 +15,81 @@ using System.Text;
 
 namespace Devify.Infrastructure.Services
 {
-    public class TokenRepository : ITokenRepository
+    public class TokenRepository : GenericRepository<SqlToken>, ITokenRepository
     {
-        private readonly string JWT_Key = "DEVIFY_AUTHENTICATE_JWT_KEY";
-        private readonly string ValidAudience = "User";
-        private readonly string ValidIssuer = "https://localhost:7221";
-        private readonly DataContext _context;
-        public TokenRepository(DataContext context)
+        private readonly IUnitOfWork _unitOfWork;
+        public TokenRepository(DataContext context, IUnitOfWork unitOfWork) : base(context)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task AddTokenAsync(SqlToken token)
+        public async Task<SqlToken> CreateToken(string accessToken, string refreshToken, string user)
         {
             try
             {
-                /*await _context.(token);
-                await _context.SaveChangesAsync();
-                Console.WriteLine($"[TokenService] -> AddAsAsync -> with RefreshToken: {token} -> successfully ");*/
+                SqlUser? m_user = _context.users!.Where(s => s.code.CompareTo(user) == 0).Include(s => s.tokens).FirstOrDefault();
+                if (m_user == null)
+                {
+                    return new SqlToken();
+                }
+                SqlToken? m_token = _context.tokens!.Where(s => s.accessToken.CompareTo(accessToken) == 0 &&
+                                                               s.refreshToken.CompareTo(refreshToken) == 0 &&
+                                                               s.isExpired == false)
+                                                   .Include(s => s.user)
+                                                   .FirstOrDefault();
+                if (m_token != null)
+                {
+                    return new SqlToken();
+                }
+                SqlToken token = new SqlToken();
+                token.id = DateTime.Now.Ticks;
+                token.accessToken = accessToken;
+                token.refreshToken = refreshToken;
+                token.createTime = DateTime.Now;
+                token.expiredTime = ConfigKey.getRTExpiredTime();
+                token.isExpired = false;
+                token.user = m_user; ;
+                _context.tokens!.Add(token);
+                int row = await _context.SaveChangesAsync();
+                if (row <= 0)
+                {
+                    return new SqlToken();
+                }
+                return token;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[TokenService] -> AddAsAsync -> with RefreshToken: {token} -> failed , Exception: {ex.Message}");
+                Log.Error($"func: CreateToken -  with user: {user} -> failed , Exception: {ex.InnerException}");
+                return new SqlToken();
             }
-            
+
         }
 
-        private DateTime ConvertUnixTimeToDateTime(long utcExpireDate)
-        {
-            var dateTimeInterval = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTimeInterval.AddSeconds(utcExpireDate).ToUniversalTime();
-            return dateTimeInterval;
-        }
-
-        public async Task<Token> GenerateToken(SqlUser account)
+        public async Task<TokenDTO> GenerateToken(string user)
         {
             try
             {
-                /*var jwtTokenHandler = new JwtSecurityTokenHandler();
-                var secretKeyBytes = Encoding.UTF8.GetBytes(JWT_Key);
-                var roles = await _userManager.GetRolesAsync(account);
-                var roleName = roles[0];
+                UserItem info = _unitOfWork.user.getUser(user);
+                if (string.IsNullOrEmpty(info.code))
+                {
+                    return new TokenDTO();
+                }
+                var jwtTokenHandler = new JwtSecurityTokenHandler();
+                var secretKeyBytes = Encoding.UTF8.GetBytes(ConfigKey.JWT_KEY);
                 var tokenDescription = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new[]
                     {
-                    new Claim(ClaimTypes.Email, account.Email),
-                    new Claim(ClaimTypes.Name, account.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim("Id", account.Id.ToString()),
-                    new Claim("RoleId", roleName),
+
+                    new Claim("code", info.code),
+                    new Claim("username", info.username),
+                    new Claim("roleId",info.role != null ? info.role : ""),
 
                 }),
-                    Issuer = ValidIssuer,
-                    Audience = ValidAudience,
-                    Expires = DateTime.UtcNow.AddMinutes(60),
+                    Issuer = ConfigKey.VALID_ISSUER,
+                    Audience = ConfigKey.VALID_AUDIENCE,
+                    Expires = ConfigKey.getATExpiredTime(),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey
                     (secretKeyBytes), SecurityAlgorithms.HmacSha256Signature)
                 };
@@ -74,29 +98,18 @@ namespace Devify.Infrastructure.Services
                 var accessToken = jwtTokenHandler.WriteToken(token);
                 var refreshToken = GenerateRefreshToken();
 
-                var refreshTokenEntity = new SqlToken
-                {
-                    Id = Guid.NewGuid(),
-                    AccountId = account.Id,
-                    JwtId = token.Id,
-                    Token = refreshToken,
-                    IsRevoked = false,
-                    IsUsed = false,
-                    Expired = DateTime.UtcNow.AddMinutes(2)
-                };
-                await AddTokenAsync(refreshTokenEntity);
-                Console.WriteLine($"[TokenService] -> GenerateToken -> with Username: {account.UserName} -> successfully");
-                return new Token
+                SqlToken newToken = await CreateToken(accessToken, refreshToken, info.code);
+
+                return new TokenDTO
                 {
                     AccessToken = accessToken,
                     RefreshToken = refreshToken
-                };*/
-                return null;
+                };
             }
             catch (Exception ex)
             {
-                
-                return null;
+                Log.Error($"func: GenerateToken -  with user: {user} -> failed , Exception: {ex.InnerException}");
+                return new TokenDTO();
             }
 
         }
@@ -111,140 +124,46 @@ namespace Devify.Infrastructure.Services
             }
         }
 
-        public bool IsTokenIdEqualRequestId(string token, string requestId)
+        public async Task<TokenDTO> RenewToken(string refreshToken)
         {
             try
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var decodedToken = tokenHandler.ReadJwtToken(token);
-                var claimId = decodedToken.Claims.FirstOrDefault(claim => claim.Type == "Id")?.Value;
-                if (!string.IsNullOrEmpty(claimId) && claimId == requestId)
+                SqlToken? checkToken = _context.tokens!.Where(x => x.refreshToken.CompareTo(refreshToken) == 0 && x.isExpired == false).Include(s => s.user).FirstOrDefault();
+                if (checkToken == null)
                 {
-                    Console.WriteLine($"[TokenService] -> IsTokenIdEqualRequestId -> with token: {token} and requestId: {requestId} -> return true -> successfully");
-                    return true;
+                    return new TokenDTO();
                 }
-                Console.WriteLine($"[TokenService] -> IsTokenIdEqualRequestId -> with token: {token} and requestId: {requestId} -> return false -> successfully");
-                return false;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[TokenService] -> IsTokenIdEqualRequestId -> with token: {token} and requestId: {requestId} -> failed , Exception: {ex.Message}");
-                return false;
-            }
 
-        }
-
-        public async Task<ApiResponse> RenewToken(string refreshTokenRequest)
-        {
-            try
-            {
-                // check 4 : check refresh token exist in db ?
-                /*var storedToken = _context.RefreshTokens.FirstOrDefault(x => x.Token == refreshTokenRequest);
-                if (storedToken == null)
-                    return new ApiResponse
-                    {
-                        Success = false,
-                        Message = "Refresh token does not exist"
-                    };
-                // check 5 : check refresh token is used/revoked?
-                if (storedToken.IsUsed)
-                    return new ApiResponse
-                    {
-                        Success = false,
-                        Message = "Refresh token has been used"
-                    };
-                if (storedToken.IsRevoked)
-                    return new ApiResponse
-                    {
-                        Success = false,
-                        Message = "Refresh token has been revoked"
-                    };
-                // Update token is used
-                storedToken.IsUsed = true;
-                storedToken.IsRevoked = true;
-                _context.Update(storedToken);
+                checkToken.isExpired = true;
                 await _context.SaveChangesAsync();
-                var user = await _userManager.FindByIdAsync(storedToken.AccountId);
-                var token = await GenerateToken(user);
-                Console.WriteLine($"[TokenService] -> RenewToken -> with refreshTokenRequest: {refreshTokenRequest} -> successfully");
-                return new ApiResponse
-                {
-                    Success = true,
-                    Message = "Renew Token Success",
-                    Data = token
-                };*/
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[TokenService] -> RenewToken -> with refreshTokenRequest: {refreshTokenRequest} -> failed , Exception: {ex.Message}");
-                return new ApiResponse
-                {
-                    result = false,
-                    message = "Something went wrong"
-                };
-            }
-        }
 
-        private TokenValidationParameters GetValidationParameters(bool isValidateLifetime = true)
-        {
-            var secretKeyBytes = Encoding.UTF8.GetBytes(JWT_Key);
-            var validationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidAudience = ValidAudience,
-                ValidIssuer = ValidIssuer,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
-                ClockSkew = TimeSpan.Zero,
-                ValidateLifetime = isValidateLifetime
-            };
-
-            return validationParameters;
-        }
-
-        public bool ValidateToken(string token)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var validationParameter = GetValidationParameters();
-            try
-            {
-                var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameter, out _);
-                var expirationDateUnix = long.Parse(claimsPrincipal.FindFirst("exp")?.Value);
-                var expirationDate = DateTimeOffset.FromUnixTimeSeconds(expirationDateUnix).DateTime;
-                if (expirationDate <= DateTime.UtcNow)
+                SqlUser? user = _context.users!.Where(s => s.code.CompareTo(checkToken.user!.code) == 0 && s.isdeleted == false).Include(s => s.role).FirstOrDefault();
+                if(user == null)
                 {
-                    Console.WriteLine($"[TokenService] -> ValidateToken -> return false -> successfully");
-                    return false;
+                    return new TokenDTO();
                 }
-                Console.WriteLine($"[TokenService] -> ValidateToken -> return true -> successfully");
-                return true;
-            }
-            catch (SecurityTokenException ex)
-            {
-                Console.WriteLine($"[TokenService] -> ValidateToken -> SecurityTokenException -> failed , Exception: {ex.Message}");
-                return false;
+                TokenDTO token = await GenerateToken(user.code);
+                return token;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[TokenService] -> ValidateToken -> failed , Exception: {ex.Message}");
-                return false;
+                Log.Error($"func: RenewToken -> with refreshToken: {refreshToken} -> failed , Exception: {ex.InnerException}");
+                return new TokenDTO();
             }
         }
 
-        public TokenInfoDecoded DecodedToken(string token)
+        public TokenDecodedInfo DecodeToken(string token)
         {
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var secretKeyBytes = Encoding.UTF8.GetBytes(JWT_Key);
+                var secretKeyBytes = Encoding.UTF8.GetBytes(ConfigKey.JWT_KEY);
                 var tokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidAudience = ValidAudience,
-                    ValidIssuer = ValidIssuer,
+                    ValidAudience = ConfigKey.VALID_AUDIENCE,
+                    ValidIssuer = ConfigKey.VALID_ISSUER,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
                     ClockSkew = TimeSpan.Zero,
@@ -253,24 +172,43 @@ namespace Devify.Infrastructure.Services
 
                 SecurityToken securityToken;
                 ClaimsPrincipal principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
-                TokenInfoDecoded tokenInfo = new TokenInfoDecoded
+                TokenDecodedInfo tokenInfo = new TokenDecodedInfo
                 {
-                    Id = principal.FindFirst("Id")?.Value,
-                    RoleId = principal.FindFirst("RoleId")?.Value,
-                    Token = token
+                    code = principal.FindFirst("code")?.Value,
+                    role = principal.FindFirst("roleId")?.Value,
+                    username = principal.FindFirst("username")?.Value,
                 };
 
                 return tokenInfo;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return new TokenInfoDecoded();
+                Log.Error($"func: DecodeToken -> with token: {token} -> failed , Exception: {ex.InnerException}");
+                return new TokenDecodedInfo();
             }
         }
 
-        DateTime ITokenRepository.ConvertUnixTimeToDateTime(long utcExpireDate)
+        public async Task<int> DeleteRevokedToken()
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<SqlToken> tmp = _context.tokens!.ToList();
+                List<SqlToken> tokens = _context.tokens.Where(s => s.isExpired == true || DateTime.Now > s.expiredTime.ToUniversalTime()).ToList();
+                if (tokens.Count <= 0)
+                {
+                    return 0;
+                }
+                _context.RemoveRange(tokens);
+                int rows = await _context.SaveChangesAsync();
+                Log.Information($"func: DeleteRevokedToken -> remove {rows} items ");
+                return rows;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"func: DeleteRevokedToken -> failed , Exception: {ex.InnerException}");
+                return 0;
+            }
+
         }
     }
 }

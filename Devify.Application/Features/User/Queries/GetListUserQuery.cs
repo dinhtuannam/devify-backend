@@ -1,5 +1,4 @@
 ﻿using Devify.Application.DTO;
-using Devify.Application.Features.Language.Queries;
 using Devify.Application.Interfaces;
 using MediatR;
 using System;
@@ -8,30 +7,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Devify.Application.Features.Category.Queries
+namespace Devify.Application.Features.User.Queries
 {
-    public class GetCategoryQuery : IRequest<ApiResponse>
+    public class GetListUserQuery : IRequest<ApiResponse>
     {
-        public string code { get; set; } = "";
-        public GetCategoryQuery(string code)
-        {
-            this.code = code;
-        }
-        public class Handler : IRequestHandler<GetCategoryQuery, ApiResponse>
+        public class Handler : IRequestHandler<GetListUserQuery, ApiResponse>
         {
             private readonly IUnitOfWork _unitOfWork;
             public Handler(IUnitOfWork unitOfWork)
             {
                 _unitOfWork = unitOfWork;
             }
-            public Task<ApiResponse> Handle(GetCategoryQuery query, CancellationToken cancellationToken)
+            public Task<ApiResponse> Handle(GetListUserQuery query, CancellationToken cancellationToken)
             {
                 ApiResponse res = new ApiResponse()
                 {
                     result = true,
-                    message = "Get category successfully",
+                    message = "Get list user successfully",
                     code = 0,
-                    data = _unitOfWork.category.getCategory(query.code)
+                    data = _unitOfWork.user.getListUser()
                 };
                 return Task.FromResult(res);
             }

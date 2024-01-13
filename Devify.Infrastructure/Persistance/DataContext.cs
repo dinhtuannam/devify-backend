@@ -10,7 +10,7 @@ namespace Devify.Infrastructure.Persistance
         public DbSet<SqlChapter> chapters { get; set; }
         public DbSet<SqlLesson> lessons { get; set; }
         public DbSet<SqlLanguage> languages { get; set; }
-        public DbSet<SqlToken> refreshTokens { get; set; }
+        public DbSet<SqlToken> tokens { get; set; }
         public DbSet<SqlCategory> categories { get; set; }
         public DbSet<SqlOrder> orders { get; set; }
         public DbSet<SqlDetailOrder> detailOrders { get; set; }
@@ -21,6 +21,7 @@ namespace Devify.Infrastructure.Persistance
         public DbSet<SqlTransaction> transactions { get; set; }
         public DbSet<SqlRating> ratings { get; set; }
         public DbSet<SqlDiscount> discounts { get; set; }
+        public DbSet<SqlUser> users { get; set; }
 
         public static string configSql = "Host=dpg-cmf3dkmd3nmc739dj1fg-a.singapore-postgres.render.com:5432;Database=db_devify;Username=db_devify_user;Password=rxB3v2YwsCSjMkG7l0fgFugMPtbM4wsa";
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Devify.Application.Configs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Devify.Installers
@@ -8,7 +9,7 @@ namespace Devify.Installers
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             //  ============================= Tạo biến ========================================
-            var secretKey = configuration.GetConnectionString("JWT_Key");
+            var secretKey = ConfigKey.JWT_KEY;
             var secretKeyBytes = System.Text.Encoding.UTF8.GetBytes(secretKey);
 
 
@@ -25,8 +26,8 @@ namespace Devify.Installers
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidAudience = configuration.GetConnectionString("ValidAudience"),
-                    ValidIssuer = configuration.GetConnectionString("ValidIssuer"),
+                    ValidAudience = ConfigKey.VALID_AUDIENCE,
+                    ValidIssuer = ConfigKey.VALID_ISSUER,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
                     ClockSkew = TimeSpan.Zero

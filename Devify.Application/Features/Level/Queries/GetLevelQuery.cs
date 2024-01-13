@@ -25,7 +25,7 @@ namespace Devify.Application.Features.Level.Queries
                     result = true,
                     message = "Get level successfully",
                     code = 0,
-                    data = _unitOfWork.LevelRepository.getLevel(query.code)
+                    data = _unitOfWork.level.getLevel(query.code)
                 };
                 return Task.FromResult(res);
             }

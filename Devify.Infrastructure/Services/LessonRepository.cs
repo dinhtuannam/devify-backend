@@ -18,7 +18,7 @@ namespace Devify.Infrastructure.Services
         public List<LessonItem> getAllLesson()
         {
             List<LessonItem> list = new List<LessonItem>();
-            List<SqlLesson> lessons = _unitOfWork.LessonRepository.GetAll().Where(s => s.isdeleted == false).ToList();
+            List<SqlLesson> lessons = _unitOfWork.lesson.GetAll().Where(s => s.isdeleted == false).ToList();
             foreach(SqlLesson lesson in lessons)
             {
                 LessonItem item = new LessonItem();

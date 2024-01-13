@@ -17,7 +17,7 @@ namespace Devify.Application.Features.Course.Queries
             }
             public async Task<LearningCourseDTO> Handle(GetLearningCourse query, CancellationToken cancellationToken)
             {
-                return await _unitOfWork.CourseRepository.GetLearningCourse(query.Slug);
+                return await _unitOfWork.course.GetLearningCourse(query.Slug);
             }
         }
     }

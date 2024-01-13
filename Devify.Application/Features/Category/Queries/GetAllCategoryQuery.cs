@@ -26,7 +26,7 @@ namespace Devify.Application.Features.Category.Queries
                     result = true,
                     message = "Get list category successfully",
                     code = 0,
-                    data = _unitOfWork.CategoryRepository.getAllCategories()
+                    data = _unitOfWork.category.getAllCategories()
                 };
                 return Task.FromResult(res);
             }

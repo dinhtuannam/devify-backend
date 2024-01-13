@@ -27,14 +27,15 @@ namespace Devify.Application.Features.Level.Commands
             }
             public async Task<ApiResponse> Handle(CreateLevelCommand query, CancellationToken cancellationToken)
             {
-                SqlLevel level = await _unitOfWork.LevelRepository.createLevel(query.code, query.name, query.des);
+                SqlLevel level = await _unitOfWork.level.createLevel(query.code, query.name, query.des);
                 if (string.IsNullOrEmpty(level.code))
                 {
                     return new ApiResponse()
                     {
                         result = false,
                         message = "Create level failed",
-                        code = 400
+                        code = 400,
+                        data = ""
                     };
                 }
                 return new ApiResponse()

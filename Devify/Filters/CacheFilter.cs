@@ -32,7 +32,7 @@ namespace Devify.Filters
 
             var cacheKey = generateCacheKeyFromRequest(context.HttpContext.Request);
             var cacheService = context.HttpContext.RequestServices.GetRequiredService<IUnitOfWork>();
-            var cacheResponse = await cacheService.CacheRepository.GetCacheResponseAsync(cacheKey);
+            var cacheResponse = await cacheService.cache.GetCacheResponseAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cacheResponse))
             {
@@ -49,7 +49,7 @@ namespace Devify.Filters
             var excutedContext = await next();
             if(excutedContext.Result is OkObjectResult okObjectResult)
             {
-                await cacheService.CacheRepository.SetCacheResponseAsync(cacheKey, okObjectResult.Value, TimeSpan.FromSeconds(_timeToLiveSeconds));
+                await cacheService.cache.SetCacheResponseAsync(cacheKey, okObjectResult.Value, TimeSpan.FromSeconds(_timeToLiveSeconds));
             }
         }
 

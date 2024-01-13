@@ -18,7 +18,7 @@ namespace Devify.Infrastructure.Services
 
         public async Task<SqlLevel> createLevel(string code, string name, string des)
         {
-            SqlLevel? level = _unitOfWork.LevelRepository.GetCode(code, -1).FirstOrDefault();
+            SqlLevel? level = _unitOfWork.level.GetCode(code, -1).FirstOrDefault();
             if(level != null)
             {
                 return new SqlLevel();
@@ -28,7 +28,7 @@ namespace Devify.Infrastructure.Services
             m_level.name = name;
             m_level.des = des;
 
-            _unitOfWork.LevelRepository.Insert(m_level);
+            _unitOfWork.level.Insert(m_level);
             int row = await _unitOfWork.CompleteAsync();
             if(row <= 0)
             {
@@ -39,7 +39,7 @@ namespace Devify.Infrastructure.Services
 
         public async Task<bool> deleteLevel(string code)
         {
-            SqlLevel? level = _unitOfWork.LevelRepository.GetCode(code, -1).FirstOrDefault();
+            SqlLevel? level = _unitOfWork.level.GetCode(code, -1).FirstOrDefault();
             if (level == null)
             {
                 return false;
@@ -57,7 +57,7 @@ namespace Devify.Infrastructure.Services
 
         public List<LevelItem> getAllLevel()
         {
-            List<LevelItem> list = _unitOfWork.LevelRepository.GetAll()
+            List<LevelItem> list = _unitOfWork.level.GetAll()
                                               .Where(s => s.isdeleted == false)
                                               .Select(s => new LevelItem
                                               {
@@ -71,7 +71,7 @@ namespace Devify.Infrastructure.Services
 
         public LevelItem getLevel(string code)
         {
-            SqlLevel? level = _unitOfWork.LevelRepository.GetCode(code,0).FirstOrDefault();
+            SqlLevel? level = _unitOfWork.level.GetCode(code,0).FirstOrDefault();
             if(level == null)
             {
                 return new LevelItem();
@@ -87,7 +87,7 @@ namespace Devify.Infrastructure.Services
 
         public async Task<SqlLevel> updateLevel(string code, string name, string des)
         {
-            SqlLevel? level = _unitOfWork.LevelRepository.GetCode(code, 0).FirstOrDefault();
+            SqlLevel? level = _unitOfWork.level.GetCode(code, 0).FirstOrDefault();
             if (level == null)
             {
                 return new SqlLevel();

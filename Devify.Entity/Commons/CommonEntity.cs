@@ -5,9 +5,9 @@
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
 
-        public TrackEntity() { 
-            DateCreated = DateTime.Now.ToUniversalTime();
-            DateUpdated = DateTime.Now.ToUniversalTime();
+        public TrackEntity() {
+            DateCreated = DateTime.Now;
+            DateUpdated = DateTime.Now;
         }
     }
 }

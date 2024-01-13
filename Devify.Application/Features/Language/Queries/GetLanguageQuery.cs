@@ -25,7 +25,7 @@ namespace Devify.Application.Features.Language.Queries
                     result = true,
                     message = "Get language successfully",
                     code = 0,
-                    data = _unitOfWork.LanguageRepository.getLanguage(query.code)
+                    data = _unitOfWork.language.getLanguage(query.code)
                 };
                 return Task.FromResult(res);
             }

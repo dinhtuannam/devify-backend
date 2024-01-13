@@ -14,7 +14,7 @@ namespace Devify.Entity
         public string email { get; set; } = "";
         public string image { get; set; } = "";
         public bool isdeleted { get; set; } = false;
-        public bool isactivated { get; set; } = false;
+        public bool isbanned { get; set; } = false;
         public string about { get; set; } = "";
         public string social { get; set; } = "";
         public SqlRole? role { get; set; }

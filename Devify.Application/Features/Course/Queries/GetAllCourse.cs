@@ -15,7 +15,7 @@ namespace Devify.Application.Features.Course.Queries
             }
             public async Task<DataListDTO<IEnumerable<AllCourseList>>> Handle(GetAllCourse query, CancellationToken cancellationToken)
             {
-                return await _unitOfWork.CourseRepository.GetAllCourse();
+                return await _unitOfWork.course.GetAllCourse();
             }
         }
     }

@@ -28,7 +28,7 @@ namespace Devify.Application.Features.Category.Commands
 
             public async Task<ApiResponse> Handle(UpdateCategoryCommand query, CancellationToken cancellationToken)
             {
-                SqlCategory cat = await _unitOfWork.CategoryRepository.updateCategory(query.code, query.name, query.des);
+                SqlCategory cat = await _unitOfWork.category.updateCategory(query.code, query.name, query.des);
                 if (string.IsNullOrEmpty(cat.code))
                 {
                     return new ApiResponse()

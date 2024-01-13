@@ -18,7 +18,7 @@ namespace Devify.Infrastructure.Services
 
         public async Task<SqlLanguage> createLanguage(string code, string name, string des)
         {
-            SqlLanguage? lang = _unitOfWork.LanguageRepository.GetCode(code, 0).FirstOrDefault();
+            SqlLanguage? lang = _unitOfWork.language.GetCode(code, 0).FirstOrDefault();
             if (lang != null)
             {
                 return new SqlLanguage();
@@ -31,7 +31,7 @@ namespace Devify.Infrastructure.Services
                 des = des,
                 isdeleted = false
             };
-            _unitOfWork.LanguageRepository.Insert(m_lang);
+            _unitOfWork.language.Insert(m_lang);
             int row = await _unitOfWork.CompleteAsync();
             if (row <= 0)
             {
@@ -43,7 +43,7 @@ namespace Devify.Infrastructure.Services
 
         public async Task<bool> DeleteLanguage(string code)
         {
-            SqlLanguage? lang = _unitOfWork.LanguageRepository.GetCode(code, 0).FirstOrDefault();
+            SqlLanguage? lang = _unitOfWork.language.GetCode(code, 0).FirstOrDefault();
             if (lang == null)
             {
                 return false;
@@ -59,7 +59,7 @@ namespace Devify.Infrastructure.Services
 
         public List<LanguageItem> getAllLanguages()
         {
-            List<LanguageItem> list = _unitOfWork.LanguageRepository.GetCondition(s => s.isdeleted == false)
+            List<LanguageItem> list = _unitOfWork.language.GetCondition(s => s.isdeleted == false)
                                                  .Select(s => new LanguageItem
                                                  {
                                                      code = s.code,
@@ -72,7 +72,7 @@ namespace Devify.Infrastructure.Services
 
         public LanguageItem getLanguage(string code)
         {
-            SqlLanguage? lang = _unitOfWork.LanguageRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo(code) == 0).FirstOrDefault();
+            SqlLanguage? lang = _unitOfWork.language.GetCondition(s => s.isdeleted == false && s.code.CompareTo(code) == 0).FirstOrDefault();
             if(lang == null)
             {
                 return new LanguageItem();
@@ -88,7 +88,7 @@ namespace Devify.Infrastructure.Services
 
         public async Task<SqlLanguage> updateLanguage(string code, string name, string des)
         {
-            SqlLanguage? lang = _unitOfWork.LanguageRepository.GetCode(code, 0).FirstOrDefault();
+            SqlLanguage? lang = _unitOfWork.language.GetCode(code, 0).FirstOrDefault();
             if (lang == null)
             {
                 return new SqlLanguage();

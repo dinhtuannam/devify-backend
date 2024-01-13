@@ -5,61 +5,64 @@ using Devify.Models;
 
 namespace Devify.Filters
 {
-    public class AuthorizeIdAttribute : Attribute, IAuthorizationFilter
+    public class RoleAttribute : Attribute, IAuthorizationFilter
     {
+        private readonly List<string> _roles = new List<string>();
+        public RoleAttribute(params string[] roles)
+        {
+            _roles = new List<string>(roles);
+        }
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var token = context.HttpContext.Request.Headers["Authorization"].ToString();
-            var id = context.HttpContext.Request.Query["id"].ToString();
-            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(id))
+            try
             {
-                context.Result = new UnauthorizedObjectResult(new API_Response_VM
+                string user = context.HttpContext.Items["code"] as string ?? "";
+                if (string.IsNullOrEmpty(user))
                 {
-                    Success = false,
-                    Message = "Vui lòng đăng nhập",
-                    Data = "/login"
-                });
-                return;
+                    context.Result = new UnauthorizedResult();
+                    return;
+                }
+                string role = context.HttpContext.Items["role"] as string ?? "";
+                if (string.IsNullOrEmpty(role))
+                {
+                    context.Result = new UnauthorizedResult();
+                    return;
+                }
+                if (!_roles.Contains(role))
+                {
+                    context.Result = new ForbidResult();
+                    return;
+                }
             }
-            var tokenValue = token.Split(" ")[1];
-            var tokenService = context.HttpContext.RequestServices.GetService<IUnitOfWork>();
-
-            // ===================== Kiểm tra tính hợp lệ của token
-            var IsTokenValid = tokenService.TokenRepository.ValidateToken(tokenValue);
-            if (!IsTokenValid)
+            catch (Exception ex)
             {
-                context.Result = new UnauthorizedObjectResult(new API_Response_VM
-                {
-                    Success = false,
-                    Message = "Quyền truy cập không hợp lệ",
-                });
-                return;
-            }
-
-            // ===================== Kiểm tra token có = request Id
-            var IsTokenIdEqualRequestId = tokenService.TokenRepository.IsTokenIdEqualRequestId(tokenValue, id);
-            if (!IsTokenIdEqualRequestId)
-            {
-                context.Result = new UnauthorizedObjectResult(new API_Response_VM
-                {
-                    Success = false,
-                    Message = "Bạn không có quyền truy cập dịch vụ này",
-                });
+                context.Result = new ForbidResult();
                 return;
             }
         }
     }
 
-    public class CourseOwnerAttribute : Attribute, IAuthorizationFilter
+    public class UserAttribute : Attribute, IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var token = context.HttpContext.Request.Headers["Authorization"].ToString();
-            var id = context.HttpContext.Request.Query["slug"].ToString();
-            
+            try
+            {
+                string user = context.HttpContext.Items["code"] as string ?? "";
+                if (string.IsNullOrEmpty(user))
+                {
+                    context.Result = new UnauthorizedResult();
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                context.Result = new ForbidResult();
+                return;
+            }
         }
     }
 
-    
+
 }
 

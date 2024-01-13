@@ -21,6 +21,7 @@ namespace Devify.Application.Features.Level.Commands
             this.name = name;
             this.des = des;
         }
+
         public class Handler : IRequestHandler<UpdateLevelCommand, ApiResponse>
         {
             private readonly IUnitOfWork _unitOfWork;
@@ -30,14 +31,15 @@ namespace Devify.Application.Features.Level.Commands
             }
             public async Task<ApiResponse> Handle(UpdateLevelCommand query, CancellationToken cancellationToken)
             {
-                SqlLevel level = await _unitOfWork.LevelRepository.updateLevel(query.code, query.name, query.des);
+                SqlLevel level = await _unitOfWork.level.updateLevel(query.code, query.name, query.des);
                 if (string.IsNullOrEmpty(level.code))
                 {
                     return new ApiResponse()
                     {
                         result = false,
                         message = "Update level failed",
-                        code = 400
+                        code = 400,
+                        data = ""
                     };
                 }
                 return new ApiResponse()

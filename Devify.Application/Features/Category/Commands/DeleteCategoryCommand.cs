@@ -22,7 +22,7 @@ namespace Devify.Application.Features.Category.Commands
 
             public async Task<ApiResponse> Handle(DeleteCategoryCommand query, CancellationToken cancellationToken)
             {
-                bool res = await _unitOfWork.CategoryRepository.deleteCategory(query.code);
+                bool res = await _unitOfWork.category.deleteCategory(query.code);
                 if (!res)
                 {
                     return new ApiResponse()

@@ -1,7 +1,6 @@
 ﻿using Devify.Models;
 using Microsoft.AspNetCore.Mvc;
 using Devify.Application.Interfaces;
-using Devify.Application.Features.Auth.Commands;
 using MediatR;
 
 namespace Loship.Controllers
@@ -18,7 +17,7 @@ namespace Loship.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("login", Name = "authlogin")]
+        /*[HttpPost("login", Name = "authlogin")]
         public async Task<IActionResult> Login(LoginModel model)
         {
             if (ModelState.IsValid)
@@ -40,7 +39,7 @@ namespace Loship.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _unitOfWork.AuthRepository.Register(username,password,email,phone);
+                var result = await _unitOfWork.auth.Register(username,password,email,phone);
                 return Ok(result);
             }
             return BadRequest();
@@ -51,7 +50,7 @@ namespace Loship.Controllers
         {
             try
             {
-                var result = await _unitOfWork.TokenRepository.RenewToken(model.refreshToken);
+                var result = await _unitOfWork.token.RenewToken(model.refreshToken);
                 return Ok(result);
             }
             catch (Exception e)
@@ -59,6 +58,6 @@ namespace Loship.Controllers
                 return BadRequest(e);
             }
 
-        }
+        }*/
     }
 }

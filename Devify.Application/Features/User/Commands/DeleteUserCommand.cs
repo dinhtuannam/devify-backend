@@ -1,6 +1,5 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
-using Devify.Entity;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,33 +7,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Devify.Application.Features.Level.Commands
+namespace Devify.Application.Features.User.Commands
 {
-    public class DeleteLevelCommand : IRequest<ApiResponse>
+    public class DeleteUserCommand : IRequest<ApiResponse>
     {
         public string code { get; set; } = "";
 
-        public DeleteLevelCommand(string code)
+        public DeleteUserCommand(string code)
         {
             this.code = code;
         }
 
-        public class Handler : IRequestHandler<DeleteLevelCommand, ApiResponse>
+        public class Handler : IRequestHandler<DeleteUserCommand, ApiResponse>
         {
             private readonly IUnitOfWork _unitOfWork;
             public Handler(IUnitOfWork unitOfWork)
             {
                 _unitOfWork = unitOfWork;
             }
-            public async Task<ApiResponse> Handle(DeleteLevelCommand query, CancellationToken cancellationToken)
+            public async Task<ApiResponse> Handle(DeleteUserCommand query, CancellationToken cancellationToken)
             {
-                bool res = await _unitOfWork.level.deleteLevel(query.code);
+                bool res = await _unitOfWork.user.deleteUser(query.code);
                 if (!res)
                 {
                     return new ApiResponse()
                     {
                         result = false,
-                        message = "Delete level failed",
+                        message = "Delete user failed",
                         code = 400,
                         data = false
                     };
@@ -42,8 +41,8 @@ namespace Devify.Application.Features.Level.Commands
                 return new ApiResponse()
                 {
                     result = true,
-                    message = "Create level successfully",
-                    code = 0,
+                    message = "Delete user successfully",
+                    code = 200,
                     data = true
                 };
             }

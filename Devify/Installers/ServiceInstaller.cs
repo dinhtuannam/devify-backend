@@ -21,7 +21,6 @@ namespace Devify.Installers
             //  =========================  Cấu hình Repository ==============================
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-
             //  =========================  Cấu hình AutoMapper ===============================
             services.AddAutoMapper(typeof(AutoMapperConfig));
             services.AddAutoMapper(typeof(CategoryMapper));

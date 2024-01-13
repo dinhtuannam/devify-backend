@@ -24,7 +24,7 @@ namespace Devify.Application.Features.Language.Commands
 
             public async Task<ApiResponse> Handle(DeleteLanguageCommand query, CancellationToken cancellationToken)
             {
-                bool res = await _unitOfWork.LanguageRepository.DeleteLanguage(query.code);
+                bool res = await _unitOfWork.language.DeleteLanguage(query.code);
                 if (!res)
                 {
                     return new ApiResponse()

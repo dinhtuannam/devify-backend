@@ -21,7 +21,7 @@ namespace Devify.Controllers
         [Route("initLanguage")]
         public async Task<IActionResult> initLanguage()
         {
-            SqlLanguage? lang = _unitOfWork.LanguageRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("java") == 0).FirstOrDefault();
+            SqlLanguage? lang = _unitOfWork.language.GetCondition(s => s.isdeleted == false && s.code.CompareTo("java") == 0).FirstOrDefault();
             if (lang == null)
             {
                 SqlLanguage tmp = new SqlLanguage();
@@ -29,9 +29,9 @@ namespace Devify.Controllers
                 tmp.code = "java";
                 tmp.name = "Java";
                 tmp.des = "Java";
-                _unitOfWork.LanguageRepository.Insert(tmp);
+                _unitOfWork.language.Insert(tmp);
             }
-            lang = _unitOfWork.LanguageRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("javascript") == 0).FirstOrDefault();
+            lang = _unitOfWork.language.GetCondition(s => s.isdeleted == false && s.code.CompareTo("javascript") == 0).FirstOrDefault();
             if (lang == null)
             {
                 SqlLanguage tmp = new SqlLanguage();
@@ -39,9 +39,9 @@ namespace Devify.Controllers
                 tmp.code = "javascript";
                 tmp.name = "Javascript";
                 tmp.des = "Javascript";
-                _unitOfWork.LanguageRepository.Insert(tmp);
+                _unitOfWork.language.Insert(tmp);
             }
-            lang = _unitOfWork.LanguageRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("python") == 0).FirstOrDefault();
+            lang = _unitOfWork.language.GetCondition(s => s.isdeleted == false && s.code.CompareTo("python") == 0).FirstOrDefault();
             if (lang == null)
             {
                 SqlLanguage tmp = new SqlLanguage();
@@ -49,9 +49,9 @@ namespace Devify.Controllers
                 tmp.code = "python";
                 tmp.name = "Python";
                 tmp.des = "Python";
-                _unitOfWork.LanguageRepository.Insert(tmp);
+                _unitOfWork.language.Insert(tmp);
             }
-            lang = _unitOfWork.LanguageRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("c-sharp") == 0).FirstOrDefault();
+            lang = _unitOfWork.language.GetCondition(s => s.isdeleted == false && s.code.CompareTo("c-sharp") == 0).FirstOrDefault();
             if (lang == null)
             {
                 SqlLanguage tmp = new SqlLanguage();
@@ -59,9 +59,9 @@ namespace Devify.Controllers
                 tmp.code = "c-sharp";
                 tmp.name = "C#";
                 tmp.des = "C#";
-                _unitOfWork.LanguageRepository.Insert(tmp);
+                _unitOfWork.language.Insert(tmp);
             }
-            lang = _unitOfWork.LanguageRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("cpp") == 0).FirstOrDefault();
+            lang = _unitOfWork.language.GetCondition(s => s.isdeleted == false && s.code.CompareTo("cpp") == 0).FirstOrDefault();
             if (lang == null)
             {
                 SqlLanguage tmp = new SqlLanguage();
@@ -69,9 +69,9 @@ namespace Devify.Controllers
                 tmp.code = "cpp";
                 tmp.name = "C++";
                 tmp.des = "C++";
-                _unitOfWork.LanguageRepository.Insert(tmp);
+                _unitOfWork.language.Insert(tmp);
             }
-            lang = _unitOfWork.LanguageRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("sql") == 0).FirstOrDefault();
+            lang = _unitOfWork.language.GetCondition(s => s.isdeleted == false && s.code.CompareTo("sql") == 0).FirstOrDefault();
             if (lang == null)
             {
                 SqlLanguage tmp = new SqlLanguage();
@@ -79,7 +79,7 @@ namespace Devify.Controllers
                 tmp.code = "sql";
                 tmp.name = "SQL";
                 tmp.des = "SQL";
-                _unitOfWork.LanguageRepository.Insert(tmp);
+                _unitOfWork.language.Insert(tmp);
             }
             await _unitOfWork.CompleteAsync();
             return Ok();
@@ -89,11 +89,11 @@ namespace Devify.Controllers
         [Route("initUser")]
         public async Task<IActionResult> initUser()
         {
-            SqlUser? user = _unitOfWork.AccountRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("admin") == 0).FirstOrDefault();
-            SqlRole? admin = _unitOfWork.RoleRepository.GetCode("admin", 0).FirstOrDefault();
-            SqlRole? manager = _unitOfWork.RoleRepository.GetCode("manager", 0).FirstOrDefault();
-            SqlRole? creator = _unitOfWork.RoleRepository.GetCode("creator", 0).FirstOrDefault();
-            SqlRole? customer = _unitOfWork.RoleRepository.GetCode("customer", 0).FirstOrDefault();
+            SqlUser? user = _unitOfWork.user.GetCondition(s => s.isdeleted == false && s.code.CompareTo("admin") == 0).FirstOrDefault();
+            SqlRole? admin = _unitOfWork.role.GetCode("admin", -1).FirstOrDefault();
+            SqlRole? manager = _unitOfWork.role.GetCode("manager", -1).FirstOrDefault();
+            SqlRole? creator = _unitOfWork.role.GetCode("creator", -1).FirstOrDefault();
+            SqlRole? customer = _unitOfWork.role.GetCode("customer", -1).FirstOrDefault();
             if (user == null)
             {
                 SqlUser tmp = new SqlUser();
@@ -109,9 +109,9 @@ namespace Devify.Controllers
                 {
                     tmp.role = admin;
                 }
-                _unitOfWork.AccountRepository.Insert(tmp);
+                _unitOfWork.user.Insert(tmp);
             }
-            user = _unitOfWork.AccountRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("staff-1") == 0).FirstOrDefault();
+            user = _unitOfWork.user.GetCondition(s => s.isdeleted == false && s.code.CompareTo("staff-1") == 0).FirstOrDefault();
             if (user == null)
             {
                 SqlUser tmp = new SqlUser();
@@ -129,9 +129,9 @@ namespace Devify.Controllers
                     tmp.role = manager;
                 }
 
-                _unitOfWork.AccountRepository.Insert(tmp);
+                _unitOfWork.user.Insert(tmp);
             }
-            user = _unitOfWork.AccountRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("staff-2") == 0).FirstOrDefault();
+            user = _unitOfWork.user.GetCondition(s => s.isdeleted == false && s.code.CompareTo("staff-2") == 0).FirstOrDefault();
             if (user == null)
             {
                 SqlUser tmp = new SqlUser();
@@ -149,9 +149,9 @@ namespace Devify.Controllers
                     tmp.role = manager;
                 }
 
-                _unitOfWork.AccountRepository.Insert(tmp);
+                _unitOfWork.user.Insert(tmp);
             }
-            user = _unitOfWork.AccountRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("creator-1") == 0).FirstOrDefault();
+            user = _unitOfWork.user.GetCondition(s => s.isdeleted == false && s.code.CompareTo("creator-1") == 0).FirstOrDefault();
             if (user == null)
             {
                 SqlUser tmp = new SqlUser();
@@ -169,9 +169,9 @@ namespace Devify.Controllers
                     tmp.role = creator;
                 }
 
-                _unitOfWork.AccountRepository.Insert(tmp);
+                _unitOfWork.user.Insert(tmp);
             }
-            user = _unitOfWork.AccountRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("creator-2") == 0).FirstOrDefault();
+            user = _unitOfWork.user.GetCondition(s => s.isdeleted == false && s.code.CompareTo("creator-2") == 0).FirstOrDefault();
             if (user == null)
             {
                 SqlUser tmp = new SqlUser();
@@ -189,9 +189,9 @@ namespace Devify.Controllers
                     tmp.role = creator;
                 }
 
-                _unitOfWork.AccountRepository.Insert(tmp);
+                _unitOfWork.user.Insert(tmp);
             }
-            user = _unitOfWork.AccountRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("customer-1") == 0).FirstOrDefault();
+            user = _unitOfWork.user.GetCondition(s => s.isdeleted == false && s.code.CompareTo("customer-1") == 0).FirstOrDefault();
             if (user == null)
             {
                 SqlUser tmp = new SqlUser();
@@ -209,9 +209,9 @@ namespace Devify.Controllers
                     tmp.role = customer;
                 }
 
-                _unitOfWork.AccountRepository.Insert(tmp);
+                _unitOfWork.user.Insert(tmp);
             }
-            user = _unitOfWork.AccountRepository.GetCondition(s => s.isdeleted == false && s.code.CompareTo("customer-2") == 0).FirstOrDefault();
+            user = _unitOfWork.user.GetCondition(s => s.isdeleted == false && s.code.CompareTo("customer-2") == 0).FirstOrDefault();
             if (user == null)
             {
                 SqlUser tmp = new SqlUser();
@@ -229,7 +229,7 @@ namespace Devify.Controllers
                     tmp.role = customer;
                 }
 
-                _unitOfWork.AccountRepository.Insert(tmp);
+                _unitOfWork.user.Insert(tmp);
             }
             await _unitOfWork.CompleteAsync();
             return Ok();
@@ -239,7 +239,7 @@ namespace Devify.Controllers
         [Route("initRole")]
         public async Task<IActionResult> initRole()
         {
-            SqlRole? role = _unitOfWork.RoleRepository.GetCondition(s => s.code.CompareTo("admin") == 0).FirstOrDefault();
+            SqlRole? role = _unitOfWork.role.GetCondition(s => s.code.CompareTo("admin") == 0).FirstOrDefault();
             if (role == null)
             {
                 SqlRole tmp = new SqlRole();
@@ -247,9 +247,9 @@ namespace Devify.Controllers
                 tmp.code = "admin";
                 tmp.name = "admin";
                 tmp.des = "admin";
-                _unitOfWork.RoleRepository.Insert(tmp);
+                _unitOfWork.role.Insert(tmp);
             }
-            role = _unitOfWork.RoleRepository.GetCondition(s => s.code.CompareTo("manager") == 0).FirstOrDefault();
+            role = _unitOfWork.role.GetCondition(s => s.code.CompareTo("manager") == 0).FirstOrDefault();
             if (role == null)
             {
                 SqlRole tmp = new SqlRole();
@@ -257,9 +257,9 @@ namespace Devify.Controllers
                 tmp.code = "manager";
                 tmp.name = "manager";
                 tmp.des = "manager";
-                _unitOfWork.RoleRepository.Insert(tmp);
+                _unitOfWork.role.Insert(tmp);
             }
-            role = _unitOfWork.RoleRepository.GetCondition(s => s.code.CompareTo("creator") == 0).FirstOrDefault();
+            role = _unitOfWork.role.GetCondition(s => s.code.CompareTo("creator") == 0).FirstOrDefault();
             if (role == null)
             {
                 SqlRole tmp = new SqlRole();
@@ -267,9 +267,9 @@ namespace Devify.Controllers
                 tmp.code = "creator";
                 tmp.name = "creator";
                 tmp.des = "creator";
-                _unitOfWork.RoleRepository.Insert(tmp);
+                _unitOfWork.role.Insert(tmp);
             }
-            role = _unitOfWork.RoleRepository.GetCondition(s => s.code.CompareTo("customer") == 0).FirstOrDefault();
+            role = _unitOfWork.role.GetCondition(s => s.code.CompareTo("customer") == 0).FirstOrDefault();
             if (role == null)
             {
                 SqlRole tmp = new SqlRole();
@@ -277,7 +277,7 @@ namespace Devify.Controllers
                 tmp.code = "customer";
                 tmp.name = "customer";
                 tmp.des = "customer";
-                _unitOfWork.RoleRepository.Insert(tmp);
+                _unitOfWork.role.Insert(tmp);
             }
             await _unitOfWork.CompleteAsync();
             return Ok();
@@ -287,7 +287,7 @@ namespace Devify.Controllers
         [Route("initLevel")]
         public async Task<IActionResult> initLevel()
         {
-            SqlLevel? level = _unitOfWork.LevelRepository.GetCondition(s => s.code.CompareTo("beginner") == 0 && s.isdeleted == false).FirstOrDefault();
+            SqlLevel? level = _unitOfWork.level.GetCondition(s => s.code.CompareTo("beginner") == 0 && s.isdeleted == false).FirstOrDefault();
             if (level == null)
             {
                 SqlLevel tmp = new SqlLevel();
@@ -295,9 +295,9 @@ namespace Devify.Controllers
                 tmp.code = "beginner";
                 tmp.name = "Beginner";
                 tmp.des = "Beginner";
-                _unitOfWork.LevelRepository.Insert(tmp);
+                _unitOfWork.level.Insert(tmp);
             }
-            level = _unitOfWork.LevelRepository.GetCondition(s => s.code.CompareTo("intermediate") == 0 && s.isdeleted == false).FirstOrDefault();
+            level = _unitOfWork.level.GetCondition(s => s.code.CompareTo("intermediate") == 0 && s.isdeleted == false).FirstOrDefault();
             if (level == null)
             {
                 SqlLevel tmp = new SqlLevel();
@@ -305,9 +305,9 @@ namespace Devify.Controllers
                 tmp.code = "intermediate";
                 tmp.name = "Intermediate";
                 tmp.des = "Intermediate";
-                _unitOfWork.LevelRepository.Insert(tmp);
+                _unitOfWork.level.Insert(tmp);
             }
-            level = _unitOfWork.LevelRepository.GetCondition(s => s.code.CompareTo("expert") == 0 && s.isdeleted == false).FirstOrDefault();
+            level = _unitOfWork.level.GetCondition(s => s.code.CompareTo("expert") == 0 && s.isdeleted == false).FirstOrDefault();
             if (level == null)
             {
                 SqlLevel tmp = new SqlLevel();
@@ -315,7 +315,7 @@ namespace Devify.Controllers
                 tmp.code = "expert";
                 tmp.name = "Expert";
                 tmp.des = "Expert";
-                _unitOfWork.LevelRepository.Insert(tmp);
+                _unitOfWork.level.Insert(tmp);
             }
             await _unitOfWork.CompleteAsync();
             return Ok();
@@ -325,7 +325,7 @@ namespace Devify.Controllers
         [Route("initCategory")]
         public async Task<IActionResult> initCategory()
         {
-            SqlCategory? category = _unitOfWork.CategoryRepository.GetCondition(s => s.code.CompareTo("frontend") == 0 && s.isdeleted == false).FirstOrDefault();
+            SqlCategory? category = _unitOfWork.category.GetCondition(s => s.code.CompareTo("frontend") == 0 && s.isdeleted == false).FirstOrDefault();
             if (category == null)
             {
                 SqlCategory tmp = new SqlCategory();
@@ -333,9 +333,9 @@ namespace Devify.Controllers
                 tmp.code = "frontend";
                 tmp.name = "Frontend";
                 tmp.des = "Frontend development";
-                _unitOfWork.CategoryRepository.Insert(tmp);
+                _unitOfWork.category.Insert(tmp);
             }
-            category = _unitOfWork.CategoryRepository.GetCondition(s => s.code.CompareTo("backend") == 0 && s.isdeleted == false).FirstOrDefault();
+            category = _unitOfWork.category.GetCondition(s => s.code.CompareTo("backend") == 0 && s.isdeleted == false).FirstOrDefault();
             if (category == null)
             {
                 SqlCategory tmp = new SqlCategory();
@@ -343,9 +343,9 @@ namespace Devify.Controllers
                 tmp.code = "backend";
                 tmp.name = "Backend";
                 tmp.des = "Backend development";
-                _unitOfWork.CategoryRepository.Insert(tmp);
+                _unitOfWork.category.Insert(tmp);
             }
-            category = _unitOfWork.CategoryRepository.GetCondition(s => s.code.CompareTo("fullstack") == 0 && s.isdeleted == false).FirstOrDefault();
+            category = _unitOfWork.category.GetCondition(s => s.code.CompareTo("fullstack") == 0 && s.isdeleted == false).FirstOrDefault();
             if (category == null)
             {
                 SqlCategory tmp = new SqlCategory();
@@ -353,9 +353,9 @@ namespace Devify.Controllers
                 tmp.code = "fullstack";
                 tmp.name = "Fullstack";
                 tmp.des = "Fullstack development";
-                _unitOfWork.CategoryRepository.Insert(tmp);
+                _unitOfWork.category.Insert(tmp);
             }
-            category = _unitOfWork.CategoryRepository.GetCondition(s => s.code.CompareTo("mobile") == 0 && s.isdeleted == false).FirstOrDefault();
+            category = _unitOfWork.category.GetCondition(s => s.code.CompareTo("mobile") == 0 && s.isdeleted == false).FirstOrDefault();
             if (category == null)
             {
                 SqlCategory tmp = new SqlCategory();
@@ -363,9 +363,9 @@ namespace Devify.Controllers
                 tmp.code = "mobile";
                 tmp.name = "Mobile";
                 tmp.des = "Mobile development";
-                _unitOfWork.CategoryRepository.Insert(tmp);
+                _unitOfWork.category.Insert(tmp);
             }
-            category = _unitOfWork.CategoryRepository.GetCondition(s => s.code.CompareTo("data") == 0 && s.isdeleted == false).FirstOrDefault();
+            category = _unitOfWork.category.GetCondition(s => s.code.CompareTo("data") == 0 && s.isdeleted == false).FirstOrDefault();
             if (category == null)
             {
                 SqlCategory tmp = new SqlCategory();
@@ -373,9 +373,9 @@ namespace Devify.Controllers
                 tmp.code = "data";
                 tmp.name = "Data";
                 tmp.des = "Data development";
-                _unitOfWork.CategoryRepository.Insert(tmp);
+                _unitOfWork.category.Insert(tmp);
             }
-            category = _unitOfWork.CategoryRepository.GetCondition(s => s.code.CompareTo("ai") == 0 && s.isdeleted == false).FirstOrDefault();
+            category = _unitOfWork.category.GetCondition(s => s.code.CompareTo("ai") == 0 && s.isdeleted == false).FirstOrDefault();
             if (category == null)
             {
                 SqlCategory tmp = new SqlCategory();
@@ -383,9 +383,9 @@ namespace Devify.Controllers
                 tmp.code = "ai";
                 tmp.name = "AI";
                 tmp.des = "AI development";
-                _unitOfWork.CategoryRepository.Insert(tmp);
+                _unitOfWork.category.Insert(tmp);
             }
-            category = _unitOfWork.CategoryRepository.GetCondition(s => s.code.CompareTo("ml") == 0 && s.isdeleted == false).FirstOrDefault();
+            category = _unitOfWork.category.GetCondition(s => s.code.CompareTo("ml") == 0 && s.isdeleted == false).FirstOrDefault();
             if (category == null)
             {
                 SqlCategory tmp = new SqlCategory();
@@ -393,9 +393,9 @@ namespace Devify.Controllers
                 tmp.code = "ml";
                 tmp.name = "Machine Learning";
                 tmp.des = "Machine Learning development";
-                _unitOfWork.CategoryRepository.Insert(tmp);
+                _unitOfWork.category.Insert(tmp);
             }
-            category = _unitOfWork.CategoryRepository.GetCondition(s => s.code.CompareTo("game") == 0 && s.isdeleted == false).FirstOrDefault();
+            category = _unitOfWork.category.GetCondition(s => s.code.CompareTo("game") == 0 && s.isdeleted == false).FirstOrDefault();
             if (category == null)
             {
                 SqlCategory tmp = new SqlCategory();
@@ -403,7 +403,7 @@ namespace Devify.Controllers
                 tmp.code = "game";
                 tmp.name = "Game";
                 tmp.des = "Game development";
-                _unitOfWork.CategoryRepository.Insert(tmp);
+                _unitOfWork.category.Insert(tmp);
             }
             await _unitOfWork.CompleteAsync();
             return Ok();

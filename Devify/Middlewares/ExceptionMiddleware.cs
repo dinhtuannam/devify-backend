@@ -1,4 +1,5 @@
-﻿using Devify.Models;
+﻿using Devify.Application.DTO;
+using Devify.Models;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Net;
@@ -34,11 +35,11 @@ namespace Devify.Middlewares
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var response = new API_Response_VM
+            var response = new ApiResponse
             {
-                Success = false,
-                Message = exception.Message,
-                ErrCode = "500"
+                result = false,
+                message = exception.Message,
+                code = 500
             };
             var jsonResponse = JsonConvert.SerializeObject(response);
             return context.Response.WriteAsync(jsonResponse);

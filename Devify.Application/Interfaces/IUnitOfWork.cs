@@ -2,19 +2,18 @@
 {
     public interface IUnitOfWork
     {
-        ICategoryRepository CategoryRepository { get; }
-        ILanguageRepository LanguageRepository { get; }
-        ICourseRepository CourseRepository { get; }
-        IFirebaseRepository FirebaseRepository { get; }
-        IAuthRepository AuthRepository { get; }
-        ITokenRepository TokenRepository { get; }
-        IAccountRepository AccountRepository { get; }
-        ICacheRepository CacheRepository { get; }
-        ILessonRepository LessonRepository { get; }
-        ICreatorRepository CreatorRepository { get; }   
-        ILevelRepository LevelRepository { get; }
-        IChapterRepository ChapterRepository { get; }
-        IRoleRepository RoleRepository { get; }
+        ICategoryRepository category { get; }
+        ILanguageRepository language { get; }
+        ICourseRepository course { get; }
+        IFirebaseRepository firebase { get; }
+        ITokenRepository token { get; }
+        IUserRepository user { get; }
+        ICacheRepository cache { get; }
+        ILessonRepository lesson { get; }
+        ICreatorRepository creator { get; }   
+        ILevelRepository level { get; }
+        IChapterRepository chapter { get; }
+        IRoleRepository role { get; }
         Task<int> CompleteAsync();
     }
 }
