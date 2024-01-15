@@ -1,5 +1,4 @@
-﻿using Devify.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Devify.Application.Interfaces;
 using MediatR;
 

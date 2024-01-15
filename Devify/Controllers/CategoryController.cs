@@ -1,15 +1,9 @@
-﻿using AutoMapper;
-using Devify.Application.DTO;
+﻿using Devify.Application.DTO;
 using Devify.Application.Features.Category.Commands;
 using Devify.Application.Features.Category.Queries;
-using Devify.Application.Features.Language.Commands;
-using Devify.Application.Features.Language.Queries;
-using Devify.Application.Interfaces;
-using Devify.Entity;
 using Devify.Filters;
 using Devify.Models;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers

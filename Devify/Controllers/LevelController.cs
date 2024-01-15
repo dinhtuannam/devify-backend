@@ -1,10 +1,6 @@
-﻿using Devify.Application.Commons;
-using Devify.Application.DTO;
+﻿using Devify.Application.DTO;
 using Devify.Application.Features.Level.Commands;
 using Devify.Application.Features.Level.Queries;
-using Devify.Application.Interfaces;
-using Devify.Entity;
-using Devify.Filters;
 using Devify.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

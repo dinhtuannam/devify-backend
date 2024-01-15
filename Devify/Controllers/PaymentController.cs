@@ -1,11 +1,6 @@
 ﻿using Devify.Application.DTO;
-using Devify.Application.Features.Language.Commands;
 using Devify.Application.Interfaces;
-using Devify.Entity;
-using Devify.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Policy;
 
 namespace Devify.Controllers
 {

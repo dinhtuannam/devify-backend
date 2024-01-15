@@ -1,9 +1,5 @@
-﻿using Devify.Application.Features.Course.Queries;
-using Devify.Application.Interfaces;
-using Devify.Entity;
+﻿using Devify.Application.Interfaces;
 using Devify.Filters;
-using Devify.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers

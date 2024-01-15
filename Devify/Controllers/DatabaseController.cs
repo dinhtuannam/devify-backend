@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using Devify.Application.Interfaces;
+﻿using Devify.Application.Interfaces;
 using Devify.Entity;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers

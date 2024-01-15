@@ -1,13 +1,11 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Features.Course.Commands;
 using Devify.Application.Features.Course.Queries;
-using Devify.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Devify.Filters;
 using Devify.Entity;
 using Devify.Application.Interfaces;
-using AutoMapper.Configuration.Annotations;
 
 namespace Devify.Controllers
 {
