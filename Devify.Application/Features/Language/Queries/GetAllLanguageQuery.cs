@@ -1,11 +1,6 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Devify.Application.Features.Language.Queries
 {
@@ -24,7 +19,7 @@ namespace Devify.Application.Features.Language.Queries
                 {
                     result = true,
                     message = "Get list language successfully",
-                    code = 0,
+                    code = 200,
                     data = _unitOfWork.language.getAllLanguages()
                 };
                 return Task.FromResult(res);

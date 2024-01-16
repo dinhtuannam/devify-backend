@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Devify.Infrastructure.Persistance;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Devify.Infrastructure.Helpers
 {
-    public static class StaticHelper
+    public static class ConvertString
     {
         public static string NormalizeString(string input)
         {
@@ -25,6 +21,20 @@ namespace Devify.Infrastructure.Helpers
 
             string result = stringBuilder.ToString().Normalize(NormalizationForm.FormC);
             return result.ToLowerInvariant().Replace(" ", "");
+        }
+
+        public static string getSlug(string input)
+        {
+            string cleanedString = new string(input
+               .Where(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c))
+               .ToArray());
+
+            cleanedString = cleanedString.ToLowerInvariant();
+
+            cleanedString = cleanedString.Replace(' ', '-');
+
+            cleanedString = cleanedString + "-" + DataContext.randomString(6);
+            return cleanedString;
         }
     }
 }

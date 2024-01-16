@@ -1,11 +1,7 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Devify.Application.Features.Role.Queries
 {
@@ -25,14 +21,12 @@ namespace Devify.Application.Features.Role.Queries
             }
             public Task<ApiResponse> Handle(GetRoleQuery query, CancellationToken cancellationToken)
             {
-                ApiResponse res = new ApiResponse()
+                RoleItem role = _unitOfWork.role.getRole(query.code);
+                if (string.IsNullOrEmpty(role.code))
                 {
-                    result = true,
-                    message = "Get role successfully",
-                    code = 0,
-                    data = _unitOfWork.role.getRole(query.code)
-                };
-                return Task.FromResult(res);
+                    return Task.FromResult(new ApiResponse(false, "role not found", role, 404));
+                }
+                return Task.FromResult(new ApiResponse(true, "get role successfully", role, 200));
             }
         }
     }

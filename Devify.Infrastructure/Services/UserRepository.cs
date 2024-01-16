@@ -2,6 +2,7 @@
 using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
+using Devify.Infrastructure.Helpers;
 using Devify.Infrastructure.Persistance;
 using Devify.Infrastructure.SeedWorks;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +36,7 @@ namespace Devify.Infrastructure.Services
 
         public async Task<SqlUser> createUser(string username, string password, string displayName, string email, string role)
         {
-            string code = ConfigKey.randomString(16);
+            string code = ConvertString.getSlug(displayName);
             SqlUser? user = _unitOfWork.user.GetCondition(s => s.code.CompareTo(code) == 0 && s.isdeleted == false).FirstOrDefault();
             if(user != null)
             {
@@ -160,6 +161,31 @@ namespace Devify.Infrastructure.Services
         public UserItem getUserByName(string displayName)
         {
             SqlUser? user = _unitOfWork.user.GetCondition(s => s.displayName.CompareTo(displayName) == 0 && s.isdeleted == false)
+                                            .Include(s => s.role).FirstOrDefault();
+            if (user == null)
+            {
+                return new UserItem();
+            }
+            UserItem item = new UserItem
+            {
+                code = user.code,
+                username = user.username,
+                email = user.email,
+                displayName = user.displayName,
+                image = user.image,
+                about = user.about,
+                social = user.social,
+                isbanned = user.isbanned,
+                role = user.role != null ? user.role.code : "",
+                createTime = user.DateCreated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss"),
+                updateTime = user.DateUpdated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss")
+            };
+            return item;
+        }
+
+        public UserItem getUserByUsername(string username)
+        {
+            SqlUser? user = _unitOfWork.user.GetCondition(s => s.displayName.CompareTo(username) == 0 && s.isdeleted == false)
                                             .Include(s => s.role).FirstOrDefault();
             if (user == null)
             {

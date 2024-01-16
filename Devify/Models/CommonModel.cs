@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Devify.Application.DTO
+﻿namespace Devify.Models
 {
-    public class CourseSearchParams
+    public class SearchParam
     {
         private int _page = 1;
         private int _pageSize = 12;
@@ -24,8 +18,13 @@ namespace Devify.Application.DTO
             get { return _pageSize; }
             set { _pageSize = (value != 0) ? value : 12; }
         }
-        public List<string>? cat { get; set; }
-        public List<string>? lang { get; set; }
-        public List<string>? lvl { get; set; }
+    }
+
+    public class CourseSearchParam : SearchParam
+    {
+        public string title { get; set; } = "";
+        public List<string> cat { get; set; } = new List<string>();
+        public List<string> lang { get; set; } = new List<string>();
+        public List<string> lvl { get; set; } = new List<string>();
     }
 }

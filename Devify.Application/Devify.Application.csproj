@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Token\**" />
+    <EmbeddedResource Remove="Features\Token\**" />
+    <None Remove="Features\Token\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="MediatR" Version="11.0.0" />
@@ -18,10 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Devify.Entity\Devify.Entity.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Token\" />
   </ItemGroup>
 
 </Project>

@@ -19,7 +19,7 @@ namespace Devify.Application.Features.Level.Queries
                 {
                     result = true,
                     message = "Get list level successfully",
-                    code = 0,
+                    code = 200,
                     data = _unitOfWork.level.getAllLevel()
                 };
                 return Task.FromResult(res);

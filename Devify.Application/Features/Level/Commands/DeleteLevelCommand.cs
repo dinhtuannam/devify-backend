@@ -28,24 +28,17 @@ namespace Devify.Application.Features.Level.Commands
             }
             public async Task<ApiResponse> Handle(DeleteLevelCommand query, CancellationToken cancellationToken)
             {
-                bool res = await _unitOfWork.level.deleteLevel(query.code);
-                if (!res)
+                LevelItem exist = _unitOfWork.level.getLevel(query.code);
+                if (string.IsNullOrEmpty(exist.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "Delete level failed",
-                        code = 400,
-                        data = false
-                    };
+                    return new ApiResponse(false, "Level not found", false, 404);
                 }
-                return new ApiResponse()
+                bool level = await _unitOfWork.level.deleteLevel(query.code);
+                if (!level)
                 {
-                    result = true,
-                    message = "Create level successfully",
-                    code = 0,
-                    data = true
-                };
+                    return new ApiResponse(false, "Delete level failed", false, 400);
+                }
+                return new ApiResponse(true, "Delete level successfully", true, 200);
             }
         }
     }

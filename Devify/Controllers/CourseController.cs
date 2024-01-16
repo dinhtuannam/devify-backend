@@ -4,8 +4,8 @@ using Devify.Application.Features.Course.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Devify.Filters;
-using Devify.Entity;
 using Devify.Application.Interfaces;
+using Devify.Models;
 
 namespace Devify.Controllers
 {
@@ -14,105 +14,34 @@ namespace Devify.Controllers
     public class CourseController : ControllerBase
     {
         private IMediator _mediator;
-        private IUnitOfWork _unitOfWork;
-        public CourseController(IMediator mediator, IUnitOfWork unitOfWork)
+        public CourseController(IMediator mediator)
         {
             _mediator = mediator;
-            _unitOfWork = unitOfWork;
-        }
-        [HttpGet("home", Name = "home")]
-        [Cache(120)]
-        public async Task<IActionResult> getHomeCourses()
-        {
-            return Ok();
-        }
-
-        [HttpGet("slug/{slug}", Name = "get-course-by-slug")]
-        [Cache(120)]
-        public async Task<IActionResult> getDetailBySlug(string slug)
-        {
-            var courseResult = await _mediator.Send(new GetDetailCourseBySlug { Slug = slug });
-            
-            if (courseResult == null)
-            {
-                return NotFound(new ApiResponse
-                {
-                    result = false,
-                    message = $"Cannot not find course with slug = {slug}",
-                    code = 404
-                });
-            }
-            return Ok(new ApiResponse
-            {
-                result = true,
-                message = "Get course success",
-                data = courseResult,
-                code = 200
-            });
-        }
-
-        [HttpGet("search", Name = "search-course")]
-        [Cache(120)]
-        public async Task<IActionResult> searchCourse([FromQuery] CourseSearchParams model)
-        {
-            var result = await _unitOfWork.course.SearchCourse(model);
-            return Ok(new ApiResponse
-            {
-                result = true,
-                message = "searching course sucessfully",
-                data = result,
-                code = 200
-            });
         }
 
         [HttpGet]
+        [Route("/get-all-course")]
         [Cache(120)]
-        public async Task<IActionResult> getAllCourse()
+        public async Task<IActionResult> getAllCourse([FromQuery] CourseSearchParam req)
         {
-            var courseResult = await _mediator.Send(new GetAllCourse());
-            if (courseResult == null)
-                return NotFound(new ApiResponse
-                {
-                    result = false,
-                    message = "Something wrong, please try again later !",
-                    code = 404
-                });
-            return Ok(new ApiResponse
-            {
-                result = true,
-                message = "Get all course success",
-                data = courseResult
-            });
+            ApiResponse result = await _mediator.Send(new GetAllCourseQuery(req.title,req.pageSize,req.page,req.cat,req.lang,req.lvl));
+            return Program.my_api.response(result);
+        }
+
+        [HttpGet]
+        [Route("{code}/get-course")]
+        [User]
+        [Cache(120)]
+        public async Task<IActionResult> getCourse(string code)
+        {
+            ApiResponse result = await _mediator.Send(new GetCourseQuery(code));
+            return Program.my_api.response(result);
         }
 
 
-        [HttpGet("{slug}/learning", Name = "get-learning-course")]
+       /* [HttpGet("{course}/lesson/{lesson}", Name = "get-learning-lesson")]
         [Cache(120)]
-        public async Task<IActionResult> getLearningCourse(string slug)
-        {
-            var courseResult = await _mediator.Send(new GetLearningCourse { Slug = slug });
-
-            if (courseResult == null)
-            {
-                return NotFound(new ApiResponse
-                {
-                    result = false,
-                    message = $"Cannot not find learning course with slug = {slug}",
-                    code = 404
-                });
-            }
-            return Ok(new ApiResponse
-            {
-                result = true,
-                message = "Get course success",
-                data = courseResult
-                
-            });
-        }
-
-        [HttpGet("{slug}/lesson/{lessonId}", Name = "get-learning-lesson")]
-        [Cache(120)]
-        public async Task<IActionResult> getLearningLesson(string slug,Guid lessonId)
+        public async Task<IActionResult> getLearningLesson(string course,string lesson)
         {
             var courseResult = await _mediator.Send(new GetLearningLesson { slugRequest = slug, lessonIdRequest = lessonId });
             if (courseResult == null)
@@ -131,32 +60,51 @@ namespace Devify.Controllers
                 data = courseResult
 
             });
-        }
+        }*/
 
         [HttpPost]
-        public async Task<IActionResult> CreateCourse([FromForm] CreateCourseRequest model)
+        [Role("admin","creator")]
+        [Route("/create-new-course")]
+        public async Task<IActionResult> CreateCourse(CreateCourseModel req)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _mediator.Send(new CreateCourseCommand { request = model });
-                return result.result ? Ok(result) : BadRequest(result);
-            }
-            return BadRequest(ModelState);
+            string user = HttpContext.Items["code"] as string ?? "";
+            ApiResponse result = await _mediator.Send(new CreateCourseCommand(
+                user,
+                req.title,
+                req.des,
+                req.price,
+                req.salePrice,
+                req.issale,
+                req.category,
+                req.languages,
+                req.levels
+            ));
+            return Program.my_api.response(result);
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteCourse(Guid id)
+        [Role("admin", "creator")]
+        [Route("{code}")]
+        public async Task<IActionResult> DeleteCourse(string code)
         {
-            return Ok();
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
+            ApiResponse result = await _mediator.Send(new DeleteCourseCommand(code,user,role));
+            return Program.my_api.response(result);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCourse(SqlCourse model)
+        [Role("admin", "creator")]
+        [Route("/edit-course")]
+        public async Task<IActionResult> UpdateCourse(UpdateCourseModel req)
         {
-            return Ok();
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
+            ApiResponse result = await _mediator.Send(new UpdateCourseCommand(user,role,req.code,req.title,req.des,req.price,req.salePrice,req.issale,req.category));
+            return Program.my_api.response(result);
         }
 
-        [HttpPost("{courseId}/chapter")]
+        /*[HttpPost("{courseId}/chapter")]
         public async Task<IActionResult> CreateCourseChapter([FromForm] CreateCourseChapterRequest model, Guid courseId)
         {
             if (ModelState.IsValid)
@@ -198,6 +146,6 @@ namespace Devify.Controllers
                 return result.result ? Ok(result) : BadRequest(result);
             }
             return BadRequest(ModelState);
-        }
+        }*/
     }
 }

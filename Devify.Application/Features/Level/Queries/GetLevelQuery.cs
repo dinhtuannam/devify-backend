@@ -20,14 +20,12 @@ namespace Devify.Application.Features.Level.Queries
             }
             public Task<ApiResponse> Handle(GetLevelQuery query, CancellationToken cancellationToken)
             {
-                ApiResponse res = new ApiResponse()
+                LevelItem level = _unitOfWork.level.getLevel(query.code);
+                if (string.IsNullOrEmpty(level.code))
                 {
-                    result = true,
-                    message = "Get level successfully",
-                    code = 0,
-                    data = _unitOfWork.level.getLevel(query.code)
-                };
-                return Task.FromResult(res);
+                    return Task.FromResult(new ApiResponse(false, "level not found", level, 404));
+                }
+                return Task.FromResult(new ApiResponse(true, "get level successfully", level, 200));
             }
         }
     }

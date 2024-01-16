@@ -24,7 +24,7 @@ namespace Devify.Application.Features.Role.Queries
                 {
                     result = true,
                     message = "Get list role successfully",
-                    code = 0,
+                    code = 200,
                     data = _unitOfWork.role.getListRole()
                 };
                 return Task.FromResult(res);

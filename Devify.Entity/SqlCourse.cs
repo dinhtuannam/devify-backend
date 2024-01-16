@@ -25,6 +25,7 @@ namespace Devify.Entity
         public List<SqlRating>? ratings { get; set; }
         public List<SqlLevel>? levels { get; set; }
         public List<SqlChapter>? chapters { get; set; }
+        public List<SqlLesson>? lessons { get; set; }
         public List<SqlDetailOrder>? orders { get; set; }
         public List<SqlLanguage>? languages { get; set; }
         public SqlCourse() : base() { }

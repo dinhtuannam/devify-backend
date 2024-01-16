@@ -19,12 +19,12 @@ namespace Devify.Controllers
         }
 
         [HttpGet]
-        [Route("get-all-roles")]
+        [Route("get-all-role")]
         [Cache(3600)]
         public async Task<IActionResult> GetAllRoles()
         {
             ApiResponse api = await _mediator.Send(new GetListRoleQuery());
-            return Ok(api);
+            return Program.my_api.response(api);
         }
 
         [HttpGet]
@@ -33,43 +33,31 @@ namespace Devify.Controllers
         public async Task<IActionResult> GetRole(string code)
         {
             ApiResponse api = await _mediator.Send(new GetRoleQuery(code));
-            return Ok(api);
+            return Program.my_api.response(api);
         }
 
         [HttpPost]
         [Route("create-new-role")]
         public async Task<IActionResult> AddNewRole(CreateRoleModel model)
         {
-            ApiResponse res = await _mediator.Send(new CreateRoleCommand(model.code, model.name, model.des));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            ApiResponse api = await _mediator.Send(new CreateRoleCommand(model.code, model.name, model.des));
+            return Program.my_api.response(api);
         }
 
         [HttpDelete]
         [Route("{code}")]
         public async Task<IActionResult> DeleteRole(string code)
         {
-            ApiResponse res = await _mediator.Send(new DeleteRoleCommand(code));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            ApiResponse api = await _mediator.Send(new DeleteRoleCommand(code));
+            return Program.my_api.response(api);
         }
 
         [HttpPut]
         [Route("edit-role")]
         public async Task<IActionResult> UpdateRole(UpdateRoleModel model)
         {
-            ApiResponse res = await _mediator.Send(new UpdateRoleCommand(model.code, model.name, model.des));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            ApiResponse api = await _mediator.Send(new UpdateRoleCommand(model.code, model.name, model.des));
+            return Program.my_api.response(api);
         }
     }
 }

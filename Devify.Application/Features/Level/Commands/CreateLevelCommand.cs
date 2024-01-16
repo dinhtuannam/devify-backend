@@ -27,24 +27,17 @@ namespace Devify.Application.Features.Level.Commands
             }
             public async Task<ApiResponse> Handle(CreateLevelCommand query, CancellationToken cancellationToken)
             {
+                LevelItem exist = _unitOfWork.level.getLevel(query.code);
+                if (string.IsNullOrEmpty(exist.code))
+                {
+                    return new ApiResponse(false, "Level not found", "", 404);
+                }
                 SqlLevel level = await _unitOfWork.level.createLevel(query.code, query.name, query.des);
                 if (string.IsNullOrEmpty(level.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "Create level failed",
-                        code = 400,
-                        data = ""
-                    };
+                    return new ApiResponse(false, "Create level failed", "", 400);
                 }
-                return new ApiResponse()
-                {
-                    result = true,
-                    message = "Create level successfully",
-                    code = 0,
-                    data = level.code
-                };
+                return new ApiResponse(true, "Create level successfully", level.code, 200);
             }
         }
     }

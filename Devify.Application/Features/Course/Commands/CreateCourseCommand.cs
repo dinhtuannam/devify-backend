@@ -1,69 +1,64 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
+using Devify.Entity;
 using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Devify.Application.Features.Course.Commands
 {
     public class CreateCourseCommand : IRequest<ApiResponse>
     {
-        public CreateCourseRequest request { get; set; }
-        public class CreateCourseCommandHandler : IRequestHandler<CreateCourseCommand,ApiResponse>
+        public string user { get; set; } = "";
+        public string title { get; set; } = "";
+        public string des { get; set; } = "";
+        public double price { get; set; } = 0;
+        public double salePrice { get; set; } = 0;
+        public bool issale { get; set; } = false;
+        public string category { get; set; } = "";
+        public List<string> lang { get; set; } = new List<string>();
+        public List<string> lvl { get; set; } = new List<string>();
+        public CreateCourseCommand(string user, string title, string des, double price, double salePrice, bool issale, string category,List<string> lang,List<string> lvl)
+        {
+            this.user = user;
+            this.title = title;
+            this.des = des;
+            this.price = price;
+            this.salePrice = salePrice;
+            this.issale = issale;
+            this.category = category;
+            this.lang = lang;
+            this.lvl = lvl;
+        }
+
+        public class Handler : IRequestHandler<CreateCourseCommand, ApiResponse>
         {
             private readonly IUnitOfWork _unitOfWork;
-            public CreateCourseCommandHandler(IUnitOfWork unitOfWork)
+            public Handler(IUnitOfWork unitOfWork)
             {
                 _unitOfWork = unitOfWork;
             }
-            public async Task<ApiResponse> Handle(CreateCourseCommand command, CancellationToken cancellationToken)
-            {                
-                var apiResponse = new ApiResponse
+            public async Task<ApiResponse> Handle(CreateCourseCommand query, CancellationToken cancellationToken)
+            {
+                SqlCourse? course = await _unitOfWork.course.createCourse(
+                    query.user,
+                    query.title,
+                    query.des,
+                    query.price,
+                    query.salePrice,
+                    query.issale,
+                    query.category,
+                    query.lang,
+                    query.lvl
+                );
+                if (string.IsNullOrEmpty(course.code))
                 {
-                    result = true,
-                    message = "create course successfully", 
-                };
-                /*var createCourseResult = false;
-                var firebaseResult = new FirebaseDTO();
-                var isSlugValid = _unitOfWork.CourseRepository.GetByCondition(c => c.Slug == command.request.Slug).ToList();
-                if (isSlugValid.Count > 0)
-                {
-                    var newSlug = command.request.Slug;
-                    newSlug = AutoGenerate.GenerateRandomString(newSlug, 5);
-                    command.request.Slug = newSlug;
+                    return new ApiResponse(false, "Create course failed", "", 400);
                 }
-                var newCourse = new Entity.SqlCourse
-                {
-                    CourseId = new Guid(),
-                    Title = command.request.Title,
-                    Purchased = command.request.Purchased,
-                    Price = command.request.Price,
-                    Description = command.request.Description,
-                    Slug = command.request.Slug,
-                    Image = "",
-                    Status = "active",
-                    CreatorId = command.request.CreatorId,
-                    CategoryId = command.request.CategoryId,
-                    CourseLevelId = command.request.CourseLevelId,
-                    DateCreated = DateTime.UtcNow,
-                    DateUpdated = DateTime.UtcNow,
-
-                };             
-                if (command.request.Image.Length > 0)
-                {
-                    var fileName = DateTime.UtcNow.ToString("yymmssfff") + command.request.Image.FileName;
-                    firebaseResult = await _unitOfWork.FirebaseRepository.UploadToFirebase(command.request.Image.OpenReadStream(), fileName);
-                }
-                if (firebaseResult.Success == true)
-                {
-                    newCourse.Image = firebaseResult.Data;
-                    createCourseResult = await _unitOfWork.CourseRepository.AddAsAsync(newCourse);
-                }
-                if (createCourseResult == false)
-                {
-                    apiResponse.Success = false;
-                    apiResponse.Message = "create course failed";
-                }
-                await _unitOfWork.CompleteAsync();*/
-                return apiResponse;
+                return new ApiResponse(true, "Create course successfully", course.code, 200);
             }
         }
     }

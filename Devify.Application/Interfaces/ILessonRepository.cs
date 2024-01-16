@@ -10,6 +10,6 @@ namespace Devify.Application.Interfaces
 {
     public interface ILessonRepository : IGenericRepository<SqlLesson>
     {
-        public List<LessonItem> getAllLesson();
+        public List<DetailLessonDTO> getAllLesson();
     }
 }

@@ -19,12 +19,12 @@ namespace Devify.Controllers
         }
 
         [HttpGet]
-        [Route("get-all-languages")]
+        [Route("get-all-language")]
         [Cache(3600)]
         public async Task<IActionResult> GetAllLanguage()
         {
             ApiResponse api = await _mediator.Send(new GetAllLanguageQuery());
-            return Ok(api);
+            return Program.my_api.response(api);
         }
 
         [HttpGet]
@@ -33,7 +33,7 @@ namespace Devify.Controllers
         public async Task<IActionResult> GetLanguage(string code)
         {
             ApiResponse api = await _mediator.Send(new GetLanguageQuery(code));
-            return Ok(api);
+            return Program.my_api.response(api);
         }
 
         [HttpPost]
@@ -41,11 +41,7 @@ namespace Devify.Controllers
         public async Task<IActionResult> AddNewLanguage(CreateLanguageModel model)
         {
             ApiResponse res = await _mediator.Send(new CreateLanguageCommand(model.code, model.name, model.des));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            return Program.my_api.response(res);
         }
 
         [HttpDelete]
@@ -53,11 +49,7 @@ namespace Devify.Controllers
         public async Task<IActionResult> DeleteLanguage(string code)
         {
             ApiResponse res = await _mediator.Send(new DeleteLanguageCommand(code));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            return Program.my_api.response(res);
         }
 
         [HttpPut]
@@ -65,11 +57,7 @@ namespace Devify.Controllers
         public async Task<IActionResult> UpdateLanguage(UpdateLanguageModel model)
         {
             ApiResponse res = await _mediator.Send(new UpdateLanguageCommand(model.code, model.name, model.des));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            return Program.my_api.response(res);
         }
     }
 }

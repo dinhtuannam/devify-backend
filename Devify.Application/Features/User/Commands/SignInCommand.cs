@@ -49,7 +49,7 @@ namespace Devify.Application.Features.User.Commands
                     {
                         result = false,
                         message = "Something wrong please try again",
-                        code = 500,
+                        code = 400,
                         data = data
                     };
                 }

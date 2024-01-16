@@ -1,6 +1,7 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Features.Language.Commands;
 using Devify.Application.Interfaces;
+using Devify.Entity;
 using MediatR;
 
 namespace Devify.Application.Features.Category.Commands
@@ -22,24 +23,17 @@ namespace Devify.Application.Features.Category.Commands
 
             public async Task<ApiResponse> Handle(DeleteCategoryCommand query, CancellationToken cancellationToken)
             {
-                bool res = await _unitOfWork.category.deleteCategory(query.code);
-                if (!res)
+                CategoryItem exist = _unitOfWork.category.getCategory(query.code);
+                if (string.IsNullOrEmpty(exist.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "Delete category failed",
-                        data = res,
-                        code = 400
-                    };
+                    return new ApiResponse(false, "Category not found", false, 404);
                 }
-                return new ApiResponse()
+                bool cat = await _unitOfWork.category.deleteCategory(query.code);
+                if (!cat)
                 {
-                    result = true,
-                    message = "Delete category successfully",
-                    data = res,
-                    code = 200
-                };
+                    return new ApiResponse(false, "Delete category failed", false, 400);
+                }
+                return new ApiResponse(true, "Delete category successfully", true, 200);
             }
         }
     }

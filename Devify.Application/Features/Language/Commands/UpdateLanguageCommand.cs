@@ -26,24 +26,17 @@ namespace Devify.Application.Features.Language.Commands
 
             public async Task<ApiResponse> Handle(UpdateLanguageCommand query, CancellationToken cancellationToken)
             {
-                SqlLanguage lang = await _unitOfWork.language.updateLanguage(query.code, query.name, query.des);
+                LanguageItem lang = _unitOfWork.language.getLanguage(query.code);
                 if (string.IsNullOrEmpty(lang.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "Update language failed",
-                        data = "",
-                        code = 400
-                    };
+                    return new ApiResponse(false, "language not found", lang, 404);
                 }
-                return new ApiResponse()
+                SqlLanguage result = await _unitOfWork.language.updateLanguage(query.code, query.name, query.des);
+                if (string.IsNullOrEmpty(result.code))
                 {
-                    result = true,
-                    message = "Update language successfully",
-                    data = "",
-                    code = 200
-                };  
+                    return new ApiResponse(false, "Update language failed", "", 400);
+                }
+                return new ApiResponse(true, "Update language successfully", result.code, 200);
             }
         }
     }

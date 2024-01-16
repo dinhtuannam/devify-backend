@@ -31,24 +31,17 @@ namespace Devify.Application.Features.Role.Commands
 
             public async Task<ApiResponse> Handle(UpdateRoleCommand query, CancellationToken cancellationToken)
             {
+                RoleItem exist = _unitOfWork.role.getRole(query.code);
+                if (string.IsNullOrEmpty(exist.code))
+                {
+                    return new ApiResponse(false, "role not found", "", 404);
+                }
                 SqlRole role = await _unitOfWork.role.updateRole(query.code, query.name, query.des);
                 if (string.IsNullOrEmpty(role.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "Update role failed",
-                        data = "",
-                        code = 400
-                    };
+                    return new ApiResponse(false, "update role failed", "", 400);
                 }
-                return new ApiResponse()
-                {
-                    result = true,
-                    message = "Update role successfully",
-                    data = role.code,
-                    code = 200
-                };
+                return new ApiResponse(true, "update role successfully", role.code, 200);
             }
         }
     }

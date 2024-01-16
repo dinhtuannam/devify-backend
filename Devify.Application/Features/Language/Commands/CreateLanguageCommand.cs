@@ -29,24 +29,17 @@ namespace Devify.Application.Features.Language.Commands
 
             public async Task<ApiResponse> Handle(CreateLanguageCommand query, CancellationToken cancellationToken)
             {
+                LanguageItem exist = _unitOfWork.language.getLanguage(query.code);
+                if (string.IsNullOrEmpty(exist.code))
+                {
+                    return new ApiResponse(false, "Language not found", "", 404);
+                }
                 SqlLanguage lang = await _unitOfWork.language.createLanguage(query.code, query.name, query.des);
                 if (string.IsNullOrEmpty(lang.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "Create language failed",
-                        data = "",
-                        code = 400
-                    };
+                    return new ApiResponse(false, "Create Language failed", "", 400);
                 }
-                return new ApiResponse()
-                {
-                    result = true,
-                    message = "Create language successfully",
-                    data = "",
-                    code = 200
-                };
+                return new ApiResponse(true, "Create Language successfully", lang.code, 200);
             }
         }
     }

@@ -91,12 +91,12 @@ namespace Devify.Application.Features.User.Commands
                 }
                 if (flag)
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "You dont have permission",
-                        data = ""
-                    };
+                    return new ApiResponse(false, "You dont have permission", "", 403);
+                }
+                UserItem exist = _unitOfWork.user.getUser(query.code);
+                if (string.IsNullOrEmpty(exist.code))
+                {
+                    return new ApiResponse(true, "user not found", "", 400);
                 }
                 SqlUser newUser = await _unitOfWork.user.editUser(
                     query.code,
@@ -112,19 +112,9 @@ namespace Devify.Application.Features.User.Commands
 
                 if (string.IsNullOrEmpty(newUser.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "update user failed",
-                        data = ""
-                    };
+                    return new ApiResponse(false, "update user failed", "", 400);
                 }
-                return new ApiResponse()
-                {
-                    result = true,
-                    message = "update user successfully",
-                    data = newUser.code
-                };
+                return new ApiResponse(true, "update user successfully", newUser.code, 200);
             }
         }
     }

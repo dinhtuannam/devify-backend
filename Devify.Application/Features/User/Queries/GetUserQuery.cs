@@ -22,14 +22,12 @@ namespace Devify.Application.Features.User.Queries
             }
             public Task<ApiResponse> Handle(GetUserQuery query, CancellationToken cancellationToken)
             {
-                ApiResponse res = new ApiResponse()
+                UserItem user = _unitOfWork.user.getUser(query.code);
+                if (string.IsNullOrEmpty(user.code))
                 {
-                    result = true,
-                    message = "Get list user successfully",
-                    code = 0,
-                    data = _unitOfWork.user.getUser(query.code)
-                };
-                return Task.FromResult(res);
+                    return Task.FromResult(new ApiResponse(false, "user not found", user, 404));
+                }
+                return Task.FromResult(new ApiResponse(true, "Get list user successfully", user, 200));
             }
         }
     }

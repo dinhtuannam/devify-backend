@@ -73,29 +73,24 @@ namespace Devify.Application.Features.User.Commands
                 }
                 if (flag)
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "You dont have permission",
-                        data = ""
-                    };
+                    return new ApiResponse(false, "You dont have permission", "", 403);
+                }
+                UserItem exist_displayName = _unitOfWork.user.getUserByName(query.displayName);
+                if (!string.IsNullOrEmpty(exist_displayName.code))
+                {
+                    return new ApiResponse(true, "display name already used", "", 400);
+                }
+                UserItem exist_username = _unitOfWork.user.getUserByUsername(query.username);
+                if (!string.IsNullOrEmpty(exist_username.code))
+                {
+                    return new ApiResponse(true, "username already used", "", 400);
                 }
                 SqlUser newUser = await _unitOfWork.user.createUser(query.username, query.password, query.displayName, query.email, query.role);
                 if (string.IsNullOrEmpty(newUser.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "create user failed",
-                        data = ""
-                    };
+                    return new ApiResponse(false, "create user failed", "", 400);
                 }
-                return new ApiResponse()
-                {
-                    result = true,
-                    message = "create user successfully",
-                    data = newUser.code
-                };
+                return new ApiResponse(true, "create user successfully", newUser.code, 200);
             }
         }
     }

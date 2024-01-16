@@ -1,293 +1,398 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
+using Devify.Infrastructure.Helpers;
 using Devify.Infrastructure.Persistance;
 using Devify.Infrastructure.SeedWorks;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace Devify.Infrastructure.Services
 {
     public class CourseRepository : GenericRepository<SqlCourse>, ICourseRepository
     {
-        private readonly DataContext _DbContext;
         private readonly IUnitOfWork _unitOfWork;
         public CourseRepository(DataContext context, IUnitOfWork unitOfWork) : base(context)
         {
-            _DbContext = context;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<DataListDTO<IEnumerable<AllCourseList>>> GetAllCourse()
+        public DetailCourseDTO GetCourse(string code)
         {
-            var dataList = new DataListDTO<IEnumerable<AllCourseList>>();
-            try
-            {               
-                /*var query = await _context.Courses.AsNoTracking()
-                    .Include(c => c.Creator).ThenInclude(c => c.User)
-                    .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
-                    .ToListAsync();
-                dataList.Items = query.Select(c => new AllCourseList
-                {
-                    CourseId = c.CourseId,
-                    Title = c.Title,
-                    Purchased = c.Purchased,
-                    Price = c.Price,
-                    Slug = c.Slug,
-                    Image = c.Image,
-                    Creator = new DetailCourseCreator
-                    {
-                        CreatorId = c.Creator.CreatorId,
-                        DisplayName = c.Creator.User.DisplayName,
-                        Slug = c.Creator.Slug,
-                        Image = c.Creator.User.Image
-                    },
-                    CourseLanguages = c.CourseLanguages.Select(cl => new DetailCourseLanguageList
-                    {
-                        LanguageId = cl.Language.LanguageId,
-                        Name = cl.Language.Name
-                    }).ToList()
-                });
-                dataList.TotalRecords = query.Count;
-                Console.WriteLine($"[CourseService] -> GetAllCourseAsync -> success ");*/
-                return dataList;
-            }
-            catch(Exception ex)
+            DetailCourseDTO item = new DetailCourseDTO();
+            SqlCourse? course = _unitOfWork.course.GetCode(code, 0)
+                                                  .Include(s => s.category)
+                                                  .Include(s => s.languages)
+                                                  .Include(s => s.levels)
+                                                  .Include(s => s.user)
+                                                  .Include(s => s.chapters!).ThenInclude(s => s.lessons!)
+                                                  .FirstOrDefault();
+            if(course == null)
             {
-                Console.WriteLine($"[CourseService] -> GetAllCourseAsync -> failed , Exception: {ex.Message}");
-                dataList.Items = null;
-                dataList.TotalRecords = 0;
-                return dataList;
+                return item;
             }
-            
-        }
 
-        public async Task<DetailCourseDTO> GetCourseBySlug(string slug)
-        {
-            try
+            item.code = course.code;
+            item.title = course.title;
+            item.price = course.price;
+            item.purchases = course.purchases;
+            item.salePrice = course.salePrice;
+            item.issale = course.issale;
+            item.isactivated = course.isactivated;
+            item.des = course.des;
+            item.image = course.image;
+            item.createTime = course.DateCreated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+            item.updateTime = course.DateUpdated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+
+            if (course.category != null && course.category.isdeleted == false)
             {
-                /*var query = await _context.Courses.AsNoTracking()
-                        .Include(c => c.Creator).ThenInclude(c => c.User)
-                        .Include(c => c.Chapters.OrderBy(c => c.Step)).ThenInclude(c => c.Lessons.OrderBy(l => l.Step))
-                        .Include(c => c.Category)
-                        .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
-                        .Where(c => c.Slug == slug).FirstOrDefaultAsync();
-                if (query == null)
-                    return null;
-                var course = new DetailCourseDTO
+                item.category.code = course.category.code;
+                item.category.name = course.category.name;
+                item.category.des = course.category.des;
+            }
+
+            if (course.user != null && course.user.isdeleted == false)
+            {
+                item.creator.code = course.user.code;
+                item.creator.username = course.user.username;
+                item.creator.displayName = course.user.displayName;
+                item.creator.image = course.user.image;
+            }
+
+            if (course.languages != null)
+            {
+                foreach (SqlLanguage l in course.languages)
                 {
-                    CourseId = query.CourseId,
-                    Title = query.Title,
-                    Purchased = query.Purchased,
-                    Price = query.Price,
-                    Description = query.Description,
-                    Slug = query.Slug,
-                    Image = query.Image,
-                    Creator = new DetailCourseCreator
+                    if (l.isdeleted == false)
                     {
-                        CreatorId = query.Creator.CreatorId,
-                        DisplayName = query.Creator.User.DisplayName,
-                        Slug = query.Creator.Slug,
-                        Image = query.Creator.User.Image
-                    },
-                    Category = new DetailCourseCategory
+                        CourseAttribute attr = new CourseAttribute();
+                        attr.code = l.code;
+                        attr.name = l.name;
+                        attr.des = l.des;
+                        item.languages.Add(attr);
+                    }
+                }
+            }
+
+            if (course.levels != null)
+            {
+                foreach (SqlLevel l in course.levels)
+                {
+                    if (l.isdeleted == false)
                     {
-                        CategoryId = query.Category.CategoryId,
-                        CategoryName = query.Category.CategoryName,
-                    },
-                    CourseLanguages = query.CourseLanguages.Select( item => new DetailCourseLanguageList
+                        CourseAttribute attr = new CourseAttribute();
+                        attr.code = l.code;
+                        attr.name = l.name;
+                        attr.des = l.des;
+                        item.level.Add(attr);
+                    }
+                }
+            }
+
+            if (course.chapters != null)
+            {
+                foreach (SqlChapter ch in course.chapters)
+                {
+                    if (ch.isdeleted == false)
                     {
-                        LanguageId = item.Language.LanguageId,
-                        Name = item.Language.Name
-                    }),
-                    Chapters = query.Chapters.Select( item => new DetailCourseChapterList
-                    {
-                        ChapterId = item.ChapterId,
-                        Name = item.Name,
-                        Description = item.Description,
-                        Lessons = item.Lessons.Select( lsItem => new DetailCourseLessonList
+                        DetailChapterDTO chapter = new DetailChapterDTO();
+                        chapter.code = ch.code;
+                        chapter.name = ch.name;
+                        chapter.des = ch.des;
+                        chapter.step = ch.step;
+                        chapter.isactivated = ch.isactivated;
+                        chapter.createTime = ch.DateCreated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+                        chapter.updateTime = ch.DateUpdated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+
+                        if (ch.lessons != null)
                         {
-                            LessonId = lsItem.LessonId,
-                            Name = lsItem.Name
-                        })
-                    })
-                };
-                Console.WriteLine($"[CourseService] -> GetCourseBySlug width slug: {slug} -> successfully");*/
-                return null;
-                
+                            foreach (SqlLesson ls in ch.lessons)
+                            {
+                                if(ls.isdeleted == false)
+                                {
+                                    DetailLessonDTO lesson = new DetailLessonDTO();
+                                    lesson.code = ls.code;
+                                    lesson.name = ls.name;
+                                    lesson.des = ls.des;
+                                    lesson.step = ls.step;
+                                    lesson.image = ls.image;
+                                    lesson.video = ls.video;
+                                    lesson.createTime = ls.DateCreated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+                                    lesson.updateTime = ls.DateUpdated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+                                    chapter.lessons.Add(lesson);
+                                }
+                                
+                            }
+                        }
+                        item.chapters.Add(chapter);
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[CourseService] -> GetCourseBySlug -> failed , Exception: {ex.Message}");
-                return null;
-            }
-            
+
+            return item;
         }
 
-        public async Task<LearningCourseDTO> GetLearningCourse(string slug)
+        public DataList<CourseItem> GetCreatorCourse(string creator, int page, int size, string title)
         {
-            try
+            DataList<CourseItem> data = new DataList<CourseItem>();
+            UserItem user = _unitOfWork.user.getUser(creator);
+            if(string.IsNullOrEmpty(user.code) || string.IsNullOrEmpty(user.role) || user.role.CompareTo("creator") != 0)
             {
-                /* var query = await _context.Courses
-                     .Include(c => c.Chapters.OrderBy(c => c.Step)).ThenInclude(c => c.Lessons.OrderBy(l => l.Name))
-                     .Where(c => c.Slug == slug).FirstOrDefaultAsync();
-                 if (query == null)
-                     return null;
-                 var course = new LearningCourseDTO
-                 {
-                     CourseId = query.CourseId,
-                     Title = query.Title,
-                     Description = query.Description,
-                     Slug = query.Slug,
-                     Image = query.Image,
-                     Chapters = query.Chapters.Select(item => new DetailCourseChapterList
-                     {
-                         ChapterId = item.ChapterId,
-                         Name = item.Name,
-                         Description = item.Description,
-                         Lessons = item.Lessons.Select(lsItem => new DetailCourseLessonList
-                         {
-                             LessonId = lsItem.LessonId,
-                             Name = lsItem.Name
-                         })
-                     })
-                 };
-                 Console.WriteLine($"[CourseService] -> GetLearningCourse width slug: {slug} -> successfully");
-                 return course;*/
-                return null;
+                return data;
             }
-            catch (Exception ex)
+            IQueryable<SqlCourse> query = _unitOfWork.course.GetCondition(s => s.user != null &&
+                                                                               s.user.code.CompareTo(user.code) == 0 &&
+                                                                               s.isdeleted == false)
+                                                            .Include(s => s.category)
+                                                            .Include(s => s.languages)
+                                                            .Include(s => s.levels)
+                                                            .Include(s => s.user);
+            if (!string.IsNullOrEmpty(title))
             {
-                Console.WriteLine($"[CourseService] -> GetLearningCourse -> failed , Exception: {ex.Message}");
-                return null;
+                query = query.Where(s => s.title.Contains(title));
             }
+            if (page > 0 && size > 0)
+            {
+                data.totalPage = (int)Math.Ceiling((double)query.Count() / size);
+                data.totalItem = query.Count();
+                data.page = page;
+                query = query.Skip(size * (page - 1))
+                             .Take(size);
+            }
+            List<SqlCourse> courses = query.ToList();
+            foreach (SqlCourse s in courses)
+            {
+                CourseItem item = new CourseItem();
+                item.code = s.code;
+                item.title = s.title;
+                item.price = s.price;
+                item.purchases = s.purchases;
+                item.salePrice = s.salePrice;
+                item.issale = s.issale;
+                item.isactivated = s.isactivated;
+                item.des = s.des;
+                item.image = s.image;
+                item.createTime = s.DateCreated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+                item.updateTime = s.DateUpdated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+
+                if (s.category != null && s.category.isdeleted == false)
+                {
+                    item.category.code = s.category.code;
+                    item.category.name = s.category.name;
+                    item.category.des = s.category.des;
+                }
+
+                if (s.user != null && s.user.isdeleted == false)
+                {
+                    item.creator.code = s.user.code;
+                    item.creator.username = s.user.username;
+                    item.creator.displayName = s.user.displayName;
+                    item.creator.image = s.user.image;
+                }
+
+                if (s.languages != null)
+                {
+                    foreach (SqlLanguage l in s.languages)
+                    {
+                        if (l.isdeleted == false)
+                        {
+                            CourseAttribute attr = new CourseAttribute();
+                            attr.code = l.code;
+                            attr.name = l.name;
+                            attr.des = l.des;
+                            item.languages.Add(attr);
+                        }
+                    }
+                }
+
+                if (s.levels != null)
+                {
+                    foreach (SqlLevel l in s.levels)
+                    {
+                        if (l.isdeleted == false)
+                        {
+                            CourseAttribute attr = new CourseAttribute();
+                            attr.code = l.code;
+                            attr.name = l.name;
+                            attr.des = l.des;
+                            item.level.Add(attr);
+                        }
+                    }
+                }
+                data.datas.Add(item);
+            }
+            return data;
         }
 
-        public override bool Insert(SqlCourse course)
+        public DataList<CourseItem> GetAllCourse(int page, int size, string title,List<string> cat, List<string> lang, List<string> lvl)
         {
-            try
+            DataList<CourseItem> data = new DataList<CourseItem>();
+            IQueryable<SqlCourse> query = _unitOfWork.course.GetCondition(s => s.isdeleted == false)
+                                                            .Include(s => s.category)
+                                                            .Include(s => s.languages)
+                                                            .Include(s => s.levels)
+                                                            .Include(s => s.user);
+            if(cat.Count > 0)
             {
-                var result = _dbSet.AddAsync(course);
-                return true;
+                query = query.Where(s => s.category != null && cat.Contains(s.category.code));
             }
-            catch (Exception ex)
+            if (lang.Count > 0)
             {
-                Console.WriteLine($"[CourseService] -> AddAsAsync -> failed , Exception: {ex.Message}");
+                query = query.Where(s => s.languages != null && s.languages.Any(cl => lang.Contains(cl.code)) );
+            }
+            if (lvl.Count > 0)
+            {
+                query = query.Where(s => s.levels != null && s.levels.Any(cl => lvl.Contains(cl.code)) );
+            }
+            if (!string.IsNullOrEmpty(title))
+            {
+                query = query.Where(s => s.title.Contains(title));
+            }
+            if (page > 0 && size > 0)
+            {
+                data.totalPage = (int)Math.Ceiling((double)query.Count() / size);
+                data.totalItem = query.Count();
+                data.page = page;
+                query = query.Skip(size * (page - 1))
+                             .Take(size);
+            }
+            List<SqlCourse> courses = query.ToList();
+            foreach(SqlCourse s in courses)
+            {
+                CourseItem item = new CourseItem();
+                item.code = s.code;
+                item.title = s.title;
+                item.price = s.price;
+                item.purchases = s.purchases;
+                item.salePrice = s.salePrice;
+                item.issale = s.issale;
+                item.isactivated = s.isactivated;
+                item.des = s.des;
+                item.image = s.image;
+                item.createTime = s.DateCreated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+                item.updateTime = s.DateUpdated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+
+                if (s.category != null && s.category.isdeleted == false)
+                {
+                    item.category.code = s.category.code;
+                    item.category.name = s.category.name;
+                    item.category.des = s.category.des;
+                }
+
+                if (s.user != null && s.user.isdeleted == false)
+                {
+                    item.creator.code = s.user.code;
+                    item.creator.username = s.user.username;
+                    item.creator.displayName = s.user.displayName;
+                    item.creator.image = s.user.image;
+                }
+
+                if (s.languages != null)
+                {
+                    foreach(SqlLanguage l in s.languages)
+                    {
+                        if(l.isdeleted == false)
+                        {
+                            CourseAttribute attr = new CourseAttribute();
+                            attr.code = l.code;
+                            attr.name = l.name;
+                            attr.des = l.des;
+                            item.languages.Add(attr);
+                        }
+                    }
+                }
+
+                if (s.levels != null)
+                {
+                    foreach (SqlLevel l in s.levels)
+                    {
+                        if (l.isdeleted == false)
+                        {
+                            CourseAttribute attr = new CourseAttribute();
+                            attr.code = l.code;
+                            attr.name = l.name;
+                            attr.des = l.des;
+                            item.level.Add(attr);
+                        }
+                    }
+                }
+                data.datas.Add(item);
+            }
+            return data;
+        }
+
+        public async Task<SqlCourse> createCourse(string user, string title, string des, double price, double salePrice, bool issale, string category, List<string> lang, List<string> lvl)
+        {
+            SqlUser? creator = _unitOfWork.user.GetCode(user, 0).FirstOrDefault();
+            if (creator == null)
+            {
+                return new SqlCourse();
+            }
+            List<SqlLanguage> m_languages = _unitOfWork.language.GetCondition(s => s.isdeleted == false && lang.Contains(s.code)).ToList();
+            if(m_languages.Count < 0)
+            {
+                return new SqlCourse();
+            }
+            List<SqlLevel> m_levels = _unitOfWork.level.GetCondition(s => s.isdeleted == false && lvl.Contains(s.code)).ToList();
+            if (m_levels.Count < 0)
+            {
+                return new SqlCourse();
+            }
+            SqlCategory? m_category = _unitOfWork.category.GetCode(category, 0).FirstOrDefault();
+            if(m_category == null)
+            {
+                return new SqlCourse();
+            }
+            SqlCourse course = new SqlCourse();
+            course.id = DateTime.Now.Ticks;
+            course.code = ConvertString.getSlug(title);
+            course.des = des;
+            course.price = price;
+            course.salePrice = salePrice;
+            course.issale = issale;
+            course.isactivated = true;
+            course.isdeleted = false;
+            course.category = m_category;
+            course.languages = new List<SqlLanguage>();
+            course.languages.AddRange(m_languages);
+            course.levels = new List<SqlLevel>();
+            course.levels.AddRange(m_levels);
+            _unitOfWork.course.Insert(course);
+            int row = await _unitOfWork.CompleteAsync();
+            return row > 0 ? course : new SqlCourse();
+        }
+
+        public async Task<bool> deleteCourse(string code)
+        {
+            SqlCourse? course = _unitOfWork.course.GetCode(code, 0).FirstOrDefault();
+            if(course == null)
+            {
                 return false;
             }
+            course.isdeleted = true;
+            return await _unitOfWork.CompleteAsync() > 0;
         }
 
-        public async Task<LearningLessonDTO> GetLearningLesson(string slug, Guid LessonId)
+        public async Task<SqlCourse> updateCourse(string code,string title, string des, double price, double salePrice, bool issale, string category)
         {
-            try
-            {               
-                /*var lesson = await _unitOfWork.LessonRepository.GetByCondition(condition: ls => ls.LessonId == LessonId)
-                .Include(ls => ls.Chapter).ThenInclude(ch => ch.Course)
-                .Select(ls => new LearningLessonDTO
-                {
-                    LessonId = ls.LessonId,
-                    Name = ls.Name,
-                    Description = ls.Description,
-                    Video = ls.Video,
-                    CourseId = ls.Chapter.CourseId.GetValueOrDefault(),
-                })
-                .FirstOrDefaultAsync();
-                if(lesson == null)
-                {
-                    return null;
-                }
-                var course = await _unitOfWork.CourseRepository.GetByCondition(condition: c => c.Slug == slug)
-                     .Include(c => c.Creator)
-                     .Select(c => new SqlCourse
-                     {
-                         CourseId = c.CourseId,
-                         Title = c.Title,
-                         Slug = c.Slug,
-                     }).FirstOrDefaultAsync();
-                if (course == null)
-                {
-                    return null;
-                }
-                if (lesson.CourseId == course.CourseId)
-                {
-                    lesson.CourseTitle = course.Title;
-                    lesson.CourseSlug = course.Slug;
-                    return lesson;
+            SqlCourse? course = _unitOfWork.course.GetCode(code, 0).FirstOrDefault();
+            if (course == null)
+            {
+                return new SqlCourse();
+            }
+            SqlCategory? m_category = _unitOfWork.category.GetCode(code, 0).FirstOrDefault();
+            if (m_category == null)
+            {
+                return new SqlCourse();
+            }
 
-                }*/
-                return null;
-            }
-            catch(Exception ex)
-            {
-                return null;
-            }
-            
-        }
+            course.title = title;
+            course.des = des;
+            course.price = price;
+            course.salePrice = salePrice;
+            course.issale = issale;
+            course.category = m_category;
 
-        public async Task<DataListDTO<IEnumerable<SearchCourseList>>> SearchCourse(CourseSearchParams parameters)
-        {
-            /*var dataList = new DataListDTO<IEnumerable<SearchCourseList>>();
-            var query = _context.Courses.AsQueryable().Where(course => course.Status == "1");
-                          
-            if(parameters.cat != null && parameters.cat.Count > 0 )
-            {
-                query = query.Where(course => course.Category != null && parameters.cat.Contains(course.Category.CategoryName));
-            }
-            if (parameters.lvl != null && parameters.lvl.Count > 0)
-            {
-                query = query.Where(course => course.CourseLevel != null && parameters.lvl.Contains(course.CourseLevel.LevelName));
-            }
-            if (parameters.lang != null && parameters.lang.Count > 0)
-            {
-                query = query.Where(course => course.CourseLanguages
-                .Any(cl => parameters.lang.Contains(cl.Language.Name)));
-            }
-            if (!string.IsNullOrEmpty(parameters.query))
-            {
-                query = query.Where(course => course.Title.Contains(parameters.query));
-            }
-            dataList.Items = await query
-                .Include(c => c.Creator).ThenInclude(c => c.User)
-                .Include(c => c.CourseLanguages).ThenInclude(cl => cl.Language)
-                .Include(c => c.Category)
-                .Skip(parameters.pageSize * (parameters.page-1) )
-                .Take(parameters.pageSize)
-                .Select(c => new SearchCourseList
-            {
-                CourseId = c.CourseId,
-                Title = c.Title,
-                Purchased = c.Purchased,
-                Price = c.Price,
-                Slug = c.Slug,
-                Image = c.Image,
-                Creator = new DetailCourseCreator
-                {
-                    CreatorId = c.Creator.CreatorId,
-                    DisplayName = c.Creator.User.DisplayName,
-                    Slug = c.Creator.Slug,
-                    Image = c.Creator.User.Image
-                },
-                CourseCategory = new DetailCourseCategory
-                {
-                    CategoryId = c.Category.CategoryId,
-                    CategoryName = c.Category.CategoryName
-                },
-                CourseLevel = new DetailCourseLevel
-                {
-                    CourseLevelId = c.CourseLevel.CourseLevelId,
-                    LevelName = c.CourseLevel.LevelName
-                },
-                CourseLanguages = c.CourseLanguages.Select(cl => new DetailCourseLanguageList
-                {
-                    LanguageId = cl.Language.LanguageId,
-                    Name = cl.Language.Name
-                }).ToList()
-            }).ToListAsync();
-            dataList.TotalRecords = query.Count();
-            Console.WriteLine($"[CourseService] -> GetAllCourseAsync -> success ");
-            return dataList;*/
-            return null;
+            return await _unitOfWork.CompleteAsync() > 0 ? course : new SqlCourse();
         }
     }
 }

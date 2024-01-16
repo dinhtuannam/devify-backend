@@ -31,24 +31,17 @@ namespace Devify.Application.Features.Level.Commands
             }
             public async Task<ApiResponse> Handle(UpdateLevelCommand query, CancellationToken cancellationToken)
             {
+                LevelItem exist = _unitOfWork.level.getLevel(query.code);
+                if (string.IsNullOrEmpty(exist.code))
+                {
+                    return new ApiResponse(false, "Level not found", "", 404);
+                }
                 SqlLevel level = await _unitOfWork.level.updateLevel(query.code, query.name, query.des);
                 if (string.IsNullOrEmpty(level.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "Update level failed",
-                        code = 400,
-                        data = ""
-                    };
+                    return new ApiResponse(false, "Update level failed", "", 400);
                 }
-                return new ApiResponse()
-                {
-                    result = true,
-                    message = "Update level successfully",
-                    code = 0,
-                    data = level.code
-                };
+                return new ApiResponse(true, "Update level successfully", level.code, 200);
             }
         }
     }

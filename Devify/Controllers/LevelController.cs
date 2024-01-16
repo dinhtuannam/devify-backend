@@ -22,7 +22,7 @@ namespace Devify.Controllers
         public async Task<IActionResult> GetAllLevel()
         {
             ApiResponse api = await _mediator.Send(new GetAllLevelQuery());
-            return Ok(api);
+            return Program.my_api.response(api);
         }
 
         [HttpGet]
@@ -30,7 +30,7 @@ namespace Devify.Controllers
         public async Task<IActionResult> GetLevel(string code)
         {
             ApiResponse api = await _mediator.Send(new GetLevelQuery(code));
-            return Ok(api);
+            return Program.my_api.response(api);
         }
 
         [HttpPost]
@@ -38,11 +38,7 @@ namespace Devify.Controllers
         public async Task<IActionResult> CreateLevel(CreateLevelModel model)
         {
             ApiResponse api = await _mediator.Send(new CreateLevelCommand(model.code,model.name,model.des));
-            if (!api.result)
-            {
-                return BadRequest(api);
-            }
-            return Ok(api);
+            return Program.my_api.response(api);
         }
 
         [HttpPut]
@@ -50,11 +46,7 @@ namespace Devify.Controllers
         public async Task<IActionResult> UpdateLevel(UpdateLevelModel model)
         {
             ApiResponse api = await _mediator.Send(new UpdateLevelCommand(model.code, model.name, model.des));
-            if (!api.result)
-            {
-                return BadRequest(api);
-            }
-            return Ok(api);
+            return Program.my_api.response(api);
         }
 
         [HttpDelete]
@@ -62,11 +54,7 @@ namespace Devify.Controllers
         public async Task<IActionResult> DeleteLevel(string code)
         {
             ApiResponse api = await _mediator.Send(new DeleteLevelCommand(code));
-            if (!api.result)
-            {
-                return BadRequest(api);
-            }
-            return Ok(api);
+            return Program.my_api.response(api);
         }
     }
 }

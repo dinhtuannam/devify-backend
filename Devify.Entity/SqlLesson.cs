@@ -19,6 +19,7 @@ namespace Devify.Entity
         public bool isdeleted { get; set; } = false;
         public bool isactivated { get; set; } = false;
         public SqlChapter? chapter { get; set; }
+        public SqlCourse? course { get; set; }
         public List<SqlComment>? comments { get; set; }
 
         public SqlLesson() : base() { }

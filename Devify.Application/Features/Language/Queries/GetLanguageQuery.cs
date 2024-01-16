@@ -20,14 +20,12 @@ namespace Devify.Application.Features.Language.Queries
             }
             public Task<ApiResponse> Handle(GetLanguageQuery query, CancellationToken cancellationToken)
             {
-                ApiResponse res = new ApiResponse()
+                LanguageItem lang = _unitOfWork.language.getLanguage(query.code);
+                if (string.IsNullOrEmpty(lang.code))
                 {
-                    result = true,
-                    message = "Get language successfully",
-                    code = 0,
-                    data = _unitOfWork.language.getLanguage(query.code)
-                };
-                return Task.FromResult(res);
+                    return Task.FromResult(new ApiResponse(false, "language not found", lang, 404));
+                }
+                return Task.FromResult(new ApiResponse(true, "get lang successfully", lang, 200));
             }
         }
     }

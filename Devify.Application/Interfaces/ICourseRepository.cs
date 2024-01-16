@@ -1,15 +1,16 @@
 ﻿using Devify.Application.DTO;
 using Devify.Entity;
+using System.Diagnostics;
 
 namespace Devify.Application.Interfaces
 {
     public interface ICourseRepository : IGenericRepository<SqlCourse>
     {
-        Task<DetailCourseDTO> GetCourseBySlug(string slug);
-        Task<LearningCourseDTO> GetLearningCourse(string slug);
-        Task<LearningLessonDTO> GetLearningLesson(string slug,Guid LessonId);
-        Task<DataListDTO<IEnumerable<AllCourseList>>> GetAllCourse();
-        Task<DataListDTO<IEnumerable<SearchCourseList>>> SearchCourse(CourseSearchParams parameters);
-
+        DetailCourseDTO GetCourse(string code);
+        DataList<CourseItem> GetCreatorCourse(string creator, int page, int size, string title);
+        DataList<CourseItem> GetAllCourse(int page,int pageSize,string title,List<string> cat,List<string> lang,List<string> lvl);
+        Task<SqlCourse> createCourse(string user,string title, string des, double price, double salePrice, bool issale,string category, List<string> lang, List<string> lvl);
+        Task<SqlCourse> updateCourse(string code,string title, string des, double price, double salePrice, bool issale, string category);
+        Task<bool> deleteCourse(string code);
     }
 }

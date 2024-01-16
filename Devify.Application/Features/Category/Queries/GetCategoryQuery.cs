@@ -26,14 +26,12 @@ namespace Devify.Application.Features.Category.Queries
             }
             public Task<ApiResponse> Handle(GetCategoryQuery query, CancellationToken cancellationToken)
             {
-                ApiResponse res = new ApiResponse()
+                CategoryItem cat = _unitOfWork.category.getCategory(query.code);
+                if (string.IsNullOrEmpty(cat.code))
                 {
-                    result = true,
-                    message = "Get category successfully",
-                    code = 0,
-                    data = _unitOfWork.category.getCategory(query.code)
-                };
-                return Task.FromResult(res);
+                    return Task.FromResult(new ApiResponse(false, "category not found", cat, 404));
+                }
+                return Task.FromResult(new ApiResponse(true, "get category successfully", cat, 200));
             }
         }
     }

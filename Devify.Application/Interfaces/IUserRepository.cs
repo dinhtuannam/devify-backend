@@ -8,6 +8,7 @@ namespace Devify.Application.Interfaces
     {
         public UserItem getUser(string code);
         public UserItem getUserByName(string displayName);
+        public UserItem getUserByUsername(string username);
         public List<UserItem> getListUser();
         public UserItem signIn(string username, string password);
         public Task<bool> deleteUser(string code);

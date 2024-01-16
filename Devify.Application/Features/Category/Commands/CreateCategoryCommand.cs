@@ -29,24 +29,17 @@ namespace Devify.Application.Features.Category.Commands
 
             public async Task<ApiResponse> Handle(CreateCategoryCommand query, CancellationToken cancellationToken)
             {
+                CategoryItem exist = _unitOfWork.category.getCategory(query.code);
+                if (string.IsNullOrEmpty(exist.code))
+                {
+                    return new ApiResponse(false, "Category not found", "", 404);
+                }
                 SqlCategory cat = await _unitOfWork.category.createCategory(query.code, query.name, query.des);
                 if (string.IsNullOrEmpty(cat.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "Create category failed",
-                        data = "",
-                        code = 400
-                    };
+                    return new ApiResponse(false, "Create category failed","",400);
                 }
-                return new ApiResponse()
-                {
-                    result = true,
-                    message = "Create category successfully",
-                    data = "",
-                    code = 200
-                };
+                return new ApiResponse(true, "Create category successfully", cat.code, 200);
             }
         }
     }

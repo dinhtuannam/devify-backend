@@ -33,24 +33,17 @@ namespace Devify.Application.Features.Role.Commands
 
             public async Task<ApiResponse> Handle(CreateRoleCommand query, CancellationToken cancellationToken)
             {
+                RoleItem exist = _unitOfWork.role.getRole(query.code);
+                if (string.IsNullOrEmpty(exist.code))
+                {
+                    return new ApiResponse(false, "role not found", "", 404);
+                }
                 SqlRole role = await _unitOfWork.role.createRole(query.code, query.name, query.des);
                 if (string.IsNullOrEmpty(role.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "Create role failed",
-                        data = "",
-                        code = 400
-                    };
+                    return new ApiResponse(false, "create role failed", "", 400);
                 }
-                return new ApiResponse()
-                {
-                    result = true,
-                    message = "Create role successfully",
-                    data = role.code,
-                    code = 200
-                };
+                return new ApiResponse(true, "create role successfully", role.code, 200);
             }
         }
     }

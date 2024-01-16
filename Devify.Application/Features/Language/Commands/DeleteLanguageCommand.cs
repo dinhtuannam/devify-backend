@@ -24,24 +24,17 @@ namespace Devify.Application.Features.Language.Commands
 
             public async Task<ApiResponse> Handle(DeleteLanguageCommand query, CancellationToken cancellationToken)
             {
-                bool res = await _unitOfWork.language.DeleteLanguage(query.code);
-                if (!res)
+                LanguageItem exist = _unitOfWork.language.getLanguage(query.code);
+                if (string.IsNullOrEmpty(exist.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "Delete language failed",
-                        data = res,
-                        code = 400
-                    };
+                    return new ApiResponse(false, "Language not found", false, 404);
                 }
-                return new ApiResponse()
+                bool lang = await _unitOfWork.language.DeleteLanguage(query.code);
+                if (!lang)
                 {
-                    result = true,
-                    message = "Delete language successfully",
-                    data = res,
-                    code = 200
-                };
+                    return new ApiResponse(false, "Delete language failed", false, 400);
+                }
+                return new ApiResponse(true, "Delete language successfully", true, 200);
             }
         }
     }

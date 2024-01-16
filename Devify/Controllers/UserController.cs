@@ -19,61 +19,53 @@ namespace Devify.Controllers
         }
 
         [HttpGet]
-        [Route("get-all-users")]
+        [Route("get-all-user")]
         [Cache(3600)]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> getAllUsers()
         {
             ApiResponse api = await _mediator.Send(new GetListUserQuery());
-            return Ok(api);
+            return Program.my_api.response(api);
         }
 
         [HttpGet]
         [Route("{code}/get-user")]
         [Cache(3600)]
-        public async Task<IActionResult> GetUser(string code)
+        public async Task<IActionResult> getUser(string code)
         {
             ApiResponse api = await _mediator.Send(new GetUserQuery(code));
-            return Ok(api);
+            return Program.my_api.response(api);
         }
 
         [HttpGet]
         [Route("{name}/get-user-by-name")]
         [Cache(3600)]
-        public async Task<IActionResult> GetUserByName(string name)
+        public async Task<IActionResult> getUserByName(string name)
         {
             ApiResponse api = await _mediator.Send(new GetUserByNameQuery(name));
-            return Ok(api);
+            return Program.my_api.response(api);
         }
 
         [HttpPost]
         [Route("create-new-user")]
-        public async Task<IActionResult> AddNewUser(CreateUserModel model)
+        public async Task<IActionResult> createNewUser(CreateUserModel model)
         {
-            ApiResponse res = await _mediator.Send(new CreateUserCommand("","",model.username, model.password, model.displayName,model.email,model.role));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            ApiResponse api = await _mediator.Send(new CreateUserCommand("","",model.username, model.password, model.displayName,model.email,model.role));
+            return Program.my_api.response(api);
         }
 
         [HttpPost]
         [Route("sign-in")]
-        public async Task<IActionResult> SignIn(SignInModel model)
+        public async Task<IActionResult> signIn(SignInModel model)
         {
-            ApiResponse res = await _mediator.Send(new SignInCommand(model.username,model.password));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            ApiResponse api = await _mediator.Send(new SignInCommand(model.username,model.password));
+            return Program.my_api.response(api);
         }
 
         [HttpPut]
         [Route("edit-user")]
-        public async Task<IActionResult> UpdateUser(UpdateUserModel model)
+        public async Task<IActionResult> updateUser(UpdateUserModel model)
         {
-            ApiResponse res = await _mediator.Send(new UpdateUserCommand(
+            ApiResponse api = await _mediator.Send(new UpdateUserCommand(
                 "",
                 "",
                 model.code, 
@@ -86,23 +78,15 @@ namespace Devify.Controllers
                 model.about,
                 model.role
             ));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            return Program.my_api.response(api);
         }
 
         [HttpDelete]
         [Route("{code}")]
-        public async Task<IActionResult> DeleteUser(string code)
+        public async Task<IActionResult> deleteUser(string code)
         {
-            ApiResponse res = await _mediator.Send(new DeleteUserCommand(code));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            ApiResponse api = await _mediator.Send(new DeleteUserCommand(code));
+            return Program.my_api.response(api);
         }
 
         

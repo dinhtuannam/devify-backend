@@ -1,11 +1,6 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Devify.Application.Features.Role.Commands
 {
@@ -26,24 +21,17 @@ namespace Devify.Application.Features.Role.Commands
 
             public async Task<ApiResponse> Handle(DeleteRoleCommand query, CancellationToken cancellationToken)
             {
-                bool res = await _unitOfWork.role.deleteRole(query.code);
-                if (!res)
+                RoleItem exist = _unitOfWork.role.getRole(query.code);
+                if (string.IsNullOrEmpty(exist.code))
                 {
-                    return new ApiResponse()
-                    {
-                        result = false,
-                        message = "Delete role failed",
-                        data = res,
-                        code = 400
-                    };
+                    return new ApiResponse(false, "role not found", false, 404);
                 }
-                return new ApiResponse()
+                bool role = await _unitOfWork.role.deleteRole(query.code);
+                if (!role)
                 {
-                    result = true,
-                    message = "Delete role successfully",
-                    data = res,
-                    code = 200
-                };
+                    return new ApiResponse(false, "Delete role failed", false, 400);
+                }
+                return new ApiResponse(true, "Delete role successfully", true, 200);
             }
         }
     }

@@ -19,21 +19,21 @@ namespace Devify.Controllers
         }
 
         [HttpGet]
-        [Route("get-all-categories")]
+        [Route("get-all-category")]
         [Cache(3600)]
         public async Task<IActionResult> GetAllCategories()
         {
-            ApiResponse api = await _mediator.Send(new GetAllCategoryQuery());
-            return Ok(api);
+            ApiResponse res = await _mediator.Send(new GetAllCategoryQuery());
+            return Program.my_api.response(res);
         }
 
         [HttpGet]
-        [Route("{code}/get-language")]
+        [Route("{code}/get-category")]
         [Cache(3600)]
         public async Task<IActionResult> GetCategory(string code)
         {
-            ApiResponse api = await _mediator.Send(new GetCategoryQuery(code));
-            return Ok(api);
+            ApiResponse res = await _mediator.Send(new GetCategoryQuery(code));
+            return Program.my_api.response(res);
         }
 
         [HttpPost]
@@ -41,11 +41,7 @@ namespace Devify.Controllers
         public async Task<IActionResult> AddNewCategory(CreateCategoryModel model)
         {
             ApiResponse res = await _mediator.Send(new CreateCategoryCommand(model.code, model.name, model.des));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            return Program.my_api.response(res);
         }
 
         [HttpDelete]
@@ -53,11 +49,7 @@ namespace Devify.Controllers
         public async Task<IActionResult> DeleteCategory(string code)
         {
             ApiResponse res = await _mediator.Send(new DeleteCategoryCommand(code));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            return Program.my_api.response(res);
         }
 
         [HttpPut]
@@ -65,11 +57,7 @@ namespace Devify.Controllers
         public async Task<IActionResult> UpdateCategory(UpdateCategoryModel model)
         {
             ApiResponse res = await _mediator.Send(new UpdateCategoryCommand(model.code, model.name, model.des));
-            if (!res.result)
-            {
-                return BadRequest(res);
-            }
-            return Ok(res);
+            return Program.my_api.response(res);
         }
     }
 }
