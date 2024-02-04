@@ -20,7 +20,7 @@ namespace Devify.Controllers
         }
 
         [HttpGet]
-        [Route("/get-all-course")]
+        [Route("get-all-course")]
         [Cache(120)]
         public async Task<IActionResult> getAllCourse([FromQuery] CourseSearchParam req)
         {
@@ -64,7 +64,7 @@ namespace Devify.Controllers
 
         [HttpPost]
         [Role("admin","creator")]
-        [Route("/create-new-course")]
+        [Route("create-new-course")]
         public async Task<IActionResult> CreateCourse(CreateCourseModel req)
         {
             string user = HttpContext.Items["code"] as string ?? "";
@@ -95,7 +95,7 @@ namespace Devify.Controllers
 
         [HttpPut]
         [Role("admin", "creator")]
-        [Route("/edit-course")]
+        [Route("edit-course")]
         public async Task<IActionResult> UpdateCourse(UpdateCourseModel req)
         {
             string user = HttpContext.Items["code"] as string ?? "";

@@ -47,9 +47,12 @@ namespace Devify.Installers
             //  =========================  Cấu hình Cors ==============================
             services.AddCors(options =>
             {
-                options.AddPolicy("HTTPSystem", builder =>
+                options.AddDefaultPolicy(builder =>
                 {
-                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin => true).WithExposedHeaders("Grpc-Status", "Grpc-Encoding", "Grpc-Accept-Encoding");
+                    builder.WithOrigins("http://localhost:3000")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowCredentials(); // Important for sending cookies
                 });
             });
 

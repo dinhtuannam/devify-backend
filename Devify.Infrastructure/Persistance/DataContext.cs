@@ -6,6 +6,7 @@ namespace Devify.Infrastructure.Persistance
     public class DataContext : DbContext
     {
         public static Random random = new Random();
+        public DbSet<SqlCart> carts { get; set; }
         public DbSet<SqlCourse> courses { get; set; }
         public DbSet<SqlChapter> chapters { get; set; }
         public DbSet<SqlLesson> lessons { get; set; }
@@ -41,6 +42,7 @@ namespace Devify.Infrastructure.Persistance
         {
             modelBuilder.Entity<SqlCourse>().HasMany<SqlLanguage>(s => s.languages).WithMany(s => s.courses);
             modelBuilder.Entity<SqlCourse>().HasMany<SqlLevel>(s => s.levels).WithMany(s => s.courses);
+            modelBuilder.Entity<SqlUser>().HasOne(s => s.cart).WithOne(s => s.user).HasForeignKey<SqlCart>(s => s.userId);
         }
     }
 }

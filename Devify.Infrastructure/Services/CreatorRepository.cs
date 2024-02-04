@@ -9,11 +9,9 @@ namespace Devify.Infrastructure.Services
 {
     public class CreatorRepository : GenericRepository<SqlUser>, ICreatorRepository 
     {
-        private readonly DataContext _DbContext;
         private readonly IUnitOfWork _unitOfWork;
         public CreatorRepository(DataContext context, IUnitOfWork unitOfWork) : base(context)
         {
-            _DbContext = context;
             _unitOfWork = unitOfWork;
         }
 

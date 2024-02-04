@@ -22,6 +22,7 @@ namespace Devify.Entity
         public bool issale { get; set; } = false;
         public SqlUser? user { get; set; }
         public SqlCategory? category { get; set; }
+        public List<SqlCart>? carts { get; set; }
         public List<SqlRating>? ratings { get; set; }
         public List<SqlLevel>? levels { get; set; }
         public List<SqlChapter>? chapters { get; set; }

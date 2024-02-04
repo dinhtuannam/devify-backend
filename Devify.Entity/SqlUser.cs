@@ -18,6 +18,7 @@ namespace Devify.Entity
         public string about { get; set; } = "";
         public string social { get; set; } = "";
         public SqlRole? role { get; set; }
+        public SqlCart? cart { get; set; }
         public List<SqlOrder>? orders { get; } = new List<SqlOrder>();
         public List<SqlNotification>? notifications { get; } = new List<SqlNotification>();
         public List<SqlCourse>? courses { get; } = new List<SqlCourse>();

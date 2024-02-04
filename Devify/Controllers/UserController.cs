@@ -1,8 +1,10 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Features.User.Commands;
 using Devify.Application.Features.User.Queries;
 using Devify.Filters;
 using Devify.Models;
+using Firebase.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -58,16 +60,76 @@ namespace Devify.Controllers
         public async Task<IActionResult> signIn(SignInModel model)
         {
             ApiResponse api = await _mediator.Send(new SignInCommand(model.username,model.password));
+            UserSignInInfo data = (UserSignInInfo)api.data;
+            if(!string.IsNullOrEmpty(data.token.AccessToken))
+            {
+                Response.Cookies.Append(ConfigKey.AT_COOKIES, data.token.AccessToken, new CookieOptions
+                {
+                    HttpOnly = false,
+                    Secure = true, 
+                    SameSite = SameSiteMode.None, 
+                    Expires = ConfigKey.getATExpiredTime()
+                });
+
+                Response.Cookies.Append(ConfigKey.RT_COOKIES, data.token.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = false,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = ConfigKey.getRTExpiredTime()
+                });
+
+                Response.Cookies.Append("devify_isLogin", "true", new CookieOptions
+                {
+                    HttpOnly = false,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = ConfigKey.getRTExpiredTime()
+                });
+            }
+            return Program.my_api.response(api);
+        }
+
+        [HttpPost]
+        [Route("{token}/renew-token")]
+        public async Task<IActionResult> renewToken(string token)
+        {
+            ApiResponse api = await _mediator.Send(new RenewTokenCommand(token));
+            TokenDTO data = (TokenDTO)api.data;
+            Response.Cookies.Append(ConfigKey.AT_COOKIES, data.AccessToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, 
+                SameSite = SameSiteMode.None, 
+                Expires = ConfigKey.getATExpiredTime()
+            });
+            Response.Cookies.Append(ConfigKey.RT_COOKIES, data.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = ConfigKey.getRTExpiredTime()
+            });
+            Response.Cookies.Append("devify:isLogin", "true", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = ConfigKey.getRTExpiredTime()
+            });
             return Program.my_api.response(api);
         }
 
         [HttpPut]
+        [User]
         [Route("edit-user")]
         public async Task<IActionResult> updateUser(UpdateUserModel model)
         {
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
             ApiResponse api = await _mediator.Send(new UpdateUserCommand(
-                "",
-                "",
+                user,
+                role,
                 model.code, 
                 model.username, 
                 model.password,
@@ -82,6 +144,7 @@ namespace Devify.Controllers
         }
 
         [HttpDelete]
+        [Role("admin")]
         [Route("{code}")]
         public async Task<IActionResult> deleteUser(string code)
         {
