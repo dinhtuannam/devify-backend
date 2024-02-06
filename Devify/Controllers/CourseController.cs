@@ -29,38 +29,36 @@ namespace Devify.Controllers
         }
 
         [HttpGet]
-        [Route("{code}/get-course")]
+        [Route("{code}/get-view-info-course")]
         [User]
+        [Cache(120)]
+        public async Task<IActionResult> getViewInfoCourse(string code)
+        {
+            ApiResponse result = await _mediator.Send(new GetCourseQuery(code,false));
+            return Program.my_api.response(result);
+        }
+
+        [HttpGet]
+        [Route("{code}/get-course")]
+        [Role("admin","manager","creator")]
         [Cache(120)]
         public async Task<IActionResult> getCourse(string code)
         {
-            ApiResponse result = await _mediator.Send(new GetCourseQuery(code));
+            ApiResponse result = await _mediator.Send(new GetCourseQuery(code, true));
             return Program.my_api.response(result);
         }
 
 
-       /* [HttpGet("{course}/lesson/{lesson}", Name = "get-learning-lesson")]
+        [HttpGet]
+        [Route("{code}/get-learning-info")]
         [Cache(120)]
-        public async Task<IActionResult> getLearningLesson(string course,string lesson)
+        public async Task<IActionResult> getLearningInfo(string code)
         {
-            var courseResult = await _mediator.Send(new GetLearningLesson { slugRequest = slug, lessonIdRequest = lessonId });
-            if (courseResult == null)
-            {
-                return NotFound(new ApiResponse
-                {
-                    result = false,
-                    message = $"Cannot not find learning lesson with id = {lessonId}",
-                    code = 404
-                });
-            }
-            return Ok(new ApiResponse
-            {
-                result = true,
-                message = "Get leaning lesson success",
-                data = courseResult
-
-            });
-        }*/
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
+            ApiResponse result = await _mediator.Send(new GetLearningInfoQuery(code, user, role));
+            return Program.my_api.response(result);
+        }
 
         [HttpPost]
         [Role("admin","creator")]

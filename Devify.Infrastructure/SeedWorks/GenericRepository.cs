@@ -67,6 +67,16 @@ namespace Devify.Infrastructure.SeedWorks
             return query.AsQueryable();
         }
 
+        public T GetRawEntityByCode(string code)
+        {
+            T? data = _dbSet.Where(s => EF.Property<string>(s, "code") == code).FirstOrDefault();    
+            if(data == null)
+            {
+                return null;
+            }
+            return data;
+        }
+
 
         // ===================================== COMMANDS ======================================= 
         public virtual bool Insert(T entity)
@@ -107,5 +117,6 @@ namespace Devify.Infrastructure.SeedWorks
             }
         }
 
+        
     }
 }

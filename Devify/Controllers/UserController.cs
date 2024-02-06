@@ -1,5 +1,6 @@
 ﻿using Devify.Application.Configs;
 using Devify.Application.DTO;
+using Devify.Application.Features.Course.Queries;
 using Devify.Application.Features.User.Commands;
 using Devify.Application.Features.User.Queries;
 using Devify.Filters;
@@ -35,6 +36,15 @@ namespace Devify.Controllers
         public async Task<IActionResult> getUser(string code)
         {
             ApiResponse api = await _mediator.Send(new GetUserQuery(code));
+            return Program.my_api.response(api);
+        }
+
+        [HttpGet]
+        [Route("{code}/get-creator-courses")]
+        [Cache(3600)]
+        public async Task<IActionResult> getCreatorCourses(string code,int page = 1,int size = 8,string title = "")
+        {
+            ApiResponse api = await _mediator.Send(new GetCreatorCourseQuery(code,page,size,title));
             return Program.my_api.response(api);
         }
 
@@ -98,21 +108,21 @@ namespace Devify.Controllers
             TokenDTO data = (TokenDTO)api.data;
             Response.Cookies.Append(ConfigKey.AT_COOKIES, data.AccessToken, new CookieOptions
             {
-                HttpOnly = true,
+                HttpOnly = false,
                 Secure = true, 
                 SameSite = SameSiteMode.None, 
                 Expires = ConfigKey.getATExpiredTime()
             });
             Response.Cookies.Append(ConfigKey.RT_COOKIES, data.RefreshToken, new CookieOptions
             {
-                HttpOnly = true,
+                HttpOnly = false,
                 Secure = true,
                 SameSite = SameSiteMode.None,
                 Expires = ConfigKey.getRTExpiredTime()
             });
-            Response.Cookies.Append("devify:isLogin", "true", new CookieOptions
+            Response.Cookies.Append("devify_isLogin", "true", new CookieOptions
             {
-                HttpOnly = true,
+                HttpOnly = false,
                 Secure = true,
                 SameSite = SameSiteMode.None,
                 Expires = ConfigKey.getRTExpiredTime()

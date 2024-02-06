@@ -58,5 +58,20 @@ namespace Devify.Application.DTO
         public string image { get; set; } = "";
     }
 
+    public class CourseLearningInfo
+    {
+        public string code { get; set; } = "";
+        public string title { get; set; } = "";
+        public string des { get; set; } = "";
+        public string image { get; set; } = "";
+        public string createTime { get; set; } = "";
+        public string updateTime { get; set; } = "";
+        public bool isOwner { get; set; } = false;
+        public int totalChapter { get; set; } = 0;
+        public int totalLesson { get; set; } = 0;
+        public CourseCreatorAttribute creator { get; set; } = new CourseCreatorAttribute();
+        public List<DetailChapterDTO> chapters { get; set; } = new List<DetailChapterDTO>();
+
+    }
 
 }

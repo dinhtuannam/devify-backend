@@ -7,9 +7,11 @@ namespace Devify.Application.Features.Course.Queries
     public class GetCourseQuery : IRequest<ApiResponse>
     {
         public string code { get; set; } = "";
-        public GetCourseQuery(string code)
+        public bool privateData { get; set; } = false;
+        public GetCourseQuery(string code,bool privateData)
         {
             this.code = code;
+            this.privateData = privateData;
         }
         public class Handler : IRequestHandler<GetCourseQuery, ApiResponse>
         {
@@ -20,12 +22,13 @@ namespace Devify.Application.Features.Course.Queries
             }
             public Task<ApiResponse> Handle(GetCourseQuery query, CancellationToken cancellationToken)
             {
+                DetailCourseDTO course = _unitOfWork.course.GetCourse(query.code,query.privateData);
                 ApiResponse res = new ApiResponse()
                 {
                     result = true,
                     message = "Get course successfully",
                     code = 200,
-                    data = _unitOfWork.course.GetCourse(query.code)
+                    data = course
                 };
                 return Task.FromResult(res);
             }

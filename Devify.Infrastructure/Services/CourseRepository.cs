@@ -16,7 +16,7 @@ namespace Devify.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
-        public DetailCourseDTO GetCourse(string code)
+        public DetailCourseDTO GetCourse(string code,bool? privateData = true)
         {
             DetailCourseDTO item = new DetailCourseDTO();
             SqlCourse? course = _unitOfWork.course.GetCode(code, 0)
@@ -115,7 +115,7 @@ namespace Devify.Infrastructure.Services
                                     lesson.des = ls.des;
                                     lesson.step = ls.step;
                                     lesson.image = ls.image;
-                                    lesson.video = ls.video;
+                                    lesson.video = privateData == true ? ls.video : "";
                                     lesson.createTime = ls.DateCreated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
                                     lesson.updateTime = ls.DateUpdated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
                                     chapter.lessons.Add(lesson);
@@ -237,11 +237,11 @@ namespace Devify.Infrastructure.Services
             }
             if (lang.Count > 0)
             {
-                query = query.Where(s => s.languages != null && s.languages.Any(cl => lang.Contains(cl.code)) );
+                query = query.Where(s => s.languages!.Any(cl => lang.Contains(cl.code)) );
             }
             if (lvl.Count > 0)
             {
-                query = query.Where(s => s.levels != null && s.levels.Any(cl => lvl.Contains(cl.code)) );
+                query = query.Where(s => s.levels!.Any(cl => lvl.Contains(cl.code)) );
             }
             if (!string.IsNullOrEmpty(title))
             {
@@ -393,6 +393,74 @@ namespace Devify.Infrastructure.Services
             course.category = m_category;
 
             return await _unitOfWork.CompleteAsync() > 0 ? course : new SqlCourse();
+        }
+
+        public CourseLearningInfo getLearningCourseInfo(string code,string? user = "")
+        {
+            SqlCourse? course = _unitOfWork.course.GetCode(code,0)
+                                                  .Include(s => s.user!)
+                                                  .Include(s => s.chapters!).ThenInclude(s => s.lessons!)
+                                                  .FirstOrDefault();
+            if(course == null)
+            {
+                return new CourseLearningInfo();
+            }
+
+            CourseLearningInfo info = new CourseLearningInfo();
+            info.code = course.code;
+            info.title = course.title;
+            info.des = course.des;
+            info.image = course.image;
+            
+            if(course.user != null)
+            {
+                info.creator.code = course.user.code;
+                info.creator.username = course.user.username;
+                info.creator.displayName = course.user.displayName;
+                info.creator.image = course.user.image;
+
+                if(!string.IsNullOrEmpty(user) && course.user.code.CompareTo(user) == 0)
+                {
+                    info.isOwner = true;
+                }
+            }
+
+            foreach(SqlChapter ch in course.chapters!)
+            {
+                if(ch.isdeleted == false)
+                {
+                    DetailChapterDTO chapter = new DetailChapterDTO();
+                    chapter.code = ch.code;
+                    chapter.name = ch.name;
+                    chapter.des = ch.des;
+                    chapter.step = ch.step;
+                    chapter.isactivated = ch.isactivated;
+
+                    foreach(SqlLesson ls in ch.lessons!)
+                    {
+                        if(ls.isdeleted == false)
+                        {
+                            DetailLessonDTO lesson = new DetailLessonDTO();
+                            lesson.code = ls.code;
+                            lesson.name = ls.name;
+                            lesson.des = ls.des;
+                            lesson.step = ls.step;
+                            lesson.image = ls.image;
+                            lesson.video = ls.video;
+
+                            chapter.lessons.Add(lesson);
+                            info.totalLesson = info.totalLesson + 1;
+                        }
+                    }
+
+                    chapter.lessons = chapter.lessons.OrderBy(s => s.step).ToList();
+                    info.totalChapter = info.totalChapter + 1;
+                    info.chapters.Add(chapter);
+                }
+            }
+            info.chapters = info.chapters.OrderBy(s => s.step).ToList();
+
+            return info;
         }
     }
 }
