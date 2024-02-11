@@ -14,6 +14,7 @@
         ILevelRepository level { get; }
         IChapterRepository chapter { get; }
         IRoleRepository role { get; }
+        IOrderRepository order { get; }
         Task<int> CompleteAsync();
     }
 }

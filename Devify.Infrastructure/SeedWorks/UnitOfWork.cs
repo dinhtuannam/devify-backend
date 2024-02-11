@@ -24,6 +24,7 @@ namespace Devify.Infrastructure.SeedWorks
         public ILevelRepository level { get; private set; }
         public IChapterRepository chapter { get; private set; }
         public IRoleRepository role { get; private set; }
+        public IOrderRepository order { get; private set; }
 
         public UnitOfWork(
             DataContext context,
@@ -46,6 +47,7 @@ namespace Devify.Infrastructure.SeedWorks
             cache = new CacheRepository(_distributedCache, _connectionMultiplexer);
             firebase = new FirebaseRepository();
             role = new RoleRepository(_context,this);
+            order = new OrderRepository(_context, this);
         }
 
         public async Task<int> CompleteAsync()

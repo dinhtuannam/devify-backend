@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace Devify.Application.DTO
 {
+    public class UserProfile
+    {
+        public UserItem information { get; set; } = new UserItem();
+        public List<CourseItem> courses { get; set; } = new List<CourseItem>();
+    }
+
     public class UserItem
     {
         public string code { get; set; } = "";

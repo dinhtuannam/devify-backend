@@ -1,6 +1,7 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
+using Devify.Entity.Enums;
 using Devify.Infrastructure.Helpers;
 using Devify.Infrastructure.Persistance;
 using Devify.Infrastructure.SeedWorks;
@@ -461,6 +462,104 @@ namespace Devify.Infrastructure.Services
             info.chapters = info.chapters.OrderBy(s => s.step).ToList();
 
             return info;
+        }
+
+        public List<CourseItem> GetUserInventory(string code, SortDateEnum sort)
+        {
+            List<CourseItem> datas = new List<CourseItem>();
+            UserItem user = _unitOfWork.user.getUser(code);
+            if(string.IsNullOrEmpty(user.code))
+            {
+                return new List<CourseItem>();
+            }
+            List<string> productCodes = _unitOfWork.order.GetAll()
+                                                        .Where(order => order.user != null && order.user.code == code)
+                                                        .SelectMany(order => order.details!.Where(detail => detail.course != null))
+                                                        .Select(detail => detail.course!.code)
+                                                        .Distinct()
+                                                        .ToList();
+            if(productCodes.Count == 0)
+            {
+                return new List<CourseItem>();
+            }
+
+            List<SqlCourse> courses = _unitOfWork.course.GetContains(productCodes)
+                                                        .Include(s => s.user)
+                                                        .Include(s => s.languages)
+                                                        .Include(s => s.category)
+                                                        .Include(s => s.levels)
+                                                        .ToList();
+
+            foreach(SqlCourse s in courses)
+            {
+                if(s.isdeleted == false)
+                {
+                    CourseItem item = new CourseItem();
+                    item.code = s.code;
+                    item.title = s.title;
+                    item.purchases = s.purchases;
+                    item.price = s.price;
+                    item.salePrice = s.salePrice;
+                    item.des = s.des;
+                    item.image = s.image;
+                    item.isactivated = s.isactivated;
+                    item.issale = s.issale;
+                    item.createTime = s.DateCreated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+                    item.updateTime = s.DateUpdated.ToUniversalTime().ToString("dd-mm-yyyy hh:mm:ss");
+
+                    if(s.user != null && s.user.isdeleted == false) {
+                        item.creator = new CourseCreatorAttribute
+                        {
+                            code = s.user.code,
+                            displayName = s.user.displayName,
+                            image = s.user.image,
+                            username = s.user.username
+                        };
+                    }
+
+                    if (s.category != null && s.category.isdeleted == false)
+                    {
+                        item.category = new CourseAttribute
+                        {
+                            code = s.category.code,
+                            name = s.category.name,
+                            des = s.category.des,
+                        };
+                    }
+
+                    foreach(SqlLanguage lang in s.languages)
+                    {
+                        if(lang.isdeleted == false)
+                        {
+                            CourseAttribute attr = new CourseAttribute
+                            {
+                                code = lang.code,
+                                name = lang.name,
+                                des = lang.des
+                            };
+                            item.languages.Add(attr);
+                        }
+                    }
+
+                    foreach (SqlLevel lvl in s.levels)
+                    {
+                        if (lvl.isdeleted == false)
+                        {
+                            CourseAttribute attr = new CourseAttribute
+                            {
+                                code = lvl.code,
+                                name = lvl.name,
+                                des = lvl.des
+                            };
+                            item.level.Add(attr);
+                        }
+                    }
+
+                    datas.Add(item);
+                }
+            }
+
+            return datas;
         }
     }
 }

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers
 {
-    [Route("api/account")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -27,6 +27,26 @@ namespace Devify.Controllers
         public async Task<IActionResult> getAllUsers()
         {
             ApiResponse api = await _mediator.Send(new GetListUserQuery());
+            return Program.my_api.response(api);
+        }
+
+        [HttpGet]
+        [Route("get-profile")]
+        [User]
+        [Cache(3600)]
+        public async Task<IActionResult> getProfile()
+        {
+            string user = HttpContext.Items["code"] as string ?? "";
+            ApiResponse api = await _mediator.Send(new GetProfileQuery(user));
+            return Program.my_api.response(api);
+        }
+
+        [HttpGet]
+        [Route("get-inventory")]
+        [Cache(3600)]
+        public async Task<IActionResult> getInventory(string code)
+        {
+            ApiResponse api = await _mediator.Send(new GetUserInventory(code));
             return Program.my_api.response(api);
         }
 
@@ -48,14 +68,14 @@ namespace Devify.Controllers
             return Program.my_api.response(api);
         }
 
-        [HttpGet]
+/*        [HttpGet]
         [Route("{name}/get-user-by-name")]
         [Cache(3600)]
         public async Task<IActionResult> getUserByName(string name)
         {
             ApiResponse api = await _mediator.Send(new GetUserByNameQuery(name));
             return Program.my_api.response(api);
-        }
+        }*/
 
         [HttpPost]
         [Route("create-new-user")]
@@ -162,6 +182,5 @@ namespace Devify.Controllers
             return Program.my_api.response(api);
         }
 
-        
     }
 }

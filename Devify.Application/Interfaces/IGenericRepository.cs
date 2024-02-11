@@ -9,6 +9,7 @@ namespace Devify.Application.Interfaces
         IQueryable<T> GetAll();
         IQueryable<T> GetID(string code, int delete);
         IQueryable<T> GetCode(string code ,int delete);
+        IQueryable<T> GetContains(List<string> codes);
         T GetRawEntityByCode(string code);
 
         // ===================================== COMMANDS ======================================= 

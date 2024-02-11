@@ -47,6 +47,14 @@ namespace Devify.Infrastructure.SeedWorks
         {
             return _dbSet;
         }
+
+        public virtual IQueryable<T> GetContains(List<string> codes)
+        {
+            IQueryable<T> query = _dbSet;
+            query = query.Where(e => codes.Contains(EF.Property<string>(e, "code")));
+            return query.AsQueryable();
+        }
+
         public virtual IQueryable<T> GetCode(string code, int delete)
         {
             IQueryable<T> query = _dbSet;
