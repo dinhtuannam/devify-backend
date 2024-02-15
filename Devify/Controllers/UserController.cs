@@ -43,10 +43,12 @@ namespace Devify.Controllers
 
         [HttpGet]
         [Route("get-inventory")]
+        [User]
         [Cache(3600)]
-        public async Task<IActionResult> getInventory(string code)
+        public async Task<IActionResult> getInventory()
         {
-            ApiResponse api = await _mediator.Send(new GetUserInventory(code));
+            string user = HttpContext.Items["code"] as string ?? "";
+            ApiResponse api = await _mediator.Send(new GetUserInventory(user));
             return Program.my_api.response(api);
         }
 

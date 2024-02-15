@@ -28,26 +28,12 @@ namespace Devify.Application.DTO
         public string updateTime { get; set; } = "";
     }
 
-    public class DetailAccountDTO
+    public class UserShortInfo
     {
-        public string Id { get; set; }
-        public string Username { get; set; }
-        public string DisplayName { get; set; }
-        public string Image { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        //public Creator? Creator { get; set; }
-
-        public ICollection<CourseOwnerDTO> Courses = new List<CourseOwnerDTO>();
-    }
-
-    public class CourseOwnerDTO
-    {
-        public Guid CourseId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Slug { get; set; }
-        public string Image { get; set; }
+        public string code { get; set; } = "";
+        public string username { get; set; } = "";
+        public string displayName { get; set; } = "";
+        public string image { get; set; } = "";
     }
 
     public class UserSignInInfo

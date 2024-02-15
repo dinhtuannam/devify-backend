@@ -15,6 +15,8 @@
         IChapterRepository chapter { get; }
         IRoleRepository role { get; }
         IOrderRepository order { get; }
+        ICartRepository cart { get; }
+        IDiscountRepository discount { get; }
         Task<int> CompleteAsync();
     }
 }

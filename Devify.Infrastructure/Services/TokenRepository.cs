@@ -187,8 +187,8 @@ namespace Devify.Infrastructure.Services
         {
             try
             {
-                List<SqlToken> tmp = _context.tokens!.ToList();
-                List<SqlToken> tokens = _context.tokens.Where(s => s.isExpired == true || DateTime.Now > s.expiredTime.ToUniversalTime()).ToList();
+                DateTime now = DateTime.Now;
+                List<SqlToken> tokens = _context.tokens.Where(s => s.isExpired == true || DateTime.Compare(s.expiredTime, now) <= 0).ToList();
                 if (tokens.Count <= 0)
                 {
                     return 0;

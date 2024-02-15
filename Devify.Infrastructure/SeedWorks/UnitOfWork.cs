@@ -25,6 +25,8 @@ namespace Devify.Infrastructure.SeedWorks
         public IChapterRepository chapter { get; private set; }
         public IRoleRepository role { get; private set; }
         public IOrderRepository order { get; private set; }
+        public ICartRepository cart { get; private set; }
+        public IDiscountRepository discount { get; private set; }
 
         public UnitOfWork(
             DataContext context,
@@ -48,6 +50,8 @@ namespace Devify.Infrastructure.SeedWorks
             firebase = new FirebaseRepository();
             role = new RoleRepository(_context,this);
             order = new OrderRepository(_context, this);
+            cart = new CartRepository(_context, this);
+            discount = new DiscountRepository(_context, this);
         }
 
         public async Task<int> CompleteAsync()

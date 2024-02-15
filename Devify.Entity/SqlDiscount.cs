@@ -21,12 +21,11 @@ namespace Devify.Entity
         public double value { get; set; } = 0;
         public DiscountEnum type { get; set; } = DiscountEnum.Price;
         public int quantity { get; set; } = 0;
-        public double minimun { get; set; } = 0;
+        public double minimum { get; set; } = 0;
         public bool isDelete { get; set; } = false;
         public List<SqlOrder>? orders { get; set; }
         public List<SqlCart>? carts { get; set; }
         public DateTime expiredTime { get; set; }
-
         public SqlDiscount() : base() { }
     }
 }

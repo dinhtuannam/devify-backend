@@ -13,9 +13,6 @@ namespace Devify.Entity
     {
         [Key]
         public long id { get; set; }
-        public double amount { get; set; } = 0;
-        public double discount_price { get; set; } = 0;
-        public double total { get; set; } = 0;
         public long userId { get; set; }
         public SqlUser? user { get; set; }
         public SqlDiscount? discount { get; set; }

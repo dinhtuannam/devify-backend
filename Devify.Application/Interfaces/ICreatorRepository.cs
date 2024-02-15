@@ -5,9 +5,5 @@ namespace Devify.Application.Interfaces
 {
     public interface ICreatorRepository : IGenericRepository<SqlUser>
     {
-        Task<DetailCreatorDTO> GetDetailCreator(string id);
-        Task<DetailCreatorPublicDTO> GetCreatorBySlug(string slug);
-        Task<IEnumerable<CreatorCoursesDTO>> GetCreatorCoursesBySlug(string slug);
-        IEnumerable<CreatorCoursesDTO> GetCreatorCoursesById(string id);
     }
 }
