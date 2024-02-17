@@ -5,7 +5,7 @@ namespace Devify.Application.Interfaces
 {
     public interface IVnPayService
     {
-        string CreatePaymentUrl(OrderCheckoutDTO model, HttpContext context);
+        Task<string> CreatePaymentUrl(string user, HttpContext context);
         PaymentResponseModel PaymentExecute(IQueryCollection collections);
     }
 }

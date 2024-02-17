@@ -8,10 +8,14 @@ namespace Devify.Application.Features.Course.Queries
     {
         public string code { get; set; } = "";
         public bool privateData { get; set; } = false;
-        public GetCourseQuery(string code,bool privateData)
+        public string user { get; set; } = "";
+        public string role { get; set; } = "";
+        public GetCourseQuery(string code,bool privateData,string user,string role)
         {
             this.code = code;
             this.privateData = privateData;
+            this.user = user;
+            this.role = role;
         }
         public class Handler : IRequestHandler<GetCourseQuery, ApiResponse>
         {
@@ -23,6 +27,19 @@ namespace Devify.Application.Features.Course.Queries
             public Task<ApiResponse> Handle(GetCourseQuery query, CancellationToken cancellationToken)
             {
                 DetailCourseDTO course = _unitOfWork.course.GetCourse(query.code,query.privateData);
+                if (!string.IsNullOrEmpty(query.user))
+                {
+                    if (query.role.CompareTo("creator") == 0 && course.creator.code.CompareTo(query.user) == 0)
+                    {
+                        course.owner = true;
+                    }
+                    else
+                    {
+                        List<string> courseCodes = _unitOfWork.course.GetListProductCodeBoughtByUser(query.user);
+                        string? exist = courseCodes.Where(s => s.CompareTo(course.code) == 0).FirstOrDefault();
+                        course.owner = exist != null ? true : false;
+                    }
+                }
                 ApiResponse res = new ApiResponse()
                 {
                     result = true,

@@ -26,7 +26,7 @@ namespace Devify.Application.Features.Cart.Commands
             {
                 CartItem cart = new CartItem();
                 string result = await _unitOfWork.cart.applyDiscount(query.user, query.discount);
-                if(!string.IsNullOrEmpty(result)) {
+                if (!string.IsNullOrEmpty(result)) {
                     return new ApiResponse(false, result, cart, 400);
                 }
                 cart = await _unitOfWork.cart.getCartDetail(query.user);

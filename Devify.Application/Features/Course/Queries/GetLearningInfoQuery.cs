@@ -2,11 +2,6 @@
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Devify.Application.Features.Course.Queries
 {
@@ -32,17 +27,32 @@ namespace Devify.Application.Features.Course.Queries
             public Task<ApiResponse> Handle(GetLearningInfoQuery query, CancellationToken cancellationToken)
             {
                 CourseLearningInfo info = new CourseLearningInfo();
+                
+                bool isCustomer = query.role.Equals("customer");
+                bool isCreator = query.role.Equals("creator");
+
                 SqlCourse m_course = _unitOfWork.course.GetRawEntityByCode(query.course);
                 if(m_course == null)
                 {
-                    return Task.FromResult(new ApiResponse(false, "Course not found", info, 404));
+                    return Task.FromResult(new ApiResponse(false, "Không tìm thấy dữ liệu", info, 404));
                 }
+
                 info = _unitOfWork.course.getLearningCourseInfo(query.course, query.user);
-                if(string.IsNullOrEmpty(info.code))
+                if (isCustomer || (isCreator && query.user.CompareTo(info.creator.code) != 0))
                 {
-                    return Task.FromResult(new ApiResponse(false, "Course not found", info, 404));
+                    List<string> codes = _unitOfWork.course.GetListProductCodeBoughtByUser(query.user);
+                    string? bought = codes.Where(s => s.CompareTo(info.code) == 0).FirstOrDefault();
+                    if (bought == null)
+                    {
+                        return Task.FromResult(new ApiResponse(false, "Bạn không có quyền truy cập", info, 403));
+                    }
                 }
-                return Task.FromResult(new ApiResponse(true, "Get course learning data successfully", info, 200));
+
+                if (string.IsNullOrEmpty(info.code))
+                {
+                    return Task.FromResult(new ApiResponse(false, "Không tìm thấy dữ liệu", info, 404));
+                }
+                return Task.FromResult(new ApiResponse(true, "Lấy dữ liệu khóa học thành công", info, 200));
             }
         }
     }

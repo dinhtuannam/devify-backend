@@ -1,14 +1,10 @@
-﻿using Devify.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Devify.Application.DTO;
+using Devify.Entity;
 
 namespace Devify.Application.Interfaces
 {
     public interface IOrderRepository : IGenericRepository<SqlOrder>
     {
-        public void Add();
+        Task<bool> CheckOut(string user);
     }
 }

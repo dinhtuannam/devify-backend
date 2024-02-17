@@ -56,7 +56,14 @@ namespace Devify.Infrastructure.Services
                 email = email,
                 role = m_role
             };
+            SqlCart cart = new SqlCart()
+            {
+                id = DateTime.Now.Ticks,
+                user = m_user
+            };
             _unitOfWork.user.Insert(m_user);
+            _unitOfWork.cart.Insert(cart);
+
             int row = await _unitOfWork.CompleteAsync();
             if(row <= 0)
             {

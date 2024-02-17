@@ -34,6 +34,7 @@ namespace Devify.Application.DTO
         public string image { get; set; } = "";
         public bool isactivated { get; set; } = false;
         public bool issale { get; set; } = false;
+        public bool owner { get; set; } = false;
         public string createTime { get; set; } = "";
         public string updateTime { get; set; } = "";
         public CourseCreatorAttribute creator { get; set; } = new CourseCreatorAttribute();

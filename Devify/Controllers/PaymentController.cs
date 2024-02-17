@@ -1,37 +1,57 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
+using Devify.Filters;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Devify.Controllers
 {
-    [Route("api/payment")]
+    [Route("api/Payment")]
     [ApiController]
     public class PaymentController : ControllerBase
     {
         private readonly IVnPayService _vpnPayService;
         private readonly IConfiguration _configuration;
-        public PaymentController(IVnPayService vpnPayService, IConfiguration configuration)
+        private readonly IUnitOfWork _unitOfWork;
+        public PaymentController(IVnPayService vpnPayService, IConfiguration configuration,IUnitOfWork unitOfWork)
         {
             _vpnPayService = vpnPayService;
             _configuration = configuration;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost("vnpay")]
-        public IActionResult Payment(OrderCheckoutDTO model)
+        [User]
+        public async Task<IActionResult> Payment()
         {
-            var url = _vpnPayService.CreatePaymentUrl(model, HttpContext);
-            return Ok(url);
+            string user = HttpContext.Items["code"] as string ?? "";
+            string url = await _vpnPayService.CreatePaymentUrl(user, HttpContext);
+            ApiResponse api = new ApiResponse(true,"Thanh toán thành công",url,200);
+            if (string.IsNullOrEmpty(url))
+            {
+                api.result = false;
+                api.message = "Thanh toán thất bại";
+                api.code = 400;
+            }
+            return (Program.my_api.response(api));
         }
 
         [HttpGet("callback")]
-        public IActionResult PaymentCallback()
+        public async Task<IActionResult> PaymentCallback()
         {
             var response = _vpnPayService.PaymentExecute(Request.Query);
             var frontendUrl = _configuration.GetValue<string>("FrontendUrl");
-            if(response.VnPayResponseCode == "00")
-            return Redirect($"{frontendUrl}/cart/success");
-            else
-                return Redirect($"{frontendUrl}/bad-request");
+            if(response.VnPayResponseCode != "00")
+            {
+                return Redirect($"{frontendUrl}/cart");
+            }
+            bool result = await _unitOfWork.order.CheckOut(response.OrderDescription);
+            if(result == false)
+            {
+                return Redirect($"{frontendUrl}/cart");
+            }
+            return Redirect($"{frontendUrl}/success");
+
         }
     }
 }

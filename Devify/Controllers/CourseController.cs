@@ -30,11 +30,12 @@ namespace Devify.Controllers
 
         [HttpGet]
         [Route("{code}/get-view-info-course")]
-        [User]
         [Cache(120)]
         public async Task<IActionResult> getViewInfoCourse(string code)
         {
-            ApiResponse result = await _mediator.Send(new GetCourseQuery(code,false));
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
+            ApiResponse result = await _mediator.Send(new GetCourseQuery(code,false,user,role));
             return Program.my_api.response(result);
         }
 
@@ -44,13 +45,16 @@ namespace Devify.Controllers
         [Cache(120)]
         public async Task<IActionResult> getCourse(string code)
         {
-            ApiResponse result = await _mediator.Send(new GetCourseQuery(code, true));
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
+            ApiResponse result = await _mediator.Send(new GetCourseQuery(code,true,user,role));
             return Program.my_api.response(result);
         }
 
 
         [HttpGet]
         [Route("{code}/get-learning-info")]
+        [User]
         [Cache(120)]
         public async Task<IActionResult> getLearningInfo(string code)
         {

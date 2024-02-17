@@ -5,7 +5,6 @@ using Devify.Entity.Enums;
 using Devify.Infrastructure.Persistance;
 using Devify.Infrastructure.SeedWorks;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace Devify.Infrastructure.Services
@@ -29,6 +28,18 @@ namespace Devify.Infrastructure.Services
                     return "Lỗi khi tạo giỏ hàng mới";
                 }
             }
+            List<string> userBoughtList = _unitOfWork.course.GetListProductCodeBoughtByUser(user);
+            string? bought = userBoughtList.Where(s => s.CompareTo(course) == 0).FirstOrDefault();
+            if(bought != null)
+            {
+                return "Bạn hiện đã mua sản phẩm này";
+            }
+            SqlCourse? check = cart.courses != null ? 
+                               cart.courses!.Where(s => s.code.CompareTo(course) == 0).FirstOrDefault() : null;
+            if(check != null)
+            {
+                return "Sản phẩm đã tồn tại trong giỏ hàng";
+            }
             SqlCourse? m_course = _unitOfWork.course.GetRawEntityByCode(course);
             if(m_course == null || m_course.isdeleted == true)
             {
@@ -51,7 +62,12 @@ namespace Devify.Infrastructure.Services
                 }
                 return "Vui lòng thêm sản phẩm";
             }
-            SqlDiscount? m_discount = _unitOfWork.discount.GetRawEntityByCode(discount);
+            if(cart.discount != null && cart.discount.code.CompareTo(discount.ToUpper()) == 0)
+            {
+                return "";
+            }
+            
+            SqlDiscount? m_discount = _unitOfWork.discount.GetRawEntityByCode(discount.ToUpper());
             if (m_discount == null || m_discount.isDelete == true)
             {
                 return "Không tìm thấy mã giảm giá";
@@ -94,6 +110,7 @@ namespace Devify.Infrastructure.Services
             }
             cart.id = DateTime.Now.Ticks;
             cart.user = m_user;
+            cart.courses = new List<SqlCourse>();
             _unitOfWork.cart.Insert(cart);
             int row = await _unitOfWork.CompleteAsync();
             return row > 0 ? cart : null;

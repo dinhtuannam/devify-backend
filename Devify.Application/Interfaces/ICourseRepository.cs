@@ -15,5 +15,6 @@ namespace Devify.Application.Interfaces
         Task<SqlCourse> updateCourse(string code,string title, string des, double price, double salePrice, bool issale, string category);
         CourseLearningInfo getLearningCourseInfo(string code,string? user = "");
         Task<bool> deleteCourse(string code);
+        List<string> GetListProductCodeBoughtByUser(string user);
     }
 }

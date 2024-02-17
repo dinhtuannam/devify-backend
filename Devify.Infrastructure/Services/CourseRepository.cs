@@ -472,13 +472,9 @@ namespace Devify.Infrastructure.Services
             {
                 return new List<CourseItem>();
             }
-            List<string> productCodes = _unitOfWork.order.GetAll()
-                                                        .Where(order => order.user != null && order.user.code == code)
-                                                        .SelectMany(order => order.details!.Where(detail => detail.course != null))
-                                                        .Select(detail => detail.course!.code)
-                                                        .Distinct()
-                                                        .ToList();
-            if(productCodes.Count == 0)
+            List<string> productCodes = GetListProductCodeBoughtByUser(code);
+
+            if (productCodes.Count == 0)
             {
                 return new List<CourseItem>();
             }
@@ -560,6 +556,17 @@ namespace Devify.Infrastructure.Services
             }
 
             return datas;
+        }
+
+        public List<string> GetListProductCodeBoughtByUser(string user)
+        {
+            List<string> productCodes = _unitOfWork.order.GetAll()
+                                                        .Where(order => order.user != null && order.user.code == user)
+                                                        .SelectMany(order => order.details!.Where(detail => detail.course != null))
+                                                        .Select(detail => detail.course!.code)
+                                                        .Distinct()
+                                                        .ToList();
+            return productCodes;
         }
     }
 }

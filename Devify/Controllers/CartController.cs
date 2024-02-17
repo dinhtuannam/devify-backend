@@ -20,49 +20,61 @@ namespace Devify.Controllers
         }
 
         [HttpGet]
+        [User]
         [Route("get-cart")]
-        public async Task<IActionResult> getCart(string user)
+        public async Task<IActionResult> getCart()
         {
+            string user = HttpContext.Items["code"] as string ?? "";
             ApiResponse res = await _mediator.Send(new GetUserCartQuery(user));
             return Program.my_api.response(res);
         }
 
         [HttpPost]
+        [User]
         [Route("add-item/{course}")]
-        public async Task<IActionResult> addItem(string user,string course)
+        public async Task<IActionResult> addItem(string course)
         {
+            string user = HttpContext.Items["code"] as string ?? "";
             ApiResponse res = await _mediator.Send(new AddItemCommand(user,course));
             return Program.my_api.response(res);
         }
 
         [HttpDelete]
+        [User]
         [Route("remove-item/{course}")]
-        public async Task<IActionResult> removeItem(string user, string course)
+        public async Task<IActionResult> removeItem(string course)
         {
+            string user = HttpContext.Items["code"] as string ?? "";
             ApiResponse res = await _mediator.Send(new RemoveItemCommand(user, course));
             return Program.my_api.response(res);
         }
 
         [HttpPost]
+        [User]
         [Route("apply-discount/{discount}")]
-        public async Task<IActionResult> applyDiscount(string user, string discount)
+        public async Task<IActionResult> applyDiscount(string discount)
         {
+            string user = HttpContext.Items["code"] as string ?? "";
             ApiResponse res = await _mediator.Send(new ApplyDiscountCommand(user,discount));
             return Program.my_api.response(res);
         }
 
         [HttpDelete]
+        [User]
         [Route("remove-discount/{discount}")]
-        public async Task<IActionResult> removeDiscount(string user,string discount)
+        public async Task<IActionResult> removeDiscount(string discount)
         {
+            string user = HttpContext.Items["code"] as string ?? "";
             ApiResponse res = await _mediator.Send(new RemoveDiscountCommand(user, discount));
             return Program.my_api.response(res);
         }
 
         [HttpDelete]
+        [User]
         [Route("clear-cart")]
-        public async Task<IActionResult> clearCart(string user)
+        public async Task<IActionResult> clearCart()
         {
+            string user = HttpContext.Items["code"] as string ?? "";
             ApiResponse res = await _mediator.Send(new ClearCartCommand(user));
             return Program.my_api.response(res);
         }
