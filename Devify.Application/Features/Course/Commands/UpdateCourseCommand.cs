@@ -16,8 +16,10 @@ namespace Devify.Application.Features.Course.Commands
         public double salePrice { get; set; } = 0;
         public bool issale { get; set; } = false;
         public string category { get; set; } = "";
+        public List<string> languages { get; set; } = new List<string>();
+        public List<string> levels { get; set; } = new List<string>();
 
-        public UpdateCourseCommand(string user, string role ,string code,string title, string des, double price, double salePrice, bool issale, string category)
+        public UpdateCourseCommand(string user, string role ,string code,string title, string des, double price, double salePrice, bool issale, string category,List<string> languages, List<string> levels)
         {
             this.user = user;
             this.role = role;
@@ -28,6 +30,8 @@ namespace Devify.Application.Features.Course.Commands
             this.salePrice = salePrice;
             this.issale = issale;
             this.category = category;
+            this.languages = languages;
+            this.levels = levels;
         }
 
         public class Handler : IRequestHandler<UpdateCourseCommand, ApiResponse>
@@ -39,25 +43,36 @@ namespace Devify.Application.Features.Course.Commands
             }
             public async Task<ApiResponse> Handle(UpdateCourseCommand query, CancellationToken cancellationToken)
             {
+                DetailCourseDTO updatedCourse = new DetailCourseDTO();
                 if (string.IsNullOrEmpty(query.user) || string.IsNullOrEmpty(query.role))
                 {
-                    return new ApiResponse(false, "you dont have permission to access", "", 403);
+                    return new ApiResponse(false, "you dont have permission to access", updatedCourse, 403);
                 }
                 DetailCourseDTO course = _unitOfWork.course.GetCourse(query.code);
                 if (string.IsNullOrEmpty(course.code) || string.IsNullOrEmpty(course.creator.code))
                 {
-                    return new ApiResponse(false, "course not found", "", 404);
+                    return new ApiResponse(false, "course not found", updatedCourse, 404);
                 }
                 if (query.role.CompareTo("creator") == 0 && course.creator.code.CompareTo(query.user) != 0)
                 {
-                    return new ApiResponse(false, "you dont have permission to access", "", 403);
+                    return new ApiResponse(false, "you dont have permission to access", updatedCourse, 403);
                 }
-                SqlCourse? result = await _unitOfWork.course.updateCourse(query.code,query.title,query.des,query.price,query.salePrice,query.issale,query.category);
+                SqlCourse? result = await _unitOfWork.course.updateCourse(  query.code,
+                                                                            query.title,
+                                                                            query.des,
+                                                                            query.price,
+                                                                            query.salePrice,
+                                                                            query.issale,
+                                                                            query.category,
+                                                                            query.languages,
+                                                                            query.levels);
                 if (string.IsNullOrEmpty(result.code))
                 {
-                    return new ApiResponse(false, "update course failed", "", 400);
+                    return new ApiResponse(false, "update course failed", updatedCourse, 400);
                 }
-                return new ApiResponse(true, "update course successfully", result.code, 200);
+                updatedCourse = _unitOfWork.course.GetCourse(query.code, true);
+                updatedCourse.owner = true;
+                return new ApiResponse(true, "update course successfully", updatedCourse, 200);
             }
         }
     }

@@ -9,11 +9,9 @@ namespace Devify.Infrastructure.Services
     public class OrderRepository : GenericRepository<SqlOrder>, IOrderRepository
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly DataContext _context;
         public OrderRepository(DataContext context, IUnitOfWork unitOfWork) : base(context)
         {
             _unitOfWork = unitOfWork;
-            _context = context;
         }
 
         public async Task<bool> CheckOut(string user)

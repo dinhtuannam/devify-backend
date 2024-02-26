@@ -4,7 +4,6 @@ using Devify.Application.Features.Course.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Devify.Filters;
-using Devify.Application.Interfaces;
 using Devify.Models;
 
 namespace Devify.Controllers
@@ -102,7 +101,8 @@ namespace Devify.Controllers
         {
             string user = HttpContext.Items["code"] as string ?? "";
             string role = HttpContext.Items["role"] as string ?? "";
-            ApiResponse result = await _mediator.Send(new UpdateCourseCommand(user,role,req.code,req.title,req.des,req.price,req.salePrice,req.issale,req.category));
+            ApiResponse result = await _mediator.Send(
+                new UpdateCourseCommand(user,role,req.code,req.title,req.des,req.price, req.salePrice,req.issale, req.category,req.languages,req.levels));
             return Program.my_api.response(result);
         }
 

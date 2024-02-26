@@ -12,7 +12,7 @@ namespace Devify.Application.Interfaces
         DataList<CourseItem> GetCreatorCourse(string creator, int page, int size, string title);
         DataList<CourseItem> GetAllCourse(int page,int pageSize,string title,List<string> cat,List<string> lang,List<string> lvl);
         Task<SqlCourse> createCourse(string user,string title, string des, double price, double salePrice, bool issale,string category, List<string> lang, List<string> lvl);
-        Task<SqlCourse> updateCourse(string code,string title, string des, double price, double salePrice, bool issale, string category);
+        Task<SqlCourse> updateCourse(string code,string title, string des, double price, double salePrice, bool issale, string category, List<string> lang, List<string> lvl);
         CourseLearningInfo getLearningCourseInfo(string code,string? user = "");
         Task<bool> deleteCourse(string code);
         List<string> GetListProductCodeBoughtByUser(string user);

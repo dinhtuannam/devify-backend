@@ -373,9 +373,13 @@ namespace Devify.Infrastructure.Services
             return await _unitOfWork.CompleteAsync() > 0;
         }
 
-        public async Task<SqlCourse> updateCourse(string code,string title, string des, double price, double salePrice, bool issale, string category)
+        public async Task<SqlCourse> updateCourse(string code,string title, string des, double price, double salePrice, bool issale, string category, List<string> languages, List<string> levels)
         {
-            SqlCourse? course = _unitOfWork.course.GetCode(code, 0).FirstOrDefault();
+            SqlCourse? course = _unitOfWork.course.GetCode(code, 0)
+                                                  .Include(s => s.category)
+                                                  .Include(s => s.languages)
+                                                  .Include(s => s.levels)
+                                                  .FirstOrDefault();
             if (course == null)
             {
                 return new SqlCourse();
@@ -392,6 +396,21 @@ namespace Devify.Infrastructure.Services
             course.salePrice = salePrice;
             course.issale = issale;
             course.category = m_category;
+
+            List<SqlLanguage> m_languages = _unitOfWork.language.GetContains(languages).ToList();
+            List<SqlLevel> m_levels = _unitOfWork.level.GetContains(levels).ToList();
+
+            course.languages!.Clear();
+            if(m_languages.Count > 0)
+            {
+                course.languages!.AddRange(m_languages);
+            }
+
+            course.levels!.Clear();
+            if (course.levels!.Count > 0)
+            {
+                course.levels.AddRange(m_levels);
+            }
 
             return await _unitOfWork.CompleteAsync() > 0 ? course : new SqlCourse();
         }
