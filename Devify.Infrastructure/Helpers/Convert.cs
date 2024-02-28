@@ -6,25 +6,26 @@ namespace Devify.Infrastructure.Helpers
 {
     public static class ConvertString
     {
-        public static string NormalizeString(string input)
+        public static string convertToUnSign2(string s)
         {
-            string normalizedString = input.Normalize(NormalizationForm.FormD);
-            StringBuilder stringBuilder = new StringBuilder();
-
-            foreach (char c in normalizedString)
+            string stFormD = s.Normalize(NormalizationForm.FormD);
+            StringBuilder sb = new StringBuilder();
+            for (int ich = 0; ich < stFormD.Length; ich++)
             {
-                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                System.Globalization.UnicodeCategory uc = System.Globalization.CharUnicodeInfo.GetUnicodeCategory(stFormD[ich]);
+                if (uc != System.Globalization.UnicodeCategory.NonSpacingMark)
                 {
-                    stringBuilder.Append(c);
+                    sb.Append(stFormD[ich]);
                 }
             }
-
-            string result = stringBuilder.ToString().Normalize(NormalizationForm.FormC);
-            return result.ToLowerInvariant().Replace(" ", "");
+            sb = sb.Replace('Đ', 'D');
+            sb = sb.Replace('đ', 'd');
+            return (sb.ToString().Normalize(NormalizationForm.FormD));
         }
 
         public static string getSlug(string input)
         {
+            input = convertToUnSign2(input);
             string cleanedString = new string(input
                .Where(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c))
                .ToArray());

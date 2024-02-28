@@ -1,4 +1,5 @@
 ﻿using Devify.Application.Commons;
+using Devify.Application.Configs;
 using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
@@ -34,6 +35,12 @@ namespace Devify.Application.Features.Language.Commands
                 {
                     return new ApiResponse(false, "Delete language failed", false, 400);
                 }
+
+                await Task.WhenAll(
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.language),
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.course)
+                );
+                
                 return new ApiResponse(true, "Delete language successfully", true, 200);
             }
         }

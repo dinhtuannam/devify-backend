@@ -1,13 +1,14 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Features.Level.Commands;
 using Devify.Application.Features.Level.Queries;
+using Devify.Filters;
 using Devify.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/level")]
     [ApiController]
     public class LevelController : ControllerBase
     {
@@ -18,6 +19,7 @@ namespace Devify.Controllers
         }
 
         [HttpGet]
+        [Cache(3600)]
         [Route("get-all-level")]
         public async Task<IActionResult> GetAllLevel()
         {
@@ -26,6 +28,7 @@ namespace Devify.Controllers
         }
 
         [HttpGet]
+        [Cache(3600)]
         [Route("{code}/get-level")]
         public async Task<IActionResult> GetLevel(string code)
         {

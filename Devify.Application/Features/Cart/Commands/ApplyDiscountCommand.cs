@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Features.Category.Queries;
 using Devify.Application.Interfaces;
 using MediatR;
@@ -30,6 +31,7 @@ namespace Devify.Application.Features.Cart.Commands
                     return new ApiResponse(false, result, cart, 400);
                 }
                 cart = await _unitOfWork.cart.getCartDetail(query.user);
+                await _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.cart);
                 return new ApiResponse(true, "Áp dụng thẻ giảm giá thành công", cart, 200);
             }
         }

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cart")]
     [ApiController]
     public class CartController : ControllerBase
     {
@@ -21,6 +21,7 @@ namespace Devify.Controllers
 
         [HttpGet]
         [User]
+        [Cache(1000,true)]
         [Route("get-cart")]
         public async Task<IActionResult> getCart()
         {

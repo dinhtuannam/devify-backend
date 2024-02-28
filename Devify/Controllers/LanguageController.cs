@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/language")]
     [ApiController]
     public class LanguageController : ControllerBase
     {

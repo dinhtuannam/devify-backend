@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Features.Language.Commands;
 using Devify.Application.Interfaces;
 using Devify.Entity;
@@ -38,6 +39,10 @@ namespace Devify.Application.Features.Category.Commands
                 {
                     return new ApiResponse(false, "Update category failed", "", 400);
                 }
+                await Task.WhenAll(
+                   _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.category),
+                   _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.course)
+                );
                 return new ApiResponse(true, "Update category successfully", result.code, 200);
             }
         }

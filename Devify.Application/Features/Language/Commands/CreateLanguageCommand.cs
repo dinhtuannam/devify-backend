@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using MediatR;
@@ -39,6 +40,7 @@ namespace Devify.Application.Features.Language.Commands
                 {
                     return new ApiResponse(false, "Create Language failed", "", 400);
                 }
+                await _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.language);
                 return new ApiResponse(true, "Create Language successfully", lang.code, 200);
             }
         }

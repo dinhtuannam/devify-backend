@@ -33,14 +33,11 @@ namespace Devify.Infrastructure.Services
                 {
                     await _distributedCache.RemoveAsync(key);
                 }
-                Console.WriteLine($"[CacheService] -> RemoveCacheResponseAsync with pattern:{pattern} -> successfully ");
             }
             catch(Exception ex)
             {
                 Console.WriteLine($"[CacheService] -> RemoveCacheResponseAsync with pattern:{pattern} -> failed , Exception: {ex.Message}");
             }
-           
-
         }
 
         private async IAsyncEnumerable<string> GetKeyAsync(string pattern)
@@ -73,7 +70,6 @@ namespace Devify.Infrastructure.Services
                 {
                     AbsoluteExpirationRelativeToNow = timeOut
                 });
-                Console.WriteLine($"[CacheService] -> SetCacheResponseAsync with cacheKey:{cacheKey} and object and timeOut: {timeOut} -> successfully ");
             }
             catch(Exception ex)
             {

@@ -1,12 +1,7 @@
 ﻿using Devify.Application.DTO;
 using Devify.Application.Interfaces;
-using Devify.Entity;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Devify.Application.Features.User.Commands
 {

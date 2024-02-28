@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using MediatR;
@@ -41,6 +42,12 @@ namespace Devify.Application.Features.Role.Commands
                 {
                     return new ApiResponse(false, "update role failed", "", 400);
                 }
+
+                await Task.WhenAll(
+                   _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.role),
+                   _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.user)
+                );
+
                 return new ApiResponse(true, "update role successfully", role.code, 200);
             }
         }

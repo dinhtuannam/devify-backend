@@ -23,13 +23,13 @@ namespace Devify.Controllers
         [Cache(120)]
         public async Task<IActionResult> getAllCourse([FromQuery] CourseSearchParam req)
         {
-            ApiResponse result = await _mediator.Send(new GetAllCourseQuery(req.title,req.pageSize,req.page,req.cat,req.lang,req.lvl));
+            ApiResponse result = await _mediator.Send(new GetAllCourseQuery(req.query, req.pageSize,req.page,req.cat,req.lang,req.lvl));
             return Program.my_api.response(result);
         }
 
         [HttpGet]
         [Route("{code}/get-view-info-course")]
-        [Cache(120)]
+        [Cache(120,true)]
         public async Task<IActionResult> getViewInfoCourse(string code)
         {
             string user = HttpContext.Items["code"] as string ?? "";
@@ -41,7 +41,7 @@ namespace Devify.Controllers
         [HttpGet]
         [Route("{code}/get-course")]
         [Role("admin","manager","creator")]
-        [Cache(120)]
+        [Cache(120,true)]
         public async Task<IActionResult> getCourse(string code)
         {
             string user = HttpContext.Items["code"] as string ?? "";
@@ -54,7 +54,7 @@ namespace Devify.Controllers
         [HttpGet]
         [Route("{code}/get-learning-info")]
         [User]
-        [Cache(120)]
+        [Cache(120,true)]
         public async Task<IActionResult> getLearningInfo(string code)
         {
             string user = HttpContext.Items["code"] as string ?? "";

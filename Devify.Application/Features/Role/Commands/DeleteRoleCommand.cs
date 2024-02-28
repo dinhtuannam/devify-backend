@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using MediatR;
 
@@ -31,6 +32,12 @@ namespace Devify.Application.Features.Role.Commands
                 {
                     return new ApiResponse(false, "Delete role failed", false, 400);
                 }
+
+                await Task.WhenAll(
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.role),
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.user)
+                );
+
                 return new ApiResponse(true, "Delete role successfully", true, 200);
             }
         }

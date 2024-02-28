@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using MediatR;
@@ -58,6 +59,12 @@ namespace Devify.Application.Features.Course.Commands
                 {
                     return new ApiResponse(false, "Create course failed", "", 400);
                 }
+
+                await Task.WhenAll(
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.course),
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.creatorCourse(query.user))
+                );
+                
                 return new ApiResponse(true, "Create course successfully", course.code, 200);
             }
         }

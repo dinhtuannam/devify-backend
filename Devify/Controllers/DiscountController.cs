@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/discount")]
     [ApiController]
     public class DiscountController : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace Devify.Controllers
 
         [HttpGet]
         [Route("get-all-discount")]
-        [Cache(3600)]
+        [Cache(60)]
         public async Task<IActionResult> GetAllDiscount()
         {
             ApiResponse api = await _mediator.Send(new GetAllDiscountQuery());
@@ -32,7 +32,7 @@ namespace Devify.Controllers
 
         [HttpGet]
         [Route("{code}/get-discount")]
-        [Cache(3600)]
+        [Cache(60)]
         public async Task<IActionResult> GetDiscount(string code)
         {
             ApiResponse api = await _mediator.Send(new GetDiscountQuery(code));
@@ -43,7 +43,15 @@ namespace Devify.Controllers
         [Route("create-new-discount")]
         public async Task<IActionResult> AddNewDiscount(CreateDiscount model)
         {
-            ApiResponse res = await _mediator.Send(new CreateLanguageCommand(model.code, model.name, model.des));
+            ApiResponse res = await _mediator.Send(new CreateDiscountCommand(
+                model.code,
+                model.name,
+                model.des,
+                model.type,
+                model.quantity,
+                model.minimum,
+                model.expiredTime
+            ));
             return Program.my_api.response(res);
         }
 
@@ -59,7 +67,15 @@ namespace Devify.Controllers
         [Route("edit-discount")]
         public async Task<IActionResult> UpdateDiscount(UpdateDiscount model)
         {
-            ApiResponse res = await _mediator.Send(new UpdateLanguageCommand(model.code, model.name, model.des));
+            ApiResponse res = await _mediator.Send(new UpdateDiscountCommand(
+                model.code, 
+                model.name, 
+                model.des,
+                model.type,
+                model.quantity,
+                model.minimum,
+                model.expiredTime
+            ));
             return Program.my_api.response(res);
         }
     }

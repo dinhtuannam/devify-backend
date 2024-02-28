@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using MediatR;
@@ -16,10 +17,8 @@ namespace Devify.Application.Features.User.Commands
         public string userRole { get; set; } = "";
         public string code { get; set; } = "";
         public string username { get; set; } = "";
-        public string password { get; set; } = "";
         public string displayName { get; set; } = "";
         public string email { get; set; } = "";
-        public string image { get; set; } = "";
         public string social { get; set; } = "";
         public string about { get; set; } = "";
         public string role { get; set; } = "";
@@ -28,10 +27,8 @@ namespace Devify.Application.Features.User.Commands
             string userRole,
             string code,
             string username,
-            string password,
             string displayName,
             string email,
-            string image,
             string social,
             string about,
             string role)
@@ -40,10 +37,8 @@ namespace Devify.Application.Features.User.Commands
             this.userRole = userRole;
             this.code = code;
             this.username = username;
-            this.password = password;
             this.displayName = displayName;
             this.email = email;
-            this.image = image;
             this.social = social;
             this.about = about;
             this.role = role;
@@ -57,6 +52,7 @@ namespace Devify.Application.Features.User.Commands
             }
             public async Task<ApiResponse> Handle(UpdateUserCommand query, CancellationToken cancellationToken)
             {
+                UserItem user = new UserItem();
                 bool flag = false;
                 if (!string.IsNullOrEmpty(query.user) && !string.IsNullOrEmpty(query.userRole))
                 {
@@ -91,20 +87,35 @@ namespace Devify.Application.Features.User.Commands
                 }
                 if (flag)
                 {
-                    return new ApiResponse(false, "You dont have permission", "", 403);
+                    return new ApiResponse(false, "Bạn không có quyền truy cập", user, 403);
                 }
                 UserItem exist = _unitOfWork.user.getUser(query.code);
                 if (string.IsNullOrEmpty(exist.code))
                 {
-                    return new ApiResponse(true, "user not found", "", 400);
+                    return new ApiResponse(false, "Không tìm thấy người dùng", user, 400);
                 }
+                if(exist.displayName.CompareTo(query.displayName) != 0)
+                {
+                    UserItem exist_displayName = _unitOfWork.user.getUserByName(query.displayName);
+                    if (!string.IsNullOrEmpty(exist_displayName.code))
+                    {
+                        return new ApiResponse(false, "Tên hiển thị đã có người sử dụng", user, 400);
+                    }
+                }
+                if (exist.username.CompareTo(query.username) != 0)
+                {
+                    UserItem exist_username = _unitOfWork.user.getUserByUsername(query.username);
+                    if (!string.IsNullOrEmpty(exist_username.code))
+                    {
+                        return new ApiResponse(false, "Tên đăng nhập đã có người sử dụng", user, 400);
+                    }
+                }
+                
                 SqlUser newUser = await _unitOfWork.user.editUser(
                     query.code,
                     query.username,
-                    query.password,
                     query.displayName,
                     query.email,
-                    query.image,
                     query.social,
                     query.about,
                     query.role
@@ -112,9 +123,16 @@ namespace Devify.Application.Features.User.Commands
 
                 if (string.IsNullOrEmpty(newUser.code))
                 {
-                    return new ApiResponse(false, "update user failed", "", 400);
+                    return new ApiResponse(false, "Cập nhật thất bại", user, 400);
                 }
-                return new ApiResponse(true, "update user successfully", newUser.code, 200);
+                
+                await Task.WhenAll(
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.user),
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.course),
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.inventory)
+                );
+                user = _unitOfWork.user.getUser(query.code);
+                return new ApiResponse(true, "Cập nhật thành công", user, 200);
             }
         }
     }

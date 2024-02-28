@@ -42,19 +42,21 @@ namespace Devify.Infrastructure.Services
             {
                 return new SqlUser();
             }
-            SqlRole? m_role = _unitOfWork.role.GetCode(code, -1).FirstOrDefault();
+            SqlRole? m_role = _unitOfWork.role.GetCode(role, -1).FirstOrDefault();
             if(m_role == null)
             {
                 return new SqlUser();
             }
             SqlUser m_user = new SqlUser()
             {
+                id = DateTime.Now.Ticks,
                 code = code,
                 username = username,
                 password = password,
                 displayName = displayName,
                 email = email,
-                role = m_role
+                role = m_role,
+                image = ConfigKey.DEFAULT_AVATAR
             };
             SqlCart cart = new SqlCart()
             {
@@ -88,27 +90,26 @@ namespace Devify.Infrastructure.Services
             return true;
         }
 
-        public async Task<SqlUser> editUser(string code, string username, string password, string displayName, string email, string image, string social, string about, string role)
+        public async Task<SqlUser> editUser(string code, string username, string displayName, string email, string social, string about, string role)
         {
             SqlUser? user = _unitOfWork.user.GetCondition(s => s.code.CompareTo(code) == 0 && s.isdeleted == false).FirstOrDefault();
             if (user == null)
             {
                 return new SqlUser();
             }
-            SqlRole? m_role = _unitOfWork.role.GetCode(code, -1).FirstOrDefault();
+            SqlRole? m_role = _unitOfWork.role.GetCode(role, -1).FirstOrDefault();
             if (m_role == null)
             {
                 return new SqlUser();
             }
 
             user.username = username;
-            user.password = password;
             user.displayName = displayName;
             user.email = email;
-            user.image = image;
             user.social = social;
             user.about = about;
             user.role = m_role;
+            user.DateUpdated = DateTime.Now;
 
             int row = await _unitOfWork.CompleteAsync();
             if (row <= 0)
@@ -240,6 +241,23 @@ namespace Devify.Infrastructure.Services
             };
             return item;
 
+        }
+
+        public async Task<bool> updatePassword(string code, string curPassword, string newPassword)
+        {
+            SqlUser? user = _unitOfWork.user.GetCondition(s => s.code.CompareTo(code) == 0 && s.password.CompareTo(curPassword) == 0 && s.isdeleted == false)
+                                            .Include(s => s.tokens)   
+                                            .FirstOrDefault();
+            if(user == null)
+            {
+                return false;
+            }
+            if(user.tokens!.Count > 0)
+            {
+                await _unitOfWork.token.RemoveAllUserToken(code);
+            }
+            user.password = newPassword;
+            return await _unitOfWork.CompleteAsync() > 0;
         }
 
     }

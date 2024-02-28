@@ -22,7 +22,7 @@
 
     public class CourseSearchParam : SearchParam
     {
-        public string title { get; set; } = "";
+        public string query { get; set; } = "";
         public List<string> cat { get; set; } = new List<string>();
         public List<string> lang { get; set; } = new List<string>();
         public List<string> lvl { get; set; } = new List<string>();

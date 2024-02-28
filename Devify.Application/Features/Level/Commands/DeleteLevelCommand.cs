@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using MediatR;
@@ -38,6 +39,10 @@ namespace Devify.Application.Features.Level.Commands
                 {
                     return new ApiResponse(false, "Delete level failed", false, 400);
                 }
+                await Task.WhenAll(
+                   _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.level),
+                   _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.course)
+                );
                 return new ApiResponse(true, "Delete level successfully", true, 200);
             }
         }

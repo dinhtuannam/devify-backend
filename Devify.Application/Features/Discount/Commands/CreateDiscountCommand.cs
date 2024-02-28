@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Features.Language.Commands;
 using Devify.Application.Interfaces;
 using Devify.Entity;
@@ -67,6 +68,7 @@ namespace Devify.Application.Features.Discount.Commands
                 {
                     return new ApiResponse(false, "Không tìm thấy mã giảm giá", discount, 404);
                 }
+                await _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.discount);
                 return new ApiResponse(true, "Tạo mã giảm giá thành công", discount, 200);
             }
         }

@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using Devify.Entity.Enums;
@@ -246,7 +247,7 @@ namespace Devify.Infrastructure.Services
             }
             if (!string.IsNullOrEmpty(title))
             {
-                query = query.Where(s => s.title.Contains(title));
+                query = query.Where(s => s.title.ToLower().Contains(title));
             }
             if (page > 0 && size > 0)
             {
@@ -357,6 +358,8 @@ namespace Devify.Infrastructure.Services
             course.languages.AddRange(m_languages);
             course.levels = new List<SqlLevel>();
             course.levels.AddRange(m_levels);
+            course.image = ConfigKey.DEFAULT_COURSE_BG;
+
             _unitOfWork.course.Insert(course);
             int row = await _unitOfWork.CompleteAsync();
             return row > 0 ? course : new SqlCourse();

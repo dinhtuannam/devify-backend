@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using MediatR;
@@ -37,6 +38,7 @@ namespace Devify.Application.Features.Level.Commands
                 {
                     return new ApiResponse(false, "Create level failed", "", 400);
                 }
+                await _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.level);
                 return new ApiResponse(true, "Create level successfully", level.code, 200);
             }
         }

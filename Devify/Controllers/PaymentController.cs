@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,15 @@ namespace Devify.Controllers
             {
                 return Redirect($"{frontendUrl}/cart");
             }
+
+            await Task.WhenAll(
+                _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.inventory),
+                _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.cart),
+                _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.course),
+                _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.discount),
+                _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.profile)
+            );
+
             return Redirect($"{frontendUrl}/success");
 
         }

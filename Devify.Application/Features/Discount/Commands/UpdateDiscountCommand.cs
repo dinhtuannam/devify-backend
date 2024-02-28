@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Devify.Application.Configs;
 
 namespace Devify.Application.Features.Discount.Commands
 {
@@ -66,7 +67,14 @@ namespace Devify.Application.Features.Discount.Commands
                     return new ApiResponse(false, "Không tìm thấy mã giảm giá", discount, 404);
                 }
                 discount = _unitOfWork.discount.getDiscount(query.code);
+
+                await Task.WhenAll(
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.discount),
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.cart)
+                );
+
                 return new ApiResponse(true, "Cập nhật mã giảm giá thành công", discount, 200);
             }
         }
     }
+}

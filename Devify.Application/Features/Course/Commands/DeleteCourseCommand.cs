@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using MediatR;
 using System;
@@ -33,23 +34,29 @@ namespace Devify.Application.Features.Course.Commands
             {
                 if(string.IsNullOrEmpty(query.user) || string.IsNullOrEmpty(query.role))
                 {
-                    return new ApiResponse(false, "you dont have permission to access", false, 403);
+                    return new ApiResponse(false, "Bạn không có quyền truy cập", false, 403);
                 }
                 DetailCourseDTO course = _unitOfWork.course.GetCourse(query.code);
                 if (string.IsNullOrEmpty(course.code) || string.IsNullOrEmpty(course.creator.code))
                 {
-                    return new ApiResponse(false, "course not found", false, 404);
+                    return new ApiResponse(false, "Không tìm thấy khóa học", false, 404);
                 }
                 if(query.role.CompareTo("creator") == 0 && course.creator.code.CompareTo(query.user) != 0)
                 {
-                    return new ApiResponse(false, "you dont have permission to access", false, 403);
+                    return new ApiResponse(false, "Bạn không có quyền truy cập", false, 403);
                 }
                 bool result = await _unitOfWork.course.deleteCourse(query.code);
                 if (!result)
                 {
-                    return new ApiResponse(false, "delete course failed", false, 400);
+                    return new ApiResponse(false, "Xóa khóa học thất bại", false, 400);
                 }
-                return new ApiResponse(true, "delete course successfully", true, 200);
+
+                await Task.WhenAll(
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.course),
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.creatorCourse(query.user))
+                );
+
+                return new ApiResponse(true, "Xóa khóa học thành công", true, 200);
             }
         }
     }

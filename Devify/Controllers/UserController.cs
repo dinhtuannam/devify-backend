@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Devify.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace Devify.Controllers
 
         [HttpGet]
         [Route("get-all-user")]
-        [Cache(3600)]
+        [Cache(120)]
         public async Task<IActionResult> getAllUsers()
         {
             ApiResponse api = await _mediator.Send(new GetListUserQuery());
@@ -33,7 +33,7 @@ namespace Devify.Controllers
         [HttpGet]
         [Route("get-profile")]
         [User]
-        [Cache(3600)]
+        [Cache(120,true)]
         public async Task<IActionResult> getProfile()
         {
             string user = HttpContext.Items["code"] as string ?? "";
@@ -44,7 +44,7 @@ namespace Devify.Controllers
         [HttpGet]
         [Route("get-inventory")]
         [User]
-        [Cache(3600)]
+        [Cache(360,true)]
         public async Task<IActionResult> getInventory()
         {
             string user = HttpContext.Items["code"] as string ?? "";
@@ -54,7 +54,7 @@ namespace Devify.Controllers
 
         [HttpGet]
         [Route("{code}/get-user")]
-        [Cache(3600)]
+        [Cache(120,true)]
         public async Task<IActionResult> getUser(string code)
         {
             ApiResponse api = await _mediator.Send(new GetUserQuery(code));
@@ -63,21 +63,12 @@ namespace Devify.Controllers
 
         [HttpGet]
         [Route("{code}/get-creator-courses")]
-        [Cache(3600)]
+        [Cache(120)]
         public async Task<IActionResult> getCreatorCourses(string code,int page = 1,int size = 8,string title = "")
         {
             ApiResponse api = await _mediator.Send(new GetCreatorCourseQuery(code,page,size,title));
             return Program.my_api.response(api);
         }
-
-/*        [HttpGet]
-        [Route("{name}/get-user-by-name")]
-        [Cache(3600)]
-        public async Task<IActionResult> getUserByName(string name)
-        {
-            ApiResponse api = await _mediator.Send(new GetUserByNameQuery(name));
-            return Program.my_api.response(api);
-        }*/
 
         [HttpPost]
         [Route("create-new-user")]
@@ -164,13 +155,28 @@ namespace Devify.Controllers
                 role,
                 model.code, 
                 model.username, 
-                model.password,
                 model.displayName,
                 model.email,
-                model.image,
                 model.social,
                 model.about,
                 model.role
+            ));
+            return Program.my_api.response(api);
+        }
+
+        [HttpPut]
+        [User]
+        [Route("edit-password")]
+        public async Task<IActionResult> updatePassword(UpdatePasswordModel model)
+        {
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
+            ApiResponse api = await _mediator.Send(new UpdatePasswordCommand(
+                user,
+                role,
+                model.code,
+                model.curPassword,
+                model.newPassword
             ));
             return Program.my_api.response(api);
         }

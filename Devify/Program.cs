@@ -10,7 +10,7 @@ using Devify.Common;
 namespace Devify;
 public class Program
 {
-    public static StatusApi my_api = new StatusApi();   
+    public static StatusApi my_api = new StatusApi();
     public static void Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()

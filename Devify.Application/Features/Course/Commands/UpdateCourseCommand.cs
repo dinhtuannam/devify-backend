@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using MediatR;
@@ -72,6 +73,12 @@ namespace Devify.Application.Features.Course.Commands
                 }
                 updatedCourse = _unitOfWork.course.GetCourse(query.code, true);
                 updatedCourse.owner = true;
+
+                await Task.WhenAll(
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.course),
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.creatorCourse(query.user))
+                );
+
                 return new ApiResponse(true, "update course successfully", updatedCourse, 200);
             }
         }

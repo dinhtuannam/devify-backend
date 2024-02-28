@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using MediatR;
 using System;
@@ -33,6 +34,7 @@ namespace Devify.Application.Features.Cart.Commands
                 {
                     return new ApiResponse(false, result, cart, 400);
                 }
+                await _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.cart);
                 cart = await _unitOfWork.cart.getCartDetail(query.user);
                 return new ApiResponse(true, "Thêm sản phẩm thành công", cart, 200);
             }

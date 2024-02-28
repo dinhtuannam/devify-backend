@@ -205,5 +205,13 @@ namespace Devify.Infrastructure.Services
             }
 
         }
+
+        public async Task<int> RemoveAllUserToken(string user)
+        {
+            List<SqlToken> tokens = _unitOfWork.token.GetCondition(s => s.user != null && s.user.code.CompareTo(user) == 0).ToList();
+            _context.RemoveRange(tokens);
+            int rows = await _context.SaveChangesAsync();
+            return rows;
+        }
     }
 }

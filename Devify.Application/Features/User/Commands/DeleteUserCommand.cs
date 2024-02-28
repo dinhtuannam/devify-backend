@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using MediatR;
 
@@ -33,6 +34,13 @@ namespace Devify.Application.Features.User.Commands
                 {
                     return new ApiResponse(false, "Delete user failed", false, 400);
                 }
+
+                await Task.WhenAll(
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.user),
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.course),
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.inventory)
+                );
+
                 return new ApiResponse(true, "Delete user successfully", true, 200);
             }
         }

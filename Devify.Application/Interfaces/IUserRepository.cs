@@ -14,6 +14,7 @@ namespace Devify.Application.Interfaces
         public Task<bool> deleteUser(string code);
         public Task<bool> banUser(string code);
         public Task<SqlUser> createUser(string username, string password, string displayName, string email,string role);
-        public Task<SqlUser> editUser(string code, string username, string password, string displayName, string email, string image,string social,string about, string role);
+        public Task<SqlUser> editUser(string code, string username, string displayName, string email,string social,string about, string role);
+        public Task<bool> updatePassword(string code, string curPassword, string newPassword);
     }
 }

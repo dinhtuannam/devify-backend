@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Devify.Application.Configs;
 
 namespace Devify.Application.Features.Discount.Commands
 {
@@ -41,6 +42,12 @@ namespace Devify.Application.Features.Discount.Commands
                 {
                     return new ApiResponse(false, "Xóa mã giảm giá thất bại", false, 400);
                 }
+
+                await Task.WhenAll(
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.discount),
+                    _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.cart)
+                );
+
                 return new ApiResponse(true, "Xóa mã giảm giá thành công", true, 200);
             }
         }

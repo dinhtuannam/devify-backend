@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using MediatR;
@@ -73,24 +74,27 @@ namespace Devify.Application.Features.User.Commands
                 }
                 if (flag)
                 {
-                    return new ApiResponse(false, "You dont have permission", "", 403);
+                    return new ApiResponse(false, "Bạn không có quyền thực hiện", "", 403);
                 }
                 UserItem exist_displayName = _unitOfWork.user.getUserByName(query.displayName);
                 if (!string.IsNullOrEmpty(exist_displayName.code))
                 {
-                    return new ApiResponse(true, "display name already used", "", 400);
+                    return new ApiResponse(false, "Tên hiển thị đã có người sử dụng", "", 400);
                 }
                 UserItem exist_username = _unitOfWork.user.getUserByUsername(query.username);
                 if (!string.IsNullOrEmpty(exist_username.code))
                 {
-                    return new ApiResponse(true, "username already used", "", 400);
+                    return new ApiResponse(false, "Tên đăng nhập đã có người sử dụng", "", 400);
                 }
                 SqlUser newUser = await _unitOfWork.user.createUser(query.username, query.password, query.displayName, query.email, query.role);
                 if (string.IsNullOrEmpty(newUser.code))
                 {
-                    return new ApiResponse(false, "create user failed", "", 400);
+                    return new ApiResponse(false, "Tạo tài khoản thất bại", "", 400);
                 }
-                return new ApiResponse(true, "create user successfully", newUser.code, 200);
+
+                await _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.user);
+
+                return new ApiResponse(true, "Tạo tài khoản thành công", newUser.code, 200);
             }
         }
     }

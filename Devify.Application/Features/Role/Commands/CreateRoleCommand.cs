@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using MediatR;
@@ -43,6 +44,8 @@ namespace Devify.Application.Features.Role.Commands
                 {
                     return new ApiResponse(false, "create role failed", "", 400);
                 }
+
+                await _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.role);
                 return new ApiResponse(true, "create role successfully", role.code, 200);
             }
         }

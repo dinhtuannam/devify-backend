@@ -1,4 +1,5 @@
-﻿using Devify.Application.DTO;
+﻿using Devify.Application.Configs;
+using Devify.Application.DTO;
 using Devify.Application.Interfaces;
 using Devify.Entity;
 using MediatR;
@@ -36,6 +37,12 @@ namespace Devify.Application.Features.Language.Commands
                 {
                     return new ApiResponse(false, "Update language failed", "", 400);
                 }
+
+                await Task.WhenAll(
+                   _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.language),
+                   _unitOfWork.cache.RemoveCacheResponseAsync(ApiRoutes.course)
+               );
+
                 return new ApiResponse(true, "Update language successfully", result.code, 200);
             }
         }
