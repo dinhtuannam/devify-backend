@@ -79,6 +79,14 @@ namespace Devify.Controllers
         }
 
         [HttpPost]
+        [Route("add-avatar")]
+        public async Task<IActionResult> addAvatar(string code,IFormFile file)
+        {
+            ApiResponse api = await _mediator.Send(new AddAvatarCommand(code,file));
+            return Program.my_api.response(api);
+        }
+
+        [HttpPost]
         [Route("sign-in")]
         public async Task<IActionResult> signIn(SignInModel model)
         {

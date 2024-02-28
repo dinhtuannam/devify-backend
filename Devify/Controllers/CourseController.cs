@@ -83,6 +83,30 @@ namespace Devify.Controllers
             return Program.my_api.response(result);
         }
 
+        [HttpPost]
+        [Route("{code}/upload-image")]
+        public async Task<IActionResult> uploadImageCourse(string code,IFormFile file)
+        {
+            ApiResponse result = await _mediator.Send(new UploadCourseImageCommand(code, file));
+            return Program.my_api.response(result);
+        }
+
+        [HttpPost]
+        [Route("lesson/{code}/upload-image")]
+        public async Task<IActionResult> uploadImageLesson(string code, IFormFile file)
+        {
+            ApiResponse result = await _mediator.Send(new UploadLessonImageCommand(code, file));
+            return Program.my_api.response(result);
+        }
+
+        [HttpPost]
+        [Route("lesson/{code}/upload-video")]
+        public async Task<IActionResult> uploadVideoLesson(string code, IFormFile file)
+        {
+            ApiResponse result = await _mediator.Send(new UploadLessonVideoCommand(code, file));
+            return Program.my_api.response(result);
+        }
+
         [HttpDelete]
         [Role("admin", "creator")]
         [Route("{code}")]

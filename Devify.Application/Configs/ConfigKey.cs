@@ -18,6 +18,7 @@ namespace Devify.Application.Configs
         public static string CLOUD_APISECRET { get; set; } = "";
         public static string DEFAULT_AVATAR { get; set; } = "https://firebasestorage.googleapis.com/v0/b/devify-storage.appspot.com/o/images%2Fcreator%2Fuser.png?alt=media&token=81103601-6f1a-41c1-940f-2fe88ddcc6f7";
         public static string DEFAULT_COURSE_BG { get; set; } = "https://firebasestorage.googleapis.com/v0/b/devify-storage.appspot.com/o/images%2Fcourse%2Fcourse.png?alt=media&token=e5432143-96d3-4531-82a1-f053faca1907";
+        public static string DEFAULT_COURSE_VIDEO { get; set; } = "https://firebasestorage.googleapis.com/v0/b/devify-storage.appspot.com/o/videos%2Flessons%2Fcourse-video-intro.mp4?alt=media&token=8dc984da-61e1-46e8-9f10-7ff877c39eea";
         public ConfigKey(IConfiguration configuration)
         {
             _configuration = configuration;

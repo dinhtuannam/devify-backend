@@ -15,7 +15,6 @@ namespace Devify.Infrastructure.SeedWorks
         public ICategoryRepository category { get; private set; }
         public ILanguageRepository language { get; private set; }
         public ICourseRepository course { get; private set; }
-        public IFirebaseRepository firebase { get; private set; } 
         public ITokenRepository token { get; private set; }
         public IUserRepository user { get; private set; }
         public ICacheRepository cache { get; private set; }
@@ -27,6 +26,7 @@ namespace Devify.Infrastructure.SeedWorks
         public IOrderRepository order { get; private set; }
         public ICartRepository cart { get; private set; }
         public IDiscountRepository discount { get; private set; }
+        public IFirebaseRepository file { get; private set; }
 
         public UnitOfWork(
             DataContext context,
@@ -47,11 +47,11 @@ namespace Devify.Infrastructure.SeedWorks
             token = new TokenRepository(_context,this);
             user = new UserRepository(_context,this);
             cache = new CacheRepository(_distributedCache, _connectionMultiplexer);
-            firebase = new FirebaseRepository();
             role = new RoleRepository(_context,this);
             order = new OrderRepository(_context, this);
             cart = new CartRepository(_context, this);
             discount = new DiscountRepository(_context, this);
+            file = new FirebaseRepository(_context, this);
         }
 
         public async Task<int> CompleteAsync()

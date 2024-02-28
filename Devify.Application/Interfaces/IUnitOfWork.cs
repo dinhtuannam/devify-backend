@@ -5,7 +5,6 @@
         ICategoryRepository category { get; }
         ILanguageRepository language { get; }
         ICourseRepository course { get; }
-        IFirebaseRepository firebase { get; }
         ITokenRepository token { get; }
         IUserRepository user { get; }
         ICacheRepository cache { get; }
@@ -17,6 +16,7 @@
         IOrderRepository order { get; }
         ICartRepository cart { get; }
         IDiscountRepository discount { get; }
+        IFirebaseRepository file { get; }
         Task<int> CompleteAsync();
     }
 }

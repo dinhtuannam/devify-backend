@@ -23,6 +23,7 @@ namespace Devify.Infrastructure.Persistance
         public DbSet<SqlRating> ratings { get; set; }
         public DbSet<SqlDiscount> discounts { get; set; }
         public DbSet<SqlUser> users { get; set; }
+        public DbSet<SqlFile> files { get; set; }
 
         public static string configSql = "Host=dpg-cmf3dkmd3nmc739dj1fg-a.singapore-postgres.render.com:5432;Database=db_devify;Username=db_devify_user;Password=rxB3v2YwsCSjMkG7l0fgFugMPtbM4wsa";
 
