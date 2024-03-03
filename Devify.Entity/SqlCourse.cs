@@ -17,7 +17,7 @@ namespace Devify.Entity
         public string des { get; set; } = "";
         public string code { get; set; } = "";
         public string image { get; set; } = "";
-        public bool isactivated { get; set; } = false;
+        public bool isactivated { get; set; } = true;
         public bool isdeleted { get; set; } = false;
         public bool issale { get; set; } = false;
         public SqlUser? user { get; set; }

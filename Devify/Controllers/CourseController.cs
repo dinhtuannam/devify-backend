@@ -130,48 +130,77 @@ namespace Devify.Controllers
             return Program.my_api.response(result);
         }
 
-        /*[HttpPost("{courseId}/chapter")]
-        public async Task<IActionResult> CreateCourseChapter([FromForm] CreateCourseChapterRequest model, Guid courseId)
+        [HttpPost]
+        [Role("admin", "creator")]
+        [Route("{code}/add-chapter")]
+        public async Task<IActionResult> AddChapter([FromRoute] string code,LearningCreateUpdateModel req)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _mediator.Send(new CreateCourseChapterCommand { request = model , CourseId = courseId });
-                return result.result ? Ok(result) : BadRequest(result);
-            }
-            return BadRequest(ModelState);
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
+            ApiResponse result = await _mediator.Send(
+                new CreateChapterCommand(user, role, code, req.name, req.des, req.step));
+            return Program.my_api.response(result);
         }
 
-        [HttpPut("{courseId}/chapter")]
-        public async Task<IActionResult> UpdateCourseChapter([FromForm] UpdateCourseChapterRequest model, Guid courseId)
+        [HttpPost]
+        [Role("admin", "creator")]
+        [Route("chapter/{code}/add-lesson")]
+        public async Task<IActionResult> AddLesson([FromRoute] string code,LearningCreateUpdateModel req)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _mediator.Send(new UpdateCourseChapterCommand {  UpdateCourseChapterRequest = model, CourseId = courseId });
-                return result.result ? Ok(result) : BadRequest(result);
-            }
-            return BadRequest(ModelState);
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
+            ApiResponse result = await _mediator.Send(
+                new CreateLessonCommand(user, role, code, req.name, req.des, req.step));
+            return Program.my_api.response(result);
         }
 
-        [HttpPost("{courseId}/chapter/{chapterId}/lesson")]
-        public async Task<IActionResult> CreateCourseLesson([FromForm] CreateCourseRequest model, string courseId , string chapterId)
+        [HttpPut]
+        [Role("admin", "creator")]
+        [Route("chapter/{code}/update-chapter")]
+        public async Task<IActionResult> UpdateChapter([FromRoute] string code,LearningCreateUpdateModel req)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _mediator.Send(new CreateCourseCommand { request = model });
-                return result.result ? Ok(result) : BadRequest(result);
-            }
-            return BadRequest(ModelState);
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
+            ApiResponse result = await _mediator.Send(
+                new UpdateChapterCommand(user, role, code, req.name, req.des, req.step));
+            return Program.my_api.response(result);
         }
 
-        [HttpPut("{courseId}/chapter/{chapterId}/lesson")]
-        public async Task<IActionResult> UpdateCourseLesson([FromForm] CreateCourseRequest model, string courseId, string chapterId)
+        [HttpPut]
+        [Role("admin", "creator")]
+        [Route("chapter/lesson/{code}/update-lesson")]
+        public async Task<IActionResult> UpdateLesson([FromRoute] string code,LearningCreateUpdateModel req)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _mediator.Send(new CreateCourseCommand { request = model });
-                return result.result ? Ok(result) : BadRequest(result);
-            }
-            return BadRequest(ModelState);
-        }*/
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
+            ApiResponse result = await _mediator.Send(
+                new UpdateLessonCommand(user, role, code, req.name, req.des, req.step));
+            return Program.my_api.response(result);
+        }
+
+        [HttpDelete]
+        [Role("admin", "creator")]
+        [Route("chapter/{code}/delete-chapter")]
+        public async Task<IActionResult> DeleteChapter([FromRoute] string code)
+        {
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
+            ApiResponse result = await _mediator.Send(
+                new DeleteChapterCommand(user, role, code));
+            return Program.my_api.response(result);
+        }
+
+        [HttpDelete]
+        [Role("admin", "creator")]
+        [Route("chapter/lesson/{code}/delete-lesson")]
+        public async Task<IActionResult> DeleteLesson([FromRoute] string code)
+        {
+            string user = HttpContext.Items["code"] as string ?? "";
+            string role = HttpContext.Items["role"] as string ?? "";
+            ApiResponse result = await _mediator.Send(
+                new DeleteLessonCommand(user, role, code));
+            return Program.my_api.response(result);
+        }
+
     }
 }

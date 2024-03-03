@@ -1,11 +1,7 @@
 ﻿using Devify.Entity.Commons;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Devify.Entity
 {
@@ -19,7 +15,7 @@ namespace Devify.Entity
         public string des { get; set; } = "";
         public int step { get; set; } = 0;
         public bool isdeleted { get; set; } = false;
-        public bool isactivated { get; set; } = false;
+        public bool isactivated { get; set; } = true;
         public SqlCourse? course { get; set; }
         public List<SqlLesson>? lessons { get; set; }
 

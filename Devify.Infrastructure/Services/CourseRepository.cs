@@ -590,5 +590,75 @@ namespace Devify.Infrastructure.Services
                                                         .ToList();
             return productCodes;
         }
+
+        public CourseItem GetCourseByLesson(string lesson)
+        {
+            SqlLesson? m_lesson = _unitOfWork.lesson.GetCondition(s => s.code.CompareTo(lesson) == 0 && s.isdeleted == false && s.course != null)
+                                                    .Include(s => s.course).ThenInclude(s => s.user)
+                                                    .FirstOrDefault();
+
+            if(m_lesson == null || m_lesson.course!.isdeleted == true)
+            {
+                return new CourseItem();
+            }
+
+            CourseItem dto = new CourseItem
+            {
+                code = m_lesson.course.code,
+                title = m_lesson.course.title,
+                des = m_lesson.course.des,
+                image = m_lesson.course.image,
+                price = m_lesson.course.price,
+                isactivated = m_lesson.course.isactivated,
+                issale = m_lesson.course.issale,
+                salePrice = m_lesson.course.salePrice,
+                createTime = m_lesson.course.DateCreated.ToString("dd-mm-yyyy hh:mm:ss"),
+                updateTime = m_lesson.course.DateUpdated.ToString("dd-mm-yyyy hh:mm:ss"),
+                creator = new CourseCreatorAttribute
+                {
+                    code = m_lesson.course.user != null ? m_lesson.course.user.code : "",
+                    displayName = m_lesson.course.user != null ? m_lesson.course.user.displayName : "",
+                    username = m_lesson.course.user != null ? m_lesson.course.user.username : "",
+                    image = m_lesson.course.user != null ? m_lesson.course.user.image : "",
+                }
+            };
+
+            return dto;
+        }
+
+        public CourseItem GetCourseByChapter(string chapter)
+        {
+            SqlChapter? m_chapter = _unitOfWork.chapter.GetCondition(s => s.code.CompareTo(chapter) == 0 && s.isdeleted == false && s.course != null)
+                                                    .Include(s => s.course).ThenInclude(s => s.user)
+                                                    .FirstOrDefault();
+
+            if (m_chapter == null || m_chapter.course!.isdeleted == true)
+            {
+                return new CourseItem();
+            }
+
+            CourseItem dto = new CourseItem
+            {
+                code = m_chapter.course.code,
+                title = m_chapter.course.title,
+                des = m_chapter.course.des,
+                image = m_chapter.course.image,
+                price = m_chapter.course.price,
+                isactivated = m_chapter.course.isactivated,
+                issale = m_chapter.course.issale,
+                salePrice = m_chapter.course.salePrice,
+                createTime = m_chapter.course.DateCreated.ToString("dd-mm-yyyy hh:mm:ss"),
+                updateTime = m_chapter.course.DateUpdated.ToString("dd-mm-yyyy hh:mm:ss"),
+                creator = new CourseCreatorAttribute
+                {
+                    code = m_chapter.course.user != null ? m_chapter.course.user.code : "",
+                    displayName = m_chapter.course.user != null ? m_chapter.course.user.displayName : "",
+                    username = m_chapter.course.user != null ? m_chapter.course.user.username : "",
+                    image = m_chapter.course.user != null ? m_chapter.course.user.image : "",
+                }
+            };
+
+            return dto;
+        }
     }
 }

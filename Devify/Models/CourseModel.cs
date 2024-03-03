@@ -24,4 +24,11 @@
         public List<string> languages { get; set; } = new List<string>();
         public List<string> levels { get; set; } = new List<string>();
     }
+
+    public class LearningCreateUpdateModel
+    {
+        public string name { get; set; } = "";
+        public string des { get; set; } = "";
+        public int step { get; set; } = 0;
+    }
 }

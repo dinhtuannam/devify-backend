@@ -17,4 +17,5 @@ namespace Devify.Application.DTO
         public string createTime { get; set; } = "";
         public string updateTime { get; set; } = "";
     }
+
 }
